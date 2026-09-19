@@ -45,5 +45,14 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Notificaciones push (FCM) y permisos de fotos/videos. -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Eco-Retos necesita acceso a tus fotos y videos para adjuntarlos como evidencia de los retos y compartirlos en la comunidad.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Eco-Retos necesita guardar imágenes y videos de los retos en tu galería.</string>
 </dict>
 </plist>
