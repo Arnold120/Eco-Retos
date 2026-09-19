@@ -187,11 +187,11 @@ namespace WebApi.Implementacion
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        /// <summary>
-        /// Upsert por Codigo reutilizando una sola conexion: primero consulta
-        /// (donde el indice unico IX_Reto_Codigo lo hace instantaneo) y, si no
-        /// existe, inserta. Evita abrir una conexion nueva por consulta.
-        /// </summary>
+
+
+
+
+
         public async Task<Reto> ObtenerOCrearPorCodigoAsync(
             string codigo,
             int categoriaId,
@@ -216,8 +216,8 @@ namespace WebApi.Implementacion
                 {
                     var existente = Mapear(reader);
                     reader.Close();
-                    // Corrige la categoría si el reto existía con CategoriaId nulo
-                    // (datos viejos sincronizados antes de que el móvil enviara la categoría).
+
+
                     if (existente.CategoriaId == 0)
                     {
                         using var update = new SqlCommand(
@@ -228,8 +228,8 @@ namespace WebApi.Implementacion
                         await update.ExecuteNonQueryAsync();
                         existente.CategoriaId = categoriaId;
                     }
-                    // Mantiene las recompensas alineadas con el catálogo local:
-                    // los retos creados antes del Monedero quedaron con 0 monedas.
+
+
                     if (existente.ExperienciaRecompensa != experienciaRecompensa ||
                         existente.MonedasRecompensa != monedasRecompensa)
                     {

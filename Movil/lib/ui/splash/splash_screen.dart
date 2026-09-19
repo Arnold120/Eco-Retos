@@ -193,7 +193,7 @@ class _LeafPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2.5;
 
-    // Main leaf shape
+
     final path = Path();
     path.moveTo(center.dx, center.dy - radius);
     path.cubicTo(
@@ -214,7 +214,7 @@ class _LeafPainter extends CustomPainter {
     );
     canvas.drawPath(path, paint);
 
-    // Leaf vein
+
     final veinPaint = Paint()
       ..color = color.withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke
@@ -226,7 +226,7 @@ class _LeafPainter extends CustomPainter {
       veinPaint,
     );
 
-    // Small branches
+
     canvas.drawLine(
       Offset(center.dx, center.dy - radius * 0.2),
       Offset(center.dx + radius * 0.4, center.dy - radius * 0.5),
@@ -243,7 +243,7 @@ class _LeafPainter extends CustomPainter {
       veinPaint,
     );
 
-    // Recycling arrows
+
     final arrowPaint = Paint()
       ..color = color.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke

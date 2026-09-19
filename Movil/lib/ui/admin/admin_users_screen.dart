@@ -7,7 +7,7 @@ import '../design/eco_widgets.dart';
 import 'cubit/admin_panel_cubit.dart';
 import 'cubit/admin_panel_state.dart';
 
-/// Gestión de usuarios: activar/desactivar cuentas y asignar/quitar roles.
+
 class AdminUsersScreen extends StatefulWidget {
   final int usuarioIdActual;
 

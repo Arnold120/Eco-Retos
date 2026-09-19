@@ -121,12 +121,12 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   }
 
   double _calculateEcologicalImpact() {
-    // Calcular impacto ecológico basado en actividades
+
     double impacto = 0;
     if (_progreso != null) {
-      impacto += _progreso!.retosCompletados * 2.5; // kg CO2 ahorrados por reto
-      impacto += _progreso!.triviasCompletadas * 0.5; // kg CO2 por trivia
-      impacto += (_plantasObtenidas) * 10; // kg CO2 por planta/árbol
+      impacto += _progreso!.retosCompletados * 2.5; 
+      impacto += _progreso!.triviasCompletadas * 0.5; 
+      impacto += (_plantasObtenidas) * 10; 
     }
     return impacto;
   }
@@ -522,7 +522,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   }
 
   Widget _buildWeeklyChart(bool isDark) {
-    // Usar datos reales si están disponibles, sino mock
+
     final days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
     final values = _generateWeeklyData();
 
@@ -589,8 +589,8 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   }
 
   List<double> _generateWeeklyData() {
-    // En una app real, estos datos vendrían del backend
-    // Por ahora generamos datos basados en el progreso real
+
+
     final base = (_experiencia > 0 ? (_experiencia / 100).clamp(0.1, 1.0) : 0.3);
     return [
       (base * 0.8).clamp(0.0, 1.0),

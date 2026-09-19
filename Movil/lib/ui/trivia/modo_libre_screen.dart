@@ -12,14 +12,14 @@ import 'modo_libre_config_screen.dart';
 import 'modo_libre_play_screen.dart';
 import 'modo_libre_result_screen.dart';
 
-/// Pantalla raíz de Modo Libre.
-///
-/// Es un [StatefulWidget] que POSEE el [ModoLibreCubit]: lo crea en
-/// [initState], lo provee con [BlocProvider.value] por encima de todos sus
-/// consumidores y lo cierra en [dispose]. Así siempre existe exactamente un
-/// proveedor por encima de cada `BlocBuilder<ModoLibreCubit, ModoLibreState>`
-/// dentro de la ruta, eliminando de raíz los errores
-/// "Could not find the correct Provider<...> above this BlocBuilder<...>".
+
+
+
+
+
+
+
+
 class ModoLibreScreen extends StatefulWidget {
   final int usuarioId;
   final TriviaService triviaService;

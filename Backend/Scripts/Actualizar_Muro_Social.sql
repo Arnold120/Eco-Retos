@@ -1,28 +1,26 @@
-/* ============================================================================
-   Eco-Retos · Migracion del Muro Social
-   ----------------------------------------------------------------------------
-   Este script es IDEMPOTENTE: puede ejecutarse varias veces sobre la base
-   EcoRetos sin perder datos ni duplicar objetos.
 
-   Agrega:
-     - Publicacion:  Ubicacion, Categoria, CompartidoDeId, Editada, FechaEdicion
-     - PublicacionMultimedia (galeria de imagenes/videos por publicacion)
-     - Comentario:   ComentarioPadreId (respuestas anidadas), Editado
-     - Reaccion      (me gusta sobre publicaciones y comentarios)
-     - Seguimiento   (relacion seguidor -> seguido)
-     - Guardado      (publicaciones guardadas por usuario)
-     - Denuncia      (reportes de contenido)
-     - Conversacion / ConversacionParticipante / Mensaje (mensajeria)
-     - Notificacion: ReferenciaTipo, ReferenciaId, ActorUsuarioId
 
-   Uso:
-     sqlcmd -S <servidor> -d EcoRetos -i Backend\Scripts\Actualizar_Muro_Social.sql
-   o abrir y ejecutar en SQL Server Management Studio.
-   ============================================================================ */
 
-/* IMPORTANTE: ejecuta este script sobre la base de datos que usa el backend
-   (la que contiene la tabla Publicacion, normalmente "EcoRitos"). No se
-   selecciona una base fija para evitar aplicar los cambios en otra base. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 IF OBJECT_ID('dbo.Publicacion', 'U') IS NULL
 BEGIN
     RAISERROR('Ejecuta este script sobre la base de datos de Eco-Retos (debe existir la tabla Publicacion).', 16, 1);
@@ -30,9 +28,8 @@ BEGIN
 END
 GO
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Publicacion: columnas sociales y de compartido
-   ───────────────────────────────────────────────────────────────────────────── */
+
+
 IF COL_LENGTH('dbo.Publicacion', 'Ubicacion') IS NULL
     ALTER TABLE dbo.Publicacion ADD Ubicacion NVARCHAR(200) NULL;
 GO
@@ -65,10 +62,10 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Publicacion_Visibilida
     CREATE INDEX IX_Publicacion_Visibilidad ON dbo.Publicacion(Visibilidad, Estado);
 GO
 
--- NO ACTION: SQL Server no permite ON DELETE SET NULL/CASCADE en un FK
--- auto-referenciado cuando otras tablas ya cascadean hacia Publicacion
--- (rutas de cascada multiples). El backend desvincula y marca los compartidos
--- antes de eliminar el original (PublicacionService.EliminarAsync).
+
+
+
+
 IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_Publicacion_Compartida')
     ALTER TABLE dbo.Publicacion
         ADD CONSTRAINT FK_Publicacion_Compartida
@@ -84,9 +81,8 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Publicacion_Compartido
     CREATE INDEX IX_Publicacion_CompartidoDeId ON dbo.Publicacion(CompartidoDeId);
 GO
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Multimedia por publicacion (varias imagenes / videos)
-   ───────────────────────────────────────────────────────────────────────────── */
+
+
 IF OBJECT_ID('dbo.PublicacionMultimedia', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.PublicacionMultimedia (
@@ -95,7 +91,7 @@ BEGIN
         Url           NVARCHAR(500) NOT NULL,
         Tipo          NVARCHAR(20) NOT NULL CONSTRAINT DF_PublicacionMultimedia_Tipo DEFAULT 'imagen',
         Duracion      NVARCHAR(20) NULL,
-        -- Imagen de portada del video (fotograma elegido por el usuario).
+
         Poster        NVARCHAR(500) NULL,
         Orden         INT NOT NULL CONSTRAINT DF_PublicacionMultimedia_Orden DEFAULT 0,
         FechaCreacion DATETIME2 NOT NULL CONSTRAINT DF_PublicacionMultimedia_Fecha DEFAULT GETDATE(),
@@ -112,9 +108,8 @@ IF COL_LENGTH('dbo.PublicacionMultimedia', 'Poster') IS NULL
     ALTER TABLE dbo.PublicacionMultimedia ADD Poster NVARCHAR(500) NULL;
 GO
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Comentario: respuestas anidadas y edicion
-   ───────────────────────────────────────────────────────────────────────────── */
+
+
 IF COL_LENGTH('dbo.Comentario', 'ComentarioPadreId') IS NULL
     ALTER TABLE dbo.Comentario ADD ComentarioPadreId INT NULL;
 GO
@@ -133,9 +128,8 @@ IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Comentario_Padre' AND 
     CREATE INDEX IX_Comentario_Padre ON dbo.Comentario(ComentarioPadreId);
 GO
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Reacciones (me gusta) sobre publicaciones y comentarios
-   ───────────────────────────────────────────────────────────────────────────── */
+
+
 IF OBJECT_ID('dbo.Reaccion', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Reaccion (
@@ -165,9 +159,8 @@ BEGIN
 END
 GO
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Seguimiento entre usuarios
-   ───────────────────────────────────────────────────────────────────────────── */
+
+
 IF OBJECT_ID('dbo.Seguimiento', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Seguimiento (
@@ -184,9 +177,8 @@ BEGIN
 END
 GO
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Publicaciones guardadas
-   ───────────────────────────────────────────────────────────────────────────── */
+
+
 IF OBJECT_ID('dbo.Guardado', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Guardado (
@@ -202,9 +194,8 @@ BEGIN
 END
 GO
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Denuncias de contenido
-   ───────────────────────────────────────────────────────────────────────────── */
+
+
 IF OBJECT_ID('dbo.Denuncia', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Denuncia (
@@ -227,9 +218,8 @@ BEGIN
 END
 GO
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Mensajeria directa
-   ───────────────────────────────────────────────────────────────────────────── */
+
+
 IF OBJECT_ID('dbo.Conversacion', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Conversacion (
@@ -277,9 +267,8 @@ BEGIN
 END
 GO
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   Notificacion: referencia al recurso y actor
-   ───────────────────────────────────────────────────────────────────────────── */
+
+
 IF COL_LENGTH('dbo.Notificacion', 'ReferenciaTipo') IS NULL
     ALTER TABLE dbo.Notificacion ADD ReferenciaTipo NVARCHAR(30) NULL;
 GO

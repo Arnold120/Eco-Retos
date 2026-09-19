@@ -7,7 +7,7 @@ import '../widgets/category_chip.dart';
 import 'cubit/modo_libre_cubit.dart';
 import 'cubit/modo_libre_state.dart';
 
-/// Pantalla de configuración de la partida de Modo Libre.
+
 class ModoLibreConfigScreen extends StatefulWidget {
   const ModoLibreConfigScreen({super.key});
 
@@ -205,9 +205,9 @@ class _ModoLibreConfigScreenState extends State<ModoLibreConfigScreen> {
     );
   }
 
-  /// Selector compacto de categoría: ocupa una sola fila sin importar cuántas
-  /// categorías existan. El listado completo se abre en una hoja inferior con
-  /// búsqueda, así la pantalla no se satura cuando crecen las categorías.
+
+
+
   Widget _buildCategorySelector(List<CategoriaResponse> categorias) {
     CategoriaResponse? seleccionada;
     for (final cat in categorias) {
@@ -328,11 +328,11 @@ class _Seccion extends StatelessWidget {
   }
 }
 
-/// Hoja inferior con búsqueda para elegir una categoría. Escala a cualquier
-/// cantidad de categorías sin ocupar espacio fijo en la pantalla.
+
+
 class _SelectorCategoriasSheet extends StatefulWidget {
-  /// Id reservado para la opción "Todas las categorías" (los ids reales son
-  /// positivos, así se distingue de un `pop` cancelado que devuelve null).
+
+
   static const int todasId = -1;
 
   final List<CategoriaResponse> categorias;
@@ -579,7 +579,7 @@ class _SelectorCategoriasSheetState extends State<_SelectorCategoriasSheet> {
   }
 }
 
-/// Normaliza texto para búsquedas: minúsculas y sin acentos.
+
 String _sinAcentos(String texto) {
   const conAcento = 'áàäâãéèëêíìïîóòöôõúùüûñç';
   const sinAcento = 'aaaaaeeeeiiiiooooouuuunc';

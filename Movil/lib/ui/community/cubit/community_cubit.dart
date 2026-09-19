@@ -40,11 +40,11 @@ class CommunityCubit extends Cubit<CommunityState> {
     return super.close();
   }
 
-  // ─── Actualizacion automatica ───────────────────────────────────────────
 
-  /// Refresca la primera pagina sin mostrar cargando ni perder el scroll.
-  /// Sirve para que los cambios de otros usuarios aparezcan sin tener que
-  /// recargar manualmente.
+
+
+
+
   Future<void> refrescarSilencioso() async {
     if (state.isLoading || state.isLoadingMore || state.esBusqueda) return;
     try {
@@ -78,11 +78,11 @@ class CommunityCubit extends Cubit<CommunityState> {
         },
       ));
     } catch (_) {
-      // Silencioso: se reintenta en el siguiente ciclo o al refrescar.
+
     }
   }
 
-  /// Sondea el feed cada 25 s mientras el muro esta visible.
+
   void iniciarSondeo() {
     _sondeo?.cancel();
     _sondeo = Timer.periodic(
@@ -96,19 +96,19 @@ class CommunityCubit extends Cubit<CommunityState> {
     _sondeo = null;
   }
 
-  // ─── Carga del feed ─────────────────────────────────────────────────────
+
 
   Future<void> loadPublicaciones() async {
     emit(state.copyWith(isLoading: true, clearError: true));
     try {
-      // El feed y el seguimiento se cargan por separado: si uno falla, el
-      // otro se conserva (evita que las sugerencias muestren usuarios ya
-      // seguidos cuando el feed tiene problemas).
+
+
+
       List<int> seguidos = state.siguiendoIds.toList();
       try {
         seguidos = await _seguimientos.getIdsSeguidos();
       } catch (_) {
-        // Se conservan los seguidos que ya estuvieran cargados.
+
       }
       final posts = await _cargarSegunFiltro(pagina: 1);
       final ocultas = await _cargarOcultas();
@@ -188,7 +188,7 @@ class CommunityCubit extends Cubit<CommunityState> {
 
   Future<void> refresh() => loadPublicaciones();
 
-  // ─── Filtros y búsqueda ─────────────────────────────────────────────────
+
 
   Future<void> cambiarFiltro(MuroFiltro filtro) async {
     if (state.filtro == filtro) return;
@@ -205,7 +205,7 @@ class CommunityCubit extends Cubit<CommunityState> {
     await loadPublicaciones();
   }
 
-  /// Búsqueda con debounce contra el backend.
+
   void buscar(String termino) {
     _debounceBusqueda?.cancel();
     final limpio = termino.trim();
@@ -256,7 +256,7 @@ class CommunityCubit extends Cubit<CommunityState> {
     loadPublicaciones();
   }
 
-  // ─── Reacciones ─────────────────────────────────────────────────────────
+
 
   Future<void> toggleMeGusta(PublicacionResponse post) async {
     if (state.procesando.contains(post.publicacionId)) return;
@@ -314,7 +314,7 @@ class CommunityCubit extends Cubit<CommunityState> {
     }
   }
 
-  // ─── Guardados ──────────────────────────────────────────────────────────
+
 
   Future<void> toggleGuardada(PublicacionResponse post) async {
     if (state.procesando.contains(post.publicacionId)) return;
@@ -356,10 +356,10 @@ class CommunityCubit extends Cubit<CommunityState> {
     }
   }
 
-  // ─── Seguimiento ────────────────────────────────────────────────────────
 
-  /// Sincroniza el estado de seguimiento cuando otra pantalla lo obtuvo del
-  /// backend (perfil publico), sin lanzar peticiones adicionales.
+
+
+
   void sincronizarSeguimiento(int objetivoId, bool siguiendo) {
     if (objetivoId == usuarioId) return;
     final ids = Set<int>.of(state.siguiendoIds);
@@ -400,7 +400,7 @@ class CommunityCubit extends Cubit<CommunityState> {
     }
   }
 
-  // ─── Publicaciones ──────────────────────────────────────────────────────
+
 
   Future<PublicacionResponse?> crearPublicacion({
     required String contenido,
@@ -504,7 +504,7 @@ class CommunityCubit extends Cubit<CommunityState> {
     await _guardarOcultas(ocultas);
   }
 
-  // ─── Comentarios ────────────────────────────────────────────────────────
+
 
   Future<List<ComentarioResponse>> getComentarios(int publicacionId) async {
     try {
@@ -575,7 +575,7 @@ class CommunityCubit extends Cubit<CommunityState> {
     }
   }
 
-  // ─── Utilidades ─────────────────────────────────────────────────────────
+
 
   void _actualizarPost(
     int publicacionId,

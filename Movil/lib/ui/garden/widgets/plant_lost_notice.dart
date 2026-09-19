@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/repositories/garden_repository.dart';
 
-/// Aviso de plantas que se perdieron por descuido (sed o plaga sin tratar).
-/// Se muestra como diálogo para que el usuario entienda qué pasó y cómo
-/// evitarlo la próxima vez.
+
+
+
 class PlantLostNotice extends StatelessWidget {
   final List<PlantaPerdida> perdidas;
   final VoidCallback onCerrar;

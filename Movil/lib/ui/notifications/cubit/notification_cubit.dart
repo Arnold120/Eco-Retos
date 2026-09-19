@@ -55,7 +55,7 @@ class NotificationCubit extends Cubit<NotificationState> {
     return super.close();
   }
 
-  /// Refresca en segundo plano para que el badge se mantenga al dia.
+
   void iniciarPolling() {
     _poll?.cancel();
     _poll = Timer.periodic(
@@ -76,7 +76,7 @@ class NotificationCubit extends Cubit<NotificationState> {
         noLeidas: results[1].length,
       ));
     } catch (_) {
-      // Silencioso: se reintenta en el siguiente ciclo.
+
     }
   }
 

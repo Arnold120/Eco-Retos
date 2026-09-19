@@ -29,7 +29,7 @@ namespace WebApi.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>Todos los usuarios activos (para la seccion Usuarios).</summary>
+
         [HttpGet("usuarios")]
         [ProducesResponseType(typeof(IEnumerable<UsuarioResumenDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> TodosLosUsuarios(
@@ -54,7 +54,7 @@ namespace WebApi.Controllers
             }).ToList());
         }
 
-        /// <summary>Busqueda global: usuarios y publicaciones.</summary>
+
         [HttpGet]
         [ProducesResponseType(typeof(BusquedaResponseDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> Buscar([FromQuery] string q, [FromQuery] int limite = 15)

@@ -41,8 +41,8 @@ class _CommentsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    // Con el teclado abierto, la hoja se encoge y sube para que la barra de
-    // escritura quede siempre visible.
+
+
     final insets = MediaQuery.of(context).viewInsets.bottom;
     final altura =
         (MediaQuery.of(context).size.height * 0.82 - insets).clamp(240.0, 1200.0);
@@ -79,7 +79,7 @@ class _CommentsSheet extends StatelessWidget {
   }
 }
 
-/// Vista de comentarios reutilizable (sheet o pantalla de detalle).
+
 class CommentsView extends StatefulWidget {
   final int publicacionId;
   final int usuarioId;

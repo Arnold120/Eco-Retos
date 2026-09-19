@@ -30,11 +30,11 @@ Future<void> _asegurarCuenta() async {
       'Apellido': 'Sesion',
     });
   } catch (_) {
-    // Ya existe.
+
   }
 }
 
-/// Borra la sesion guardada para probar el login desde cero.
+
 Future<void> _limpiarSesion() async {
   const storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
@@ -59,7 +59,7 @@ void main() {
         reason: 'Sin sesión guardada debe mostrar el login');
     final campos = find.byType(TextFormField);
 
-    // Credenciales incorrectas: mensaje claro y campos conservados.
+
     await tester.enterText(campos.at(0), _correo);
     await tester.enterText(campos.at(1), 'clave-incorrecta');
     await tester.pump(const Duration(milliseconds: 100));
@@ -75,7 +75,7 @@ void main() {
     expect(find.text('clave-incorrecta'), findsWidgets,
         reason: 'La contraseña escrita debe conservarse');
 
-    // Ahora con la contraseña correcta.
+
     await tester.ensureVisible(campos.at(1));
     await tester.pump(const Duration(milliseconds: 200));
     await tester.tap(campos.at(1));
@@ -89,7 +89,7 @@ void main() {
     expect(find.byType(MainShell), findsOneWidget,
         reason: 'Tras iniciar sesión debe entrar al shell');
 
-    // Simula cerrar y volver a abrir la app (nueva instancia del arbol).
+
     app.main();
     await avanzar(tester, const Duration(seconds: 12));
 

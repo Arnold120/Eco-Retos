@@ -19,11 +19,11 @@ import 'cubit/community_cubit.dart';
 import 'widgets/link_preview.dart';
 import 'widgets/post_helpers.dart';
 
-/// Compositor de publicaciones (crear y editar).
+
 class CreatePostScreen extends StatefulWidget {
   final int usuarioId;
 
-  /// Si viene, la pantalla funciona en modo edicion.
+
   final PublicacionResponse? post;
 
   const CreatePostScreen({
@@ -42,7 +42,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   final List<MultimediaItem> _multimedia = [];
 
-  /// Ruta local -> progreso (0..1) de los archivos en subida.
+
   final Map<String, double> _subiendo = {};
 
   TipoPublicacion _tipo = TipoPublicacion.general;
@@ -145,7 +145,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     }
   }
 
-  // ─── Multimedia ─────────────────────────────────────────────────────────
+
 
   Future<void> _elegirFotos() async {
     if (_multimedia.length >= 10) {
@@ -189,7 +189,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     }
     if (archivo == null || !mounted) return;
 
-    // Vista previa + recorte antes de subir.
+
     final recorte = await showDialog<_RecorteVideo>(
       context: context,
       barrierDismissible: false,
@@ -205,9 +205,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     );
   }
 
-  /// Recorta/optimiza el video para movil. Si la plataforma no soporta la
-  /// compresion (por ejemplo escritorio) o el archivo ya es pequeno, se sube
-  /// el original sin bloquear el flujo.
+
+
+
   Future<({File archivo, String? poster})> _optimizarVideo(
       _RecorteVideo recorte) async {
     final archivo = recorte.archivo;
@@ -228,7 +228,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       }
     }
 
-    // Archivos livianos sin recorte: solo se sube la portada elegida.
+
     if (!hayRecorte && tamanio < 4 * 1024 * 1024) {
       return (archivo: archivo, poster: await subirPoster());
     }
@@ -277,7 +277,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
     Subscription? suscripcion;
     try {
-      // Limpia cualquier proceso anterior que haya quedado colgado.
+
       try {
         await VideoCompress.cancelCompression();
       } catch (_) {}
@@ -307,7 +307,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         }
         return (archivo: resultado, poster: poster);
       }
-      // No se pudo comprimir/recortar: se avisa y se sube el original.
+
       if (mounted && hayRecorte) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -320,7 +320,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       }
       return (archivo: archivo, poster: poster);
     } catch (_) {
-      // Sin soporte de compresion en esta plataforma: se sube el original.
+
       if (mounted && hayRecorte) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -339,9 +339,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     }
   }
 
-  /// Sube una imagen o video. Las imagenes muestran progreso en la galeria;
-  /// los videos muestran una pantalla de carga con porcentaje real y no
-  /// pueden publicarse hasta completar la subida.
+
+
+
   Future<void> _subirArchivo(XFile archivo, {required bool esVideo}) async {
     if (esVideo) {
       await _subirVideoConProgreso(File(archivo.path));
@@ -523,7 +523,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     });
   }
 
-  // ─── Selectores ─────────────────────────────────────────────────────────
+
 
   Future<void> _elegirVisibilidad() async {
     final opcion = await showModalBottomSheet<String>(
@@ -637,7 +637,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     _insertarTextoEnCursor('$prefijo#EcoRetos ');
   }
 
-  /// Permite etiquetar a las personas que el usuario sigue.
+
   Future<void> _insertarMencion() async {
     List<UsuarioResumen> seguidos;
     try {
@@ -672,7 +672,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         .showSnackBar(SnackBar(content: Text(mensaje)));
   }
 
-  // ─── UI ─────────────────────────────────────────────────────────────────
+
 
   @override
   Widget build(BuildContext context) {
@@ -1014,7 +1014,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 }
 
-/// Selector de usuarios seguidos para insertar menciones @.
+
 class _SelectorMenciones extends StatefulWidget {
   final List<UsuarioResumen> usuarios;
 
@@ -1107,14 +1107,14 @@ class _SelectorMencionesState extends State<_SelectorMenciones> {
   }
 }
 
-/// Datos del recorte elegido por el usuario antes de optimizar/subir.
+
 class _RecorteVideo {
   final File archivo;
   final Duration inicio;
   final Duration fin;
   final Duration duracionTotal;
 
-  /// Fotograma elegido como portada del video (puede ser null).
+
   final File? poster;
 
   const _RecorteVideo({
@@ -1133,7 +1133,7 @@ String _formatoSegundos(double segundos) {
   return '$min:$seg';
 }
 
-/// Vista previa del video con recorte opcional antes de publicarlo.
+
 class _EditorVideoDialog extends StatefulWidget {
   final XFile archivo;
 
@@ -1178,8 +1178,8 @@ class _EditorVideoDialogState extends State<_EditorVideoDialog> {
       if (_usarPortada) _actualizarPortada(_posicionPortada);
     } catch (_) {
       await controller.dispose();
-      // Respaldo: se obtiene la duracion con el plugin nativo para que el
-      // recorte y la portada sigan disponibles sin vista previa.
+
+
       double? duracion;
       try {
         final info = await VideoCompress.getMediaInfo(widget.archivo.path);
@@ -1232,8 +1232,8 @@ class _EditorVideoDialogState extends State<_EditorVideoDialog> {
     ));
   }
 
-  /// Mueve el video al segundo indicado y lo deja en pausa: asi el fotograma
-  /// elegido se ve en la propia vista previa.
+
+
   void _irAFotograma(double segundos) {
     final controller = _controller;
     if (controller == null || !controller.value.isInitialized) return;
@@ -1252,11 +1252,11 @@ class _EditorVideoDialogState extends State<_EditorVideoDialog> {
       if (!mounted || bytes == null || bytes.isEmpty) return;
       setState(() => _portadaBytes = bytes);
     } catch (_) {
-      // La vista previa del video sigue mostrando el fotograma elegido.
+
     }
   }
 
-  /// Genera el archivo de portada (con respaldo por bytes).
+
   Future<File?> _generarPortada(double segundos) async {
     final ms = (segundos * 1000).round();
     try {

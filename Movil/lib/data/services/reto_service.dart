@@ -32,9 +32,9 @@ class RetoService {
     );
   }
 
-  /// Registra un reto del catálogo local en el backend (upsert por Codigo).
-  /// Si ya existe con ese codigo, el servidor lo reutiliza y actualiza su
-  /// recompensa (XP + Monedas Eco).
+
+
+
   Future<RetoResponse> registrarReto({
     required String codigo,
     required int categoriaId,
@@ -56,7 +56,7 @@ class RetoService {
         'Instrucciones': instrucciones,
         'ExperienciaRecompensa': experienciaRecompensa,
         'MonedasRecompensa': monedasRecompensa,
-        // Compatibilidad con backend anterior.
+
         'Puntos': experienciaRecompensa,
         'Dificultad': dificultad,
       },
@@ -64,9 +64,9 @@ class RetoService {
     );
   }
 
-  /// Verifica (o crea) el reto en el backend y lo asigna al usuario en UNA
-  /// sola llamada. El reto vive en `Retos`: si no existe por Codigo se crea;
-  /// después se asegura la participación usuario↔reto y se aplica el estado.
+
+
+
   Future<UsuarioRetoResponse> asignarReto({
     required int usuarioId,
     required String codigo,
@@ -93,7 +93,7 @@ class RetoService {
         'Instrucciones': instrucciones,
         'ExperienciaRecompensa': experienciaRecompensa,
         'MonedasRecompensa': monedasRecompensa,
-        // Compatibilidad con backend anterior.
+
         'Puntos': experienciaRecompensa,
         'Dificultad': dificultad,
         'Estado': estado,
@@ -128,7 +128,7 @@ class RetoService {
     );
   }
 
-  /// Participación específica de un usuario en un reto (404 si no existe).
+
   Future<UsuarioRetoResponse> getRetoUsuario(int usuarioId, int retoId) {
     return ApiHelper.get(
       _client,
@@ -165,9 +165,9 @@ class RetoService {
     );
   }
 
-  /// Sincroniza en UN solo viaje todos los retos del catálogo que el usuario
-  /// ya completó o envió a revisión: crea los retos inexistentes (por Codigo)
-  /// y asigna/actualiza la participación del usuario en uno solo.
+
+
+
   Future<List<UsuarioRetoResponse>> sincronizarParticipaciones(
     int usuarioId,
     List<Map<String, dynamic>> participaciones,

@@ -3,7 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../core/theme/app_theme.dart';
 
-/// Permiso obligatorio que la app necesita para funcionar.
+
 class PermisoRequerido {
   final String clave;
   final Permission permiso;
@@ -20,10 +20,10 @@ class PermisoRequerido {
   });
 }
 
-/// Permisos que Eco-Retos solicita al iniciar. En Android, permission_handler
-/// traduce `photos`/`videos` a READ_MEDIA_IMAGES/READ_MEDIA_VIDEO en Android
-/// 13+ y a READ_EXTERNAL_STORAGE en versiones anteriores; `notification`
-/// solo aplica desde Android 13 (en versiones previas el sistema lo concede).
+
+
+
+
 const PermisoRequerido permisoNotificaciones = PermisoRequerido(
   clave: 'notificaciones',
   permiso: Permission.notification,
@@ -60,8 +60,8 @@ const PermisoRequerido permisoAlmacenamiento = PermisoRequerido(
   icono: Icons.folder_outlined,
 );
 
-/// Pantalla que bloquea la app hasta que el usuario conceda los permisos
-/// obligatorios. Explica cuál falta y permite abrir la configuración.
+
+
 class PermissionScreen extends StatelessWidget {
   final List<PermisoRequerido> faltantes;
   final Future<void> Function() onSolicitar;

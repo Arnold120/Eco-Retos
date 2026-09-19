@@ -5,9 +5,9 @@ import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 
-/// Controlador ligero para ordenar acciones al `<model-viewer>` sin recrear
-/// el WebView. Se usa para animaciones de cuidado, cambios de escala por
-/// etapa y reproducción de animaciones propias del modelo.
+
+
+
 class Plant3DController {
   Future<void> Function(String)? _ejecutar;
   Object? _dueno;
@@ -26,7 +26,7 @@ class Plant3DController {
 
   bool get activo => _ejecutar != null;
 
-  /// Reproduce la animación incluida en el GLB (si tiene).
+
   void reproducir() {
     _llamar(
       "const m=document.querySelector('model-viewer');"
@@ -34,7 +34,7 @@ class Plant3DController {
     );
   }
 
-  /// Pequeño pulso de escala (respuesta al cuidar la planta).
+
   void pulso() {
     _llamar(
       "const m=document.querySelector('model-viewer');"
@@ -44,7 +44,7 @@ class Plant3DController {
     );
   }
 
-  /// Cambia la escala del modelo al vuelo (etapas de crecimiento).
+
   void escala(double valor) {
     _llamar(
       "const m=document.querySelector('model-viewer');"
@@ -52,7 +52,7 @@ class Plant3DController {
     );
   }
 
-  /// Activa/desactiva la rotación automática (ahorro de GPU fuera de foco).
+
   void autoRotar(bool activo) {
     _llamar(
       "const m=document.querySelector('model-viewer');"
@@ -67,9 +67,9 @@ class Plant3DController {
   }
 }
 
-/// Visor 3D de una planta sobre `model_viewer_plus` (WebView local, sin
-/// internet). Carga el GLB bajo demanda, libera recursos al desmontarse y
-/// muestra estados de carga/error sin romper la pantalla.
+
+
+
 class Plant3DViewer extends StatefulWidget {
   final String src;
   final String alt;

@@ -26,11 +26,11 @@ const _nombresDia = [
   'Domingo',
 ];
 
-/// Pantalla raíz del Modo Diario.
-///
-/// Es un [StatefulWidget] que POSEE el [DiarioCubit]: lo crea, lo provee con
-/// [BlocProvider.value] por encima de todos sus consumidores y lo cierra al
-/// salir. Igual patrón autocontenido que Modo Libre.
+
+
+
+
+
 class DiarioScreen extends StatefulWidget {
   final int usuarioId;
   final TriviaService triviaService;
@@ -371,8 +371,8 @@ class _PantallaIntro extends StatelessWidget {
     required bool completado,
     required bool esHoy,
   }) {
-    // La letra del dia SIEMPRE se muestra; al completarse solo cambia el
-    // color y se agrega una marca de verificado, para que no desaparezca.
+
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

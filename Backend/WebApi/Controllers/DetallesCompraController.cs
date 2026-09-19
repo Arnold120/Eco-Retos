@@ -42,11 +42,11 @@ namespace WebApi.Controllers
             return Ok(lista);
         }
 
-        /// <summary>
-        /// Solo ADMIN: crear detalles sueltos no debe usarse para comprar
-        /// (las compras de usuario pasan por POST /api/Compras, que cobra del
-        /// Monedero y actualiza el inventario de forma transaccional).
-        /// </summary>
+
+
+
+
+
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(DetalleCompraResponseDto), StatusCodes.Status201Created)]

@@ -1,9 +1,9 @@
 ﻿namespace WebApi.Modelo
 {
-    /// <summary>
-    /// Movimiento monetario (auditoría). Cantidad firmada: positiva = ganancia,
-    /// negativa = gasto.
-    /// </summary>
+
+
+
+
     public class HistorialMoneda
     {
         public int HistorialMonedaId { get; set; }

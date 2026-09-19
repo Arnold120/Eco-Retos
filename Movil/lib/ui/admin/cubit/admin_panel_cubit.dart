@@ -5,8 +5,8 @@ import '../../../../data/services/admin_service.dart';
 import '../../../../data/services/usuarios_service.dart';
 import 'admin_panel_state.dart';
 
-/// Estado general del panel de administración: métricas, evidencias
-/// pendientes, usuarios y roles.
+
+
 class AdminPanelCubit extends Cubit<AdminPanelState> {
   final UsuariosService _usuariosService;
   final AdminService _adminService;
@@ -18,7 +18,7 @@ class AdminPanelCubit extends Cubit<AdminPanelState> {
        _adminService = adminService,
        super(const AdminPanelState());
 
-  /// Métricas del panel: totales de usuarios y evidencias sin revisar.
+
   Future<void> cargarPanel() async {
     emit(state.copyWith(isLoading: true, clearError: true));
     try {
@@ -41,7 +41,7 @@ class AdminPanelCubit extends Cubit<AdminPanelState> {
     }
   }
 
-  /// Lista completa de usuarios con sus roles.
+
   Future<void> cargarUsuarios() async {
     if (state.usuarios.isEmpty) {
       emit(state.copyWith(isLoading: true, clearError: true));
@@ -66,7 +66,7 @@ class AdminPanelCubit extends Cubit<AdminPanelState> {
     }
   }
 
-  /// Catálogo de roles para poder asignarlos/quitarlos.
+
   Future<void> cargarRoles() async {
     if (state.roles.isNotEmpty) return;
     try {

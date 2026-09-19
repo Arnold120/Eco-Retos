@@ -14,7 +14,7 @@ namespace WebApi.Dto
         [StringLength(20, ErrorMessage = "La duracion no puede superar los 20 caracteres.")]
         public string? Duracion { get; set; }
 
-        /// <summary>Portada del video (fotograma elegido por el usuario).</summary>
+
         [StringLength(500, ErrorMessage = "La portada no puede superar los 500 caracteres.")]
         public string? Poster { get; set; }
     }
@@ -41,11 +41,11 @@ namespace WebApi.Dto
         [StringLength(50, ErrorMessage = "La categoria no puede superar los 50 caracteres.")]
         public string? Categoria { get; set; }
 
-        /// <summary>PUBLICO | SEGUIDORES | SOLO_YO</summary>
+
         [StringLength(20, ErrorMessage = "La visibilidad no puede superar los 20 caracteres.")]
         public string Visibilidad { get; set; } = "PUBLICO";
 
-        /// <summary>Si viene, la publicacion se crea como compartido de esa publicacion original.</summary>
+
         public int? CompartidoDeId { get; set; }
 
         public List<MultimediaDto>? Multimedia { get; set; }
@@ -71,7 +71,7 @@ namespace WebApi.Dto
         [StringLength(50, ErrorMessage = "La categoria no puede superar los 50 caracteres.")]
         public string? Categoria { get; set; }
 
-        /// <summary>PUBLICO | SEGUIDORES | SOLO_YO</summary>
+
         [StringLength(20, ErrorMessage = "La visibilidad no puede superar los 20 caracteres.")]
         public string Visibilidad { get; set; } = "PUBLICO";
 

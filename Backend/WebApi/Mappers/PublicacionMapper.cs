@@ -4,10 +4,10 @@ using WebApi.Modelo;
 
 namespace WebApi.Mappers
 {
-    /// <summary>
-    /// Convierte entidades en DTOs de respuesta social. Usa consultas por lote
-    /// para evitar el patron N+1 al mapear listas (feed, busqueda, perfiles).
-    /// </summary>
+
+
+
+
     public class PublicacionMapper
     {
         private readonly IPublicacionService _publicaciones;

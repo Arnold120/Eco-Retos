@@ -82,15 +82,15 @@ namespace WebApi.Controllers
             return Ok((await ConvertirListaAsync(retos)).ToList());
         }
 
-        /// <summary>Registro automático de un reto del catálogo local (upsert por Codigo).</summary>
+
         [HttpPost("registrar")]
         [Authorize]
         [ProducesResponseType(typeof(RetoResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(RetoResponseDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> RegistrarPorCodigo([FromBody] RegistrarRetoCatalogoRequestDto dto)
         {
-            // Upsert centralizado: si el reto existe, también actualiza su
-            // recompensa (XP + Monedas Eco) con la del catálogo local.
+
+
             var reto = await _retoService.ObtenerOCrearPorCodigoAsync(
                 dto.Codigo.Trim(),
                 dto.CategoriaId,
@@ -113,9 +113,9 @@ namespace WebApi.Controllers
             if (usuario is null)
                 return NotFound(new { mensaje = $"No se encontro el usuario con id {dto.UsuarioId}." });
 
-            // Vive en Retos el "push": verifica si el reto del catalogo ya esta
-            // en la base (por Codigo) y, si no esta, lo crea. Despues se asigna
-            // al usuario (o se reutiliza la participacion existente).
+
+
+
             var reto = await _retoService.ObtenerOCrearPorCodigoAsync(
                 dto.Codigo.Trim(),
                 dto.CategoriaId,

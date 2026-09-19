@@ -1,31 +1,31 @@
--- =============================================================================
--- Actualizar_Esquema_CategoriaId.sql
--- -----------------------------------------------------------------------------
--- Lleva una base creada con un esquema ANTERIOR al actual de EcoRetosDB.sql
--- (sin las columnas CategoriaId / Codigo) al esquema vigente de la taxonomia
--- de las 7 categorias oficiales.
---
--- Sintoma que resuelve: 500 "Invalid column name 'CategoriaId'" en
---   POST  /api/historial-puntos
---   GET   /api/historial-puntos/usuario/{id}
--- y en general cualquier endpoint que lea/escriba CategoriaId.
---
--- Como usarlo:
---   1. Abrir SQL Server Management Studio.
---   2. Conectarse a la base del proyecto (p. ej. EcoReto).
---   3. Abrir y ejecutar este script. Es IDEMPOTENTE: puede ejecutarse varias
---      veces sin efectos secundarios (cada bloque comprueba si ya existe).
---
--- Requisito: ya debe existir la tabla Categoria con los IDs 1-7 (los crea el
--- script principal EcoRetosDB.sql).
--- =============================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 SET NOCOUNT ON;
 GO
 
--- -----------------------------------------------------------------------------
--- 1. HistorialPuntos.CategoriaId (el error reportado)
--- -----------------------------------------------------------------------------
+
+
+
 IF COL_LENGTH('dbo.HistorialPuntos', 'CategoriaId') IS NULL
 BEGIN
     ALTER TABLE dbo.HistorialPuntos ADD CategoriaId INT NULL;
@@ -60,9 +60,9 @@ BEGIN
 END;
 GO
 
--- -----------------------------------------------------------------------------
--- 2. Reto: columna Codigo (upsert del catalogo) + CategoriaId
--- -----------------------------------------------------------------------------
+
+
+
 IF COL_LENGTH('dbo.Reto', 'Codigo') IS NULL
 BEGIN
     ALTER TABLE dbo.Reto ADD Codigo NVARCHAR(50) NULL;
@@ -75,7 +75,7 @@ IF NOT EXISTS (
     WHERE name = 'IX_Reto_Codigo' AND object_id = OBJECT_ID('dbo.Reto')
 )
 BEGIN
-    -- Indice unico filtrado: permite multiples NULL en bases migradas.
+
     CREATE UNIQUE INDEX IX_Reto_Codigo ON dbo.Reto(Codigo) WHERE Codigo IS NOT NULL;
     PRINT 'Reto: indice unico IX_Reto_Codigo creado.';
 END;
@@ -85,8 +85,8 @@ IF COL_LENGTH('dbo.Reto', 'CategoriaId') IS NULL
 BEGIN
     ALTER TABLE dbo.Reto ADD CategoriaId INT NULL;
 
-    -- Los retos existentes sin categoria se asignan a "Reciclaje" (Id 1)
-    -- como valor de seguridad; el movil los corrige al sincronizar.
+
+
     UPDATE dbo.Reto SET CategoriaId = 1 WHERE CategoriaId IS NULL;
     PRINT 'Reto: columna CategoriaId agregada y datos existentes asignados a Reciclaje (1).';
 END;
@@ -115,9 +115,9 @@ BEGIN
 END;
 GO
 
--- -----------------------------------------------------------------------------
--- 3. Trivia.CategoriaId
--- -----------------------------------------------------------------------------
+
+
+
 IF COL_LENGTH('dbo.Trivia', 'CategoriaId') IS NULL
 BEGIN
     ALTER TABLE dbo.Trivia ADD CategoriaId INT NULL;
@@ -148,9 +148,9 @@ BEGIN
 END;
 GO
 
--- -----------------------------------------------------------------------------
--- 4. Recurso.CategoriaId
--- -----------------------------------------------------------------------------
+
+
+
 IF COL_LENGTH('dbo.Recurso', 'CategoriaId') IS NULL
 BEGIN
     ALTER TABLE dbo.Recurso ADD CategoriaId INT NULL;

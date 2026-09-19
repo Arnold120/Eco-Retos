@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../data/models/garden/plant_growth.dart';
 
-/// Ilustración propia de cada herramienta del jardín (regadera, abono y
-/// insecticida). Usa las imágenes de `assets/objetos_jardin/` y cae al emoji
-/// si el asset no está disponible.
+
+
+
 class ToolIcon extends StatelessWidget {
   final HerramientaJardin herramienta;
   final double size;

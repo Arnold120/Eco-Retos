@@ -12,12 +12,12 @@ import '../profile/edit_profile_screen.dart';
 import '../profile/cubit/profile_cubit.dart';
 import 'legal_screen.dart';
 
-/// Evita que toques repetidos generen varios códigos de sesión seguidos
-/// mientras el navegador se abre.
+
+
 bool _abriendoSoporte = false;
 
-/// Configuración de la cuenta. Solo incluye opciones que ejecutan acciones
-/// reales contra el backend o preferencias con efecto comprobable.
+
+
 class SettingsScreen extends StatelessWidget {
   final int usuarioId;
 
@@ -207,7 +207,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  // ─── Acciones reales ────────────────────────────────────────────────────
+
 
   void _editarPerfil(BuildContext context) {
     Navigator.of(context).push(
@@ -543,9 +543,9 @@ class SettingsScreen extends StatelessWidget {
         .showSnackBar(SnackBar(content: Text(mensaje)));
   }
 
-  /// Abre una URL en el navegador. No depende de `canLaunchUrl` (en Android
-  /// 11+ puede devolver false si falta la visibilidad de paquetes) y prueba
-  /// varios modos antes de rendirse.
+
+
+
   Future<bool> _abrirUrl(String url) async {
     final uri = Uri.parse(url);
     for (final modo in const [
@@ -556,17 +556,17 @@ class SettingsScreen extends StatelessWidget {
       try {
         if (await launchUrl(uri, mode: modo)) return true;
       } catch (_) {
-        // Se intenta el siguiente modo.
+
       }
     }
     return false;
   }
 
-  /// Abre el Centro de Soporte web.
-  ///
-  /// Primero pide al backend un código de un solo uso (90 s) y abre
-  /// `/soporte?codigo=...` para iniciar sesión sin exponer el JWT en la URL.
-  /// Si el código falla, se abre el soporte con login manual como respaldo.
+
+
+
+
+
   Future<void> _abrirSoporte(BuildContext context) async {
     if (_abriendoSoporte) return;
     _abriendoSoporte = true;
@@ -580,7 +580,7 @@ class SettingsScreen extends StatelessWidget {
             ? respuesta.data['codigo']?.toString()
             : null;
       } catch (_) {
-        // Sin conexión con el código: se abre el login manual del soporte.
+
       }
 
       final url = (codigo != null && codigo.isNotEmpty)
@@ -634,7 +634,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  // ─── Widgets ────────────────────────────────────────────────────────────
+
 
   Widget _seccion(String title) {
     return Padding(

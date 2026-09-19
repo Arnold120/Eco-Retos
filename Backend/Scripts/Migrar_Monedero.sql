@@ -1,28 +1,27 @@
-/* ============================================================================
-   EcoRetos - Migración al sistema unificado de Monedero
-   ----------------------------------------------------------------------------
-   Ejecutar conectado a la base del proyecto (por ejemplo EcoReto):
-     1. Abrir SSMS y seleccionar la base de datos en el desplegable.
-     2. Ejecutar este script completo.
 
-   Qué hace (idempotente, se puede ejecutar más de una vez):
-     1. Crea Monedero, HistorialMonedas y RecompensaReclamada.
-     2. Agrega Progreso.Experiencia (XP) y separa XP de monedas.
-     3. Renombra columnas al vocabulario único:
-          Material.PrecioPuntos               -> PrecioMonedas
-          Compra.TotalPuntos                  -> TotalMonedas
-          DetalleCompra.PrecioUnitario        -> PrecioUnitarioMonedas
-          Insignia.PuntosRecompensa           -> MonedasRecompensa
-          Reto.Puntos                         -> ExperienciaRecompensa (+ MonedasRecompensa)
-     4. Migra los saldos de monedas desde HistorialPuntos a Monedero.
-     5. Copia los movimientos monetarios a HistorialMonedas (con saldo corrido).
-     6. Migra la sumatoria de XP a Progreso.Experiencia.
-     7. NO borra HistorialPuntos: queda como archivo histórico.
 
-   Regla de separación usada (idéntica a la que usaba la app):
-     XP       = movimientos con Tipo 'RETO' o 'TRIVIA'
-     Monedas  = cualquier otro movimiento (RETO_ECO, TRIVIA_ECO, COMPRA, ...)
-   ============================================================================ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
@@ -155,7 +154,7 @@ GO
 PRINT '4) Migrando XP a Progreso.Experiencia...';
 IF OBJECT_ID('dbo.HistorialPuntos', 'U') IS NOT NULL
 BEGIN
-    -- Usuarios con fila de Progreso: sumar XP de movimientos RETO/TRIVIA.
+
     UPDATE p
     SET p.Experiencia = x.Xp
     FROM dbo.Progreso p
@@ -167,7 +166,7 @@ BEGIN
     ) x ON x.UsuarioId = p.UsuarioId
     WHERE p.Experiencia = 0 AND x.Xp > 0;
 
-    -- Usuarios con historial pero sin fila de Progreso: crear la fila con su XP.
+
     INSERT INTO dbo.Progreso (UsuarioId, Experiencia, NivelActual, PorcentajeProgreso)
     SELECT x.UsuarioId, x.Xp, 1, 0
     FROM (
@@ -179,7 +178,7 @@ BEGIN
     WHERE x.Xp > 0
       AND NOT EXISTS (SELECT 1 FROM dbo.Progreso p WHERE p.UsuarioId = x.UsuarioId);
 
-    -- Recalcular nivel y porcentaje de los usuarios migrados (100 XP por nivel).
+
     UPDATE p
     SET p.NivelActual = (p.Experiencia / 100) + 1,
         p.PorcentajeProgreso = CAST((p.Experiencia % 100) AS DECIMAL(5,2))
@@ -197,7 +196,7 @@ BEGIN
 
     DECLARE @Pendientes TABLE (UsuarioId INT PRIMARY KEY, Total INT NOT NULL);
 
-    -- Usuarios que aún no han sido migrados (sin movimientos en HistorialMonedas).
+
     INSERT INTO @Pendientes (UsuarioId, Total)
     SELECT u.UsuarioId,
            ISNULL((
@@ -213,7 +212,7 @@ BEGIN
         SELECT 1 FROM dbo.HistorialMonedas hm WHERE hm.UsuarioId = u.UsuarioId
     );
 
-    -- 5.1 Copiar los movimientos monetarios con saldo corrido.
+
     INSERT INTO dbo.HistorialMonedas
         (UsuarioId, CategoriaId, Cantidad, Tipo, Descripcion, SaldoResultante, Fecha)
     SELECT hp.UsuarioId,
@@ -231,7 +230,7 @@ BEGIN
     INNER JOIN @Pendientes pend ON pend.UsuarioId = hp.UsuarioId
     WHERE UPPER(LTRIM(RTRIM(hp.Tipo))) NOT IN ('RETO', 'TRIVIA');
 
-    -- 5.2 Saldo final por usuario (si quedó negativo, se regulariza con AJUSTE).
+
     DECLARE @Negativos TABLE (UsuarioId INT PRIMARY KEY, Total INT NOT NULL);
     INSERT INTO @Negativos (UsuarioId, Total)
     SELECT hm.UsuarioId, SUM(hm.Cantidad)
@@ -247,7 +246,7 @@ BEGIN
            0, SYSDATETIME()
     FROM @Negativos n;
 
-    -- 5.3 Crear/actualizar el monedero con el saldo migrado.
+
     UPDATE m
     SET m.Saldo = CASE WHEN s.Total < 0 THEN 0 ELSE s.Total END,
         m.FechaActualizacion = SYSDATETIME()

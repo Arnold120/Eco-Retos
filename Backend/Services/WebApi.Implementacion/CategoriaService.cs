@@ -8,7 +8,7 @@ namespace WebApi.Implementacion
 {
     public class CategoriaService : ICategoriaService
     {
-        /// <summary>Los IDs 1-7 son las categorías oficiales del proyecto (taxonomía maestra): no se pueden eliminar.</summary>
+
         private static readonly int[] Oficiales = { 1, 2, 3, 4, 5, 6, 7 };
 
         private readonly string _connectionString;
@@ -103,8 +103,8 @@ namespace WebApi.Implementacion
             using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            // Evita el error de FK con un mensaje claro: si hay Retos, Trivias,
-            // Recursos o movimientos de puntos asociados, la categoria no se elimina.
+
+
             foreach (var tabla in new[] { "Reto", "Trivia", "Recurso", "HistorialPuntos" })
             {
                 using var check = new SqlCommand($"SELECT COUNT(1) FROM {tabla} WHERE CategoriaId = @CategoriaId", connection);

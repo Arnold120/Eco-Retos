@@ -22,7 +22,7 @@ class AuthService {
 
   Future<String?> getToken() async => _storage.read(key: 'auth_token');
 
-  /// Roles persistentes de la sesión (no depende del claim del JWT).
+
   Future<List<String>> getRoles() async {
     try {
       final raw = await _storage.read(key: _rolesKey);

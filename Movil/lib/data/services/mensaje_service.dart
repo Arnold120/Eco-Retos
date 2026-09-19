@@ -23,7 +23,7 @@ class MensajeService {
     return response.data['total'] ?? 0;
   }
 
-  /// Abre o crea la conversacion con [usuarioId].
+
   Future<ConversacionResumen> abrirConversacion(int usuarioId) {
     return ApiHelper.post(
       _client,

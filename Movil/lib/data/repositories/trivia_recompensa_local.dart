@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Recompensa pendiente o reclamada de la última partida de Modo Libre.
-///
-/// Se persiste localmente para que la recompensa siga disponible (reclamable)
-/// aunque la app se cierre antes de pulsar "RECLAMAR RECOMPENSAS". Cada vez
-/// que se inicia una partida nueva la pendiente anterior se descarta.
+
+
+
+
+
 class RecompensaLibre extends Equatable {
   final int puntos;
   final int xp;
@@ -15,7 +15,7 @@ class RecompensaLibre extends Equatable {
   final int respuestasCorrectas;
   final int totalPreguntas;
   final bool reclamada;
-  /// Clave única de la partida (idempotencia del reclamo en el backend).
+
   final String clave;
 
   const RecompensaLibre({
@@ -85,9 +85,9 @@ class RecompensaLibre extends Equatable {
       ];
 }
 
-/// Almacén local de la recompensa de la última partida de Modo Libre
-/// (SharedPreferences), con la misma robustez ante preferencias corruptas que
-/// `DiarioStore`.
+
+
+
 class RecompensaLibreStore {
   final int usuarioId;
 
@@ -118,7 +118,7 @@ class RecompensaLibreStore {
         }
       }
     } catch (_) {
-      // Preferencias corruptas: se descarta la recompensa pendiente.
+
       _memoria = null;
     } finally {
       _cargado = true;

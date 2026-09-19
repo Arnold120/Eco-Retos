@@ -1,6 +1,6 @@
 ﻿namespace WebApi.Modelo
 {
-    /// <summary>Resultado de agregar o gastar monedas.</summary>
+
     public class MovimientoMonedasResultado
     {
         public bool Exito { get; set; }
@@ -10,7 +10,7 @@
         public HistorialMoneda? Movimiento { get; set; }
     }
 
-    /// <summary>Resultado de reclamar una recompensa (XP y/o monedas).</summary>
+
     public class RecompensaResultado
     {
         public bool Exito { get; set; }
@@ -24,7 +24,7 @@
         public decimal PorcentajeProgreso { get; set; }
     }
 
-    /// <summary>Resultado de una compra transaccional completa.</summary>
+
     public class CompraCompletaResultado
     {
         public bool Exito { get; set; }

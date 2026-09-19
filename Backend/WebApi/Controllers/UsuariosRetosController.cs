@@ -39,7 +39,7 @@ namespace WebApi.Controllers
             return Ok(lista);
         }
 
-        /// <summary>Evidencias enviadas por estudiantes pendientes de revisión (solo ADMIN).</summary>
+
         [HttpGet("evidencias-pendientes")]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(IEnumerable<UsuarioRetoResponseDto>), StatusCodes.Status200OK)]
@@ -51,7 +51,7 @@ namespace WebApi.Controllers
             return Ok(lista);
         }
 
-        /// <summary>Todas las evidencias (cualquier estado) para historial de revisión (solo ADMIN).</summary>
+
         [HttpGet("evidencias")]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(typeof(IEnumerable<UsuarioRetoResponseDto>), StatusCodes.Status200OK)]
@@ -63,7 +63,7 @@ namespace WebApi.Controllers
             return Ok(lista);
         }
 
-        /// <summary>Acepta una evidencia: el reto queda COMPLETADO con sus puntos (solo ADMIN).</summary>
+
         [HttpPatch("{id:int}/aprobar")]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -76,7 +76,7 @@ namespace WebApi.Controllers
             return Ok(new { mensaje = "Evidencia aprobada. El reto fue completado." });
         }
 
-        /// <summary>Rechaza una evidencia: el estudiante debera rehacer el reto (solo ADMIN).</summary>
+
         [HttpPatch("{id:int}/rechazar")]
         [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -195,9 +195,9 @@ namespace WebApi.Controllers
                 PuntosObtenidos = p.PuntosObtenidos
             });
 
-            // Una sola conexion + una transaccion para todo el lote: crea los
-            // retos inexistentes (por Codigo), asigna cada participacion y
-            // devuelve los datos ya resueltos (sin re-consultas por item).
+
+
+
             var sincronizados = await _usuarioRetoService.SincronizarParticipacionesAsync(dto.UsuarioId, items);
 
             var resultado = sincronizados.Select(r => new UsuarioRetoResponseDto

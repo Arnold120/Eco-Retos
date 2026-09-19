@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../data/models/challenge/challenge_models.dart';
 
-/// Filtros del panel de revisión de evidencias.
+
 enum EvidenceFiltro { todas, pendientes, aprobadas, rechazadas }
 
 extension EvidenceFiltroInfo on EvidenceFiltro {
@@ -48,10 +48,10 @@ class AdminEvidenceState extends Equatable {
   static bool _estaPendiente(UsuarioRetoResponse e) =>
       e.estado != 'COMPLETADO' && e.estado != 'RECHAZADO';
 
-  /// Evidencias por aprobar/rechazar (no resueltas aún).
+
   int get pendientes => evidencias.where(_estaPendiente).length;
 
-  /// Evidencias visibles según el filtro activo.
+
   List<UsuarioRetoResponse> get evidenciasFiltradas {
     switch (filtro) {
       case EvidenceFiltro.todas:

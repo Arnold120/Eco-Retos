@@ -33,7 +33,7 @@ class LoadingWidget extends StatelessWidget {
   }
 }
 
-/// Shimmer loading effect for skeleton screens
+
 class ShimmerLoading extends StatefulWidget {
   final Widget child;
   final Duration duration;
@@ -109,7 +109,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
   }
 }
 
-/// Pre-built skeleton widgets for common UI patterns
+
 class SkeletonWidgets {
   static Widget profileHeader({bool isDark = false}) {
     return Container(
@@ -396,7 +396,7 @@ class SkeletonWidgets {
     );
   }
 
-  // Public aliases for backward compatibility
+
   static Widget shimmerCircle(double size) => _shimmerCircle(size);
   static Widget shimmerRect({
     required double width,

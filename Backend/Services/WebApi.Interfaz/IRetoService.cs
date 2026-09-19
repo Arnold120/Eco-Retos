@@ -15,10 +15,10 @@ namespace WebApi.Interfaz
         Task<Reto?> ActualizarAsync(Reto reto);
         Task<bool> EliminarAsync(int retoId);
 
-        /// <summary>
-        /// Verifica si el reto del catalogo local ya existe por Codigo; si no
-        /// existe lo crea. Una sola conexion (sin round-trips innecesarios).
-        /// </summary>
+
+
+
+
         Task<Reto> ObtenerOCrearPorCodigoAsync(
             string codigo,
             int categoriaId,

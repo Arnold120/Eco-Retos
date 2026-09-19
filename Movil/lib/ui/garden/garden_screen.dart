@@ -194,8 +194,8 @@ class _GardenContentState extends State<_GardenContent> {
   @override
   void initState() {
     super.initState();
-    // Solo refresca la interfaz: el progreso real se calcula con timestamps.
-    // Cada 30 s también se revisa si alguna planta se perdió por descuido.
+
+
     _ticker = Timer.periodic(const Duration(seconds: 30), (_) {
       if (!mounted) return;
       context.read<GardenCubit>().revisarPerdidas();
@@ -260,9 +260,9 @@ class _GardenContentState extends State<_GardenContent> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Cabecera y racha
-  // ---------------------------------------------------------------------------
+
+
+
 
   Widget _cabecera(GardenState estado) {
     final jardin = estado.jardin;
@@ -499,9 +499,9 @@ class _GardenContentState extends State<_GardenContent> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Jardín
-  // ---------------------------------------------------------------------------
+
+
+
 
   Widget _jardinVacio() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -601,9 +601,9 @@ class _GardenContentState extends State<_GardenContent> {
     mostrarDetallePlanta(context, plantaId: planta.id);
   }
 
-  // ---------------------------------------------------------------------------
-  // Tienda de herramientas
-  // ---------------------------------------------------------------------------
+
+
+
 
   Widget _herramientas(GardenState estado) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -724,9 +724,9 @@ class _GardenContentState extends State<_GardenContent> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Tienda de plantas
-  // ---------------------------------------------------------------------------
+
+
+
 
   Widget _tienda(GardenState estado) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -782,9 +782,9 @@ class _GardenContentState extends State<_GardenContent> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Información
-  // ---------------------------------------------------------------------------
+
+
+
 
   Widget _info() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -865,9 +865,9 @@ class _GardenContentState extends State<_GardenContent> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Utilidades visuales
-  // ---------------------------------------------------------------------------
+
+
+
 
   BoxDecoration _cardBox(bool isDark) {
     return BoxDecoration(
@@ -905,9 +905,9 @@ class _GardenContentState extends State<_GardenContent> {
   }
 }
 
-// -----------------------------------------------------------------------------
-// Tarjeta de especie (tienda horizontal)
-// -----------------------------------------------------------------------------
+
+
+
 
 class _EspecieCard extends StatelessWidget {
   final EspecieJardin especie;
@@ -1067,9 +1067,9 @@ class _EspecieCard extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// Catálogo de plantas (hoja modal)
-// -----------------------------------------------------------------------------
+
+
+
 
 class _CatalogoJardinSheet extends StatelessWidget {
   const _CatalogoJardinSheet();

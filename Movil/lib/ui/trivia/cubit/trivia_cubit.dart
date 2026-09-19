@@ -20,10 +20,10 @@ class TriviaCubit extends Cubit<TriviaState> {
 
   final GeneradorPreguntaTrivia _generador = const GeneradorPreguntaTrivia();
 
-  /// `true` cuando la partida se juega con preguntas generadas localmente
-  /// (respaldo cuando la trivia no tiene preguntas/preguntas y opciones en
-  /// el servidor). En ese modo se omiten las llamadas que dependen de
-  /// intentos registrados en la base de datos.
+
+
+
+
   bool _usandoPreguntasVirtuales = false;
 
   TriviaCubit({
@@ -144,8 +144,8 @@ class TriviaCubit extends Cubit<TriviaState> {
     }
   }
 
-  /// Genera preguntas de respaldo a partir de los registros activos de trivia
-  /// cuando la trivia no tiene preguntas en el servidor.
+
+
   List<PreguntaResponse> _generarPreguntasVirtuales(TriviaResponse trivia) {
     final registros = state.trivias;
     if (registros.length < 4) return [];
@@ -314,7 +314,7 @@ class TriviaCubit extends Cubit<TriviaState> {
     emit(
       state.copyWith(mode: TriviaScreenMode.results, showingFeedback: false),
     );
-    // Notify profile to refresh
+
     _onTriviaCompleted?.call();
     developer.log(
       'Trivia completada: $xp XP, $monedas monedas',

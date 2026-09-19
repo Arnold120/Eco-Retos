@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/garden/garden_catalog.dart';
 import '../models/garden/plant_growth.dart';
 
-/// Almacén local del jardín virtual (SharedPreferences): plantas e inventario
-/// de herramientas por usuario. Migra automáticamente el formato anterior
-/// (`jardin_virtual_v1`, solo lista de plantas).
+
+
+
 class GardenLocalStore {
   final int usuarioId;
 
@@ -59,7 +59,7 @@ class GardenLocalStore {
         plantas = await _migrarDesdeV1(prefs);
       }
     } catch (_) {
-      // Preferencias corruptas: se parte de un jardín vacío.
+
       plantas = [];
       inventario = const InventarioJardin();
     }
@@ -132,7 +132,7 @@ class GardenLocalStore {
       };
       await prefs.setString(_clave, jsonEncode(json));
     } catch (_) {
-      // Si falla el guardado local, el jardín sigue funcionando en memoria.
+
     }
   }
 

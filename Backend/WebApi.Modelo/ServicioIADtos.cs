@@ -1,11 +1,10 @@
 namespace WebApi.Modelo
 {
-    /* DTOs del servicio de IA.
-       Viven en WebApi.Modelo para que la capa WebApi.Interfaz los use sin
-       dependencia circular. El backend llama al proveedor (OpenAI compatible)
-       y la web SOLO recibe resultados; ninguna clave viaja al navegador. */
 
-    /// <summary>Evaluación estructurada de la evidencia de un reto.</summary>
+
+
+
+
     public class EvaluacionIAEvidencia
     {
         public bool Cumple { get; set; }
@@ -14,12 +13,12 @@ namespace WebApi.Modelo
         public string Motivo { get; set; } = string.Empty;
         public List<string> ElementosFaltantes { get; set; } = new();
         public string Observaciones { get; set; } = string.Empty;
-        /// <summary>Proveedor que emitió el análisis: ia | reglas.</summary>
+
         public string Proveedor { get; set; } = "reglas";
         public DateTime Fecha { get; set; } = DateTime.Now;
     }
 
-    /// <summary>Análisis de un reporte de contenido (moderación).</summary>
+
     public class AnalisisIAReporte
     {
         public string Recomendacion { get; set; } = "REVISAR";
@@ -29,12 +28,12 @@ namespace WebApi.Modelo
         public string Motivo { get; set; } = string.Empty;
         public string Observaciones { get; set; } = string.Empty;
         public string CategoriaSugerida { get; set; } = "CONTENIDO";
-        /// <summary>Proveedor que emitió el análisis: ia | reglas.</summary>
+
         public string Proveedor { get; set; } = "reglas";
         public DateTime Fecha { get; set; } = DateTime.Now;
     }
 
-    /// <summary>Contexto que recibe la IA para atender un caso de soporte.</summary>
+
     public class ContextoSoporteIA
     {
         public string Titulo { get; set; } = string.Empty;
@@ -53,7 +52,7 @@ namespace WebApi.Modelo
         public List<string> Adjuntos { get; set; } = new();
     }
 
-    /// <summary>Contexto que recibe la IA para validar una evidencia de reto.</summary>
+
     public class ContextoEvidenciaIA
     {
         public int UsuarioRetoId { get; set; }
@@ -61,7 +60,7 @@ namespace WebApi.Modelo
         public string RetoDescripcion { get; set; } = string.Empty;
         public string RetoInstrucciones { get; set; } = string.Empty;
         public string RetoRequisitos { get; set; } = string.Empty;
-        /// <summary>Tipo de evidencia solicitada por el reto (FOTO, TEXTO, VIDEO...).</summary>
+
         public string RetoTipoEvidencia { get; set; } = string.Empty;
         public int? RetoCantidadObjetivo { get; set; }
         public string UsuarioNombre { get; set; } = string.Empty;
@@ -72,7 +71,7 @@ namespace WebApi.Modelo
         public DateTime? FechaCompletado { get; set; }
     }
 
-    /// <summary>Contexto que recibe la IA para analizar un reporte de contenido.</summary>
+
     public class ContextoReporteIA
     {
         public int ReporteId { get; set; }

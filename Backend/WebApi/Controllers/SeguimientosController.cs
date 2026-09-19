@@ -44,7 +44,7 @@ namespace WebApi.Controllers
                 .ToList();
         }
 
-        /// <summary>Estado de seguimiento del usuario autenticado hacia otro usuario.</summary>
+
         [HttpGet("estado/{usuarioId:int}")]
         [ProducesResponseType(typeof(SeguimientoEstadoDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -63,7 +63,7 @@ namespace WebApi.Controllers
             });
         }
 
-        /// <summary>Ids de los usuarios que sigue el usuario autenticado.</summary>
+
         [HttpGet("ids")]
         [ProducesResponseType(typeof(IEnumerable<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ObtenerIdsSeguidos()

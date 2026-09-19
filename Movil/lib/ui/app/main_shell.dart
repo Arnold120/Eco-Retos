@@ -26,7 +26,7 @@ import '../profile/cubit/profile_cubit.dart';
 import '../home/cubit/home_cubit.dart';
 import '../community/cubit/community_cubit.dart';
 
-/// Permite a los widgets internos navegar entre las pestanas del shell.
+
 class MainShellScope extends InheritedWidget {
   final void Function(int index) irATab;
 

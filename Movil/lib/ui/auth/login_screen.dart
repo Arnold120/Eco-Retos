@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _cargarCorreoGuardado();
   }
 
-  /// Recuerda el correo para no tener que escribirlo cada vez.
+
   Future<void> _cargarCorreoGuardado() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted || correo == null || correo.isEmpty) return;
       setState(() => _emailController.text = correo);
     } catch (_) {
-      // Si falla, el campo queda vacio.
+
     }
   }
 
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_claveCorreo, correo);
     } catch (_) {
-      // Preferencia secundaria.
+
     }
   }
 
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() {
     if (!_formKey.currentState!.validate()) return;
-    // Se conserva el correo y la contraseña escritos aunque falle el intento.
+
     _guardarCorreo(_emailController.text.trim());
     setState(() => _errorInline = null);
     context.read<AuthCubit>().login(

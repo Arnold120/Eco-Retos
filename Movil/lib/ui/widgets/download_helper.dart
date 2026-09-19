@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/services/descarga_service.dart';
 
-/// Archivo a descargar: url + tipo (imagen | video).
+
 typedef ArchivoDescarga = ({String url, String tipo});
 
-/// Descarga uno o varios archivos mostrando progreso real y confirmación.
+
 Future<void> descargarMultimedia(
   BuildContext context, {
   required List<ArchivoDescarga> archivos,

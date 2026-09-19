@@ -8,7 +8,7 @@ import 'cubit/diario_state.dart';
 import 'widgets/recompensa_celebracion.dart';
 import 'widgets/trivia_ui.dart';
 
-/// Pantalla de resultados del Modo Diario con botón RECLAMAR.
+
 class DiarioResultScreen extends StatefulWidget {
   final DiarioState state;
 

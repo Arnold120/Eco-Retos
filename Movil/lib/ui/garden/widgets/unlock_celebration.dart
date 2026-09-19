@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import 'garden_effects.dart';
 
-/// Celebración de desbloqueo de la planta carnívora (racha de 30 días).
-/// Se muestra sobre el jardín; al cerrarla, el visor 3D ya tiene seleccionada
-/// la nueva planta.
+
+
+
 class UnlockCelebration extends StatefulWidget {
   final VoidCallback onVerPlanta;
   final VoidCallback onCerrar;

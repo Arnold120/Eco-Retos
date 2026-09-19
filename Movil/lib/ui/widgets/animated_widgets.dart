@@ -251,7 +251,7 @@ class _PulsingWidgetState extends State<PulsingWidget>
   }
 }
 
-/// Staggered animation for list items
+
 class StaggeredAnimation extends StatelessWidget {
   final int index;
   final AnimationController controller;

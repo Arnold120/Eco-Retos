@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 class AppColors {
   const AppColors._();
 
-  // Modo claro: fondos blancos, textos negros y acentos de marca.
+
   static const Color primary = Color(0xFF2E7D5B);
   static const Color primaryDark = Color(0xFF1B5E43);
   static const Color secondary = Color(0xFF4CAF7D);
@@ -13,71 +13,71 @@ class AppColors {
   static const Color surface = Color(0xFFFFFFFF);
   static const Color background = Color(0xFFF4F7F5);
 
-  // Text colors
+
   static const Color textPrimary = Color(0xFF101512);
   static const Color textSecondary = Color(0xFF46584E);
   static const Color textHint = Color(0xFF78877E);
   static const Color textOnPrimary = Color(0xFFFFFFFF);
 
-  // XP & Coins (warm accent)
+
   static const Color xpGold = Color(0xFFF6C85F);
   static const Color xpGoldLight = Color(0xFFFFF3CD);
   static const Color coinGold = Color(0xFFF6C85F);
   static const Color coinGoldLight = Color(0xFFFFF3CD);
 
-  // Complementary colors
+
   static const Color bluePastel = Color(0xFF9ED8E8);
   static const Color coralSoft = Color(0xFFF3A6A0);
   static const Color lavender = Color(0xFFC9B8E8);
 
-  // Pastel verde menta para recompensas y acentos vivos.
-  // En modo claro las tarjetas de trivia quedan blancas.
+
+
   static const Color mintSoft = Color(0xFFFFFFFF);
   static const Color mintLight = Color(0xFFD7EFE0);
   static const Color mint = Color(0xFF8ED9B4);
   static const Color mintStrong = Color(0xFF3FAE78);
   static const Color mintDark = Color(0xFF2E7D5B);
 
-  // Status colors
+
   static const Color success = Color(0xFF4CAF7D);
   static const Color warning = Color(0xFFFF9800);
   static const Color error = Color(0xFFE53935);
   static const Color info = Color(0xFF2196F3);
 
-  // UI elements
+
   static const Color divider = Color(0xFFDCE5DF);
   static const Color border = Color(0xFFDCE5DF);
   static const Color cardShadow = Color(0x1A000000);
   static const Color overlay = Color(0x66000000);
 
-  // Difficulty colors
+
   static const Color difficultyEasy = Color(0xFF4CAF7D);
   static const Color difficultyMedium = Color(0xFFFF9800);
   static const Color difficultyHard = Color(0xFFE53935);
 
-  // Streak
+
   static const Color streakFire = Color(0xFFFF6B35);
 
-  // Level
+
   static const Color levelPurple = Color(0xFF7B1FA2);
 
-  // Garden
+
   static const Color gardenGreen = Color(0xFF43A047);
   static const Color gardenGrass = Color(0xFF8BC34A);
 
-  // Semantic colors for surfaces
+
   static const Color surfaceElevated = Color(0xFFFFFFFF);
   static const Color surfaceDim = Color(0xFFEEF3EF);
   static const Color surfaceCard = Color(0xFFFFFFFF);
   static const Color snackBarBackground = Color(0xFF1F2A24);
 
-  // Aliases
+
   static const Color primaryLight = Color(0xFF4CAF7D);
   static const Color accent = Color(0xFFF6C85F);
 
-  // ---------------------------------------------------------------------------
-  // Paleta viva ECO (trivias, recompensas y resultados)
-  // ---------------------------------------------------------------------------
+
+
+
   static const Color ecoBg = Color(0xFF071C17);
   static const Color ecoBgLight = Color(0xFF0B251F);
   static const Color ecoGreen = Color(0xFF18C7A0);
@@ -91,8 +91,8 @@ class AppColors {
 class AppColorsDark {
   const AppColorsDark._();
 
-  // Verdes apagados de modo oscuro: mantiene la identidad verde sin
-  // resultar chillante.
+
+
   static const Color primary = Color(0xFF3F8F6B);
   static const Color secondary = Color(0xFF5FAE85);
   static const Color tertiary = Color(0xFF24402F);
@@ -100,7 +100,7 @@ class AppColorsDark {
   static const Color surface = Color(0xFF0F1D16);
   static const Color backgroundLight = Color(0xFF182A1F);
 
-  // Acentos de trivia en modo oscuro (apagados).
+
   static const Color ecoGreen = Color(0xFF2E6B50);
   static const Color ecoGreen2 = Color(0xFF3A7D5E);
   static const Color ecoGreenLight = Color(0xFF529878);
@@ -138,8 +138,8 @@ class AppColorsDark {
   static const Color surfaceDim = Color(0xFF08120D);
   static const Color surfaceCard = Color(0xFF0F1D16);
 
-  // Pastel verde menta para recompensas y acentos. En oscuro se usa un
-  // verde profundo y apagado.
+
+
   static const Color mintSoft = Color(0xFF14261C);
   static const Color mintLight = Color(0xFF1E3A2B);
   static const Color mint = Color(0xFF5E9F80);
@@ -410,8 +410,8 @@ class ThemeProvider extends ChangeNotifier {
 
   bool get isDark => _themeMode == ThemeMode.dark;
 
-  /// Modo para daltonismo: aplica un filtro de correccion de color a toda
-  /// la interfaz para mejorar la distincion rojo/verde.
+
+
   bool get modoDaltonico => _modoDaltonico;
 
   void setThemeMode(ThemeMode mode) {

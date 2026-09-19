@@ -24,8 +24,8 @@ class PublicacionService {
     );
   }
 
-  /// Feed paginado del backend. [autorId] filtra por autor y [siguiendo]
-  /// limita a las cuentas que sigue el usuario autenticado.
+
+
   Future<List<PublicacionResponse>> getFeed({
     int pagina = 1,
     int tamano = 10,

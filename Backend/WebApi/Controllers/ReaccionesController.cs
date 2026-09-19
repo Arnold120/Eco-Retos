@@ -18,10 +18,10 @@ namespace WebApi.Controllers
             _reaccionService = reaccionService;
         }
 
-        /// <summary>
-        /// Alterna la reaccion del usuario autenticado sobre una publicacion o
-        /// un comentario. Devuelve el estado resultante y el total actualizado.
-        /// </summary>
+
+
+
+
         [HttpPost]
         [ProducesResponseType(typeof(ReaccionResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

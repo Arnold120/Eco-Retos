@@ -11,8 +11,8 @@ import '../../../data/models/gamification/gamification_models.dart';
 import '../../../data/services/gamification_service.dart';
 import 'trivias_state.dart';
 
-/// Alimenta la pantalla principal de trivias: Modo Libre, Modo Diario y el
-/// progreso semanal de la trivia diaria.
+
+
 class TriviasCubit extends Cubit<TriviasState> {
   final int usuarioId;
   final DiarioStore _store;
@@ -47,7 +47,7 @@ class TriviasCubit extends Cubit<TriviasState> {
       final resultados = await Future.wait([
         _categoriaService.getCategorias(),
         _store.cargar(),
-        // Saldo único de Monedas Eco.
+
         _monederoService.getSaldo(),
         _recompensaStore.cargar(),
       ]);
@@ -110,8 +110,8 @@ class TriviasCubit extends Cubit<TriviasState> {
     }
   }
 
-  /// Reclama la recompensa de Modo Libre que quedó pendiente en la pantalla
-  /// principal. Entrega única: marca reclamada localmente antes del backend.
+
+
   Future<bool> reclamarRecompensaLibre() async {
     final recompensa = state.recompensaLibre;
     if (recompensa == null || !recompensa.pendiente) return false;
@@ -119,11 +119,11 @@ class TriviasCubit extends Cubit<TriviasState> {
 
     _emit(state.copyWith(recompensaReclamando: true));
 
-    // 1) Persistir reclamada PRIMERO (anti-duplicado offline-first)
+
     final reclamada = recompensa.copyWith(reclamada: true);
     await _recompensaStore.guardar(reclamada);
 
-    // 2) Backend: recompensa idempotente calculada por el servidor.
+
     try {
       final clave = recompensa.clave.isNotEmpty
           ? recompensa.clave

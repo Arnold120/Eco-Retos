@@ -58,7 +58,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         _jardinService.getJardin(usuarioId),
         _insigniaService.getInsigniasUsuario(usuarioId),
         _monederoService.getHistorial(),
-        // Saldo único de Monedas Eco + XP/nivel (fuente de verdad: backend).
+
         _monederoService.getSaldo(),
         _diarioStore.cargar(),
       ]);
@@ -115,8 +115,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     return 'Error inesperado: $error';
   }
 
-  /// PerfilId real del usuario (el PUT /Perfiles/{id} debe recibir el id de
-  /// perfil, no de usuario; pueden diferir si el perfil se recreo).
+
+
   Future<int> _perfilId() async {
     final actual = state.perfil?.perfilId;
     if (actual != null && actual > 0) return actual;
@@ -146,7 +146,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> refresh() => loadProfile();
 
-  /// Sube una foto elegida por el usuario y la guarda como FotoPerfil.
+
   Future<bool> cambiarFoto(File archivo) async {
     if (state.subiendoFoto) return false;
     emit(state.copyWith(subiendoFoto: true, error: null));
@@ -183,8 +183,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  /// Compra una planta en el jardín: descuenta monedas del saldo real
-  /// (Monedero) e incrementa la vegetación en el backend.
+
+
   Future<bool> comprarPlanta(String tipo, int precio) async {
     final jardin = state.jardin;
     if (jardin == null || state.monedas < precio) return false;
@@ -200,7 +200,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
 
     try {
-      // Gasto centralizado en el Monedero (el backend valida el saldo).
+
       await _monederoService.gastar(
         cantidad: precio,
         tipo: 'COMPRA',

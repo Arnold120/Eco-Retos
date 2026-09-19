@@ -89,7 +89,7 @@ class CommentsSkeleton extends StatelessWidget {
   }
 }
 
-/// Estado de error reutilizable con accion de reintento.
+
 class SocialErrorState extends StatelessWidget {
   final String mensaje;
   final VoidCallback? onReintentar;
@@ -134,7 +134,7 @@ class SocialErrorState extends StatelessWidget {
   }
 }
 
-/// Estado vacio reutilizable.
+
 class SocialEmptyState extends StatelessWidget {
   final IconData icono;
   final String titulo;

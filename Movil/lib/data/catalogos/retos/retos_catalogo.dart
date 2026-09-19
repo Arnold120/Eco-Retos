@@ -1,29 +1,29 @@
 import 'reto_model.dart';
 
-/// Punto único de entrada al catálogo de retos.
-///
-/// A partir de la migración al backend, el catálogo se carga en tiempo de
-/// ejecución desde `GET /api/Retos` (antes eran archivos const locales):
-/// - `RetoCatalogo.cargar(...)` dispara (y comparte) la carga una sola vez.
-/// - Los consumidores solo leen los getters/consultas, nunca los llenan.
-/// - Si la app está offline, el catálogo queda vacío o con lo ya cargado.
-///
-/// Las pantallas SIEMPRE consultan esta clase (o al `RetoRepository`),
-/// nunca declaran retos inline.
+
+
+
+
+
+
+
+
+
+
 class RetoCatalogo {
   const RetoCatalogo._();
 
-  /// Catálogo completo, poblado por [cargar]. Vacío hasta la primera carga.
+
   static List<Reto> todos = const [];
 
-  /// true cuando la primera carga terminó (con o sin retos).
+
   static bool cargado = false;
 
   static Future<void>? _cargando;
   static Future<List<Reto>> Function()? _cargador;
 
-  /// Carga el catálogo desde el backend. La primera llamada fija el cargador
-  /// y las llamadas concurrentes comparten la misma carga (una sola red).
+
+
   static Future<void> cargar(Future<List<Reto>> Function() cargador) {
     _cargador ??= cargador;
     if (cargado) return Future.value();
@@ -35,8 +35,8 @@ class RetoCatalogo {
         todos = List.unmodifiable(lista);
         cargado = true;
       } catch (_) {
-        // Sin conexión o backend caído: el catálogo queda vacío (offline) o
-        // con lo ya cargado, y se reintenta en la próxima carga. No es fatal.
+
+
       } finally {
         _cargando = null;
       }
@@ -80,7 +80,7 @@ class RetoCatalogo {
       )
       .toList();
 
-  /// Búsqueda instantánea por nombre, categoría, etiqueta, material y tipo.
+
   static List<Reto> buscar(String termino) {
     final q = termino.trim().toLowerCase();
     if (q.isEmpty) return todos;
@@ -102,7 +102,7 @@ class RetoCatalogo {
     }).toList();
   }
 
-  /// Filtros combinables (panel de filtros avanzados).
+
   static List<Reto> filtrar({
     RetoDificultad? dificultad,
     RetoCategoria? categoria,
@@ -124,8 +124,8 @@ class RetoCatalogo {
     }).toList();
   }
 
-  /// 🔥 Reto del día: determinístico por fecha, con rotación para no
-  /// repetir el mismo reto dos días seguidos.
+
+
   static Reto? retoDelDia(DateTime dia) {
     if (todos.isEmpty) return null;
     final pool = diarios.isNotEmpty ? diarios : todos;
@@ -137,7 +137,7 @@ class RetoCatalogo {
 
   static List<Reto> get semanales => todos.where((r) => r.semanal).toList();
 
-  /// 🔥 Desafío semanal: determinístico por semana del año.
+
   static Reto? retoSemanal(DateTime fecha) {
     if (todos.isEmpty) return null;
     final pool = semanales.isNotEmpty ? semanales : todos;
@@ -145,8 +145,8 @@ class RetoCatalogo {
     return pool[semana % pool.length];
   }
 
-  /// Recomendados por afinidad: categoría favorita + dificultad cercana al
-  /// nivel + no completados previamente.
+
+
   static List<RetoProgreso> recomendados({
     required int nivelUsuario,
     required List<RetoCategoria> categoriasFavoritas,
@@ -196,7 +196,7 @@ class RetoCatalogo {
   }
 }
 
-/// Cantidades aproximadas por dificultad para la UI (estadísticas).
+
 class RetoCatalogoStats {
   const RetoCatalogoStats._();
 

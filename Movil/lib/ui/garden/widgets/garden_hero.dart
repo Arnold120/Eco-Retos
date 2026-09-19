@@ -10,8 +10,8 @@ import 'plant_3d_viewer.dart';
 import 'plant_art.dart';
 import 'tool_icon.dart';
 
-/// Tarjeta principal del jardín: modelo 3D real de la planta seleccionada,
-/// progreso, efectos de cuidado y botones de herramientas.
+
+
 class GardenHero extends StatefulWidget {
   final PlantGrowth planta;
   final InventarioJardin inventario;
@@ -426,7 +426,7 @@ class _GardenHeroState extends State<GardenHero>
     );
   }
 
-  /// Aviso vivo del estado crítico de la planta (sed, plaga o falta de abono).
+
   Widget _alerta(PlantGrowth planta) {
     final String texto;
     final Color color;

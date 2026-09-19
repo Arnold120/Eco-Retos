@@ -2,46 +2,46 @@ import 'package:equatable/equatable.dart';
 
 import '../../../data/models/trivia/diario_models.dart';
 
-/// Fases por las que pasa el flujo del Modo Diario.
+
 enum DiarioStatus {
-  /// Estado inicial antes de cargar.
+
   initial,
 
-  /// Cargando datos iniciales.
+
   loading,
 
-  /// Pantalla de introducción/espera lista para arrancar o reanudar.
+
   ready,
 
-  /// Una pregunta está visible y se puede responder.
+
   questionActive,
 
-  /// El usuario seleccionó una opción (feedback breve).
+
   answerSelected,
 
-  /// La respuesta fue correcta.
+
   answerCorrect,
 
-  /// La respuesta fue incorrecta.
+
   answerIncorrect,
 
-  /// El tiempo de la pregunta se agotó.
+
   timeExpired,
 
-  /// Partida del día finalizada, pantalla de resultados.
+
   completed,
 
-  /// La trivia diaria de hoy ya fue completada.
+
   todayDone,
 
-  /// No hay suficientes preguntas para la categoría/dificultad del día.
+
   sinPreguntas,
 
-  /// Ocurrió un error recuperable.
+
   error,
 }
 
-/// Mensaje motivador según el porcentaje de aciertos de la partida.
+
 String mensajePorDesempeno(double porcentaje) {
   if (porcentaje >= 100) return '🏆 ¡PERFECTO!';
   if (porcentaje >= 81) return '¡Excelente!';
@@ -51,7 +51,7 @@ String mensajePorDesempeno(double porcentaje) {
   return '¡No te rindas!';
 }
 
-/// Resumen final de una partida diaria para la pantalla de resultados.
+
 class ResultadoDiario extends Equatable {
   final int puntos;
   final int aciertos;
@@ -107,13 +107,13 @@ class ResultadoDiario extends Equatable {
       ];
 }
 
-/// Estado inmutable del flujo del Modo Diario.
+
 class DiarioState extends Equatable {
   final DiarioStatus status;
   final bool isLoading;
   final String? error;
 
-  /// Día actual (a medianoche) sobre el que se juega.
+
   final DateTime hoy;
   final int categoriaId;
   final String categoriaNombre;
@@ -137,10 +137,10 @@ class DiarioState extends Equatable {
   final bool reanudando;
   final ResultadoDiario? resultado;
 
-  /// La recompensa de la partida del día ya fue reclamada (entrega única).
+
   final bool recompensaReclamada;
 
-  /// Hay un reclamo de recompensas en curso (estado del botón).
+
   final bool recompensaReclamando;
 
   const DiarioState({

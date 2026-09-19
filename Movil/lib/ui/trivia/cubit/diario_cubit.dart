@@ -16,12 +16,12 @@ import '../../../data/services/trivia_service.dart' show TriviaService;
 import '../trivia_question_generator.dart';
 import 'diario_state.dart';
 
-/// Dirige el flujo del Modo Diario: preparación del día, partida de 3
-/// preguntas, temporización, ayudas, recompensas, racha, dificultad por
-/// categoría y persistencia local.
-///
-/// Una única instancia por pantalla, creada y proveída por la pantalla dueña
-/// del flujo. Todos los timers se cancelan al cerrar el cubit.
+
+
+
+
+
+
 class DiarioCubit extends Cubit<DiarioState> {
   final int usuarioId;
   final DiarioStore _store;
@@ -62,9 +62,9 @@ class DiarioCubit extends Cubit<DiarioState> {
     if (!isClosed) emit(nuevo);
   }
 
-  // ---------------------------------------------------------------------------
-  // Carga inicial
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<void> iniciar() async {
     _emit(
@@ -79,7 +79,7 @@ class DiarioCubit extends Cubit<DiarioState> {
         _categoriaService.getCategorias(),
         _triviaService.getTriviasActivas(),
         _store.cargar(),
-        // Saldo único de Monedas Eco.
+
         _monederoService.getSaldo(),
       ]);
       if (isClosed) return;
@@ -188,9 +188,9 @@ class DiarioCubit extends Cubit<DiarioState> {
     return null;
   }
 
-  // ---------------------------------------------------------------------------
-  // Partida
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<void> comenzarPartida() async {
     if (_registrosTrivia.isEmpty) {
@@ -242,8 +242,8 @@ class DiarioCubit extends Cubit<DiarioState> {
     _iniciarTemporizador();
   }
 
-  /// Genera 3 preguntas con fallback progresivo de material:
-  /// categoría+dificultad → categoría completa → todas las activas.
+
+
   List<SesionPreguntaDiaria>? _generarPreguntasDia() {
     final categoriaId = state.categoriaId;
     final dificultad = state.dificultad.valorDb;
@@ -311,9 +311,9 @@ class DiarioCubit extends Cubit<DiarioState> {
     _emit(state.copyWith(progreso: nuevoProgreso));
   }
 
-  // ---------------------------------------------------------------------------
-  // Respuestas
-  // ---------------------------------------------------------------------------
+
+
+
 
   void seleccionarOpcion(String letra) {
     if (state.status != DiarioStatus.questionActive) return;
@@ -402,9 +402,9 @@ class DiarioCubit extends Cubit<DiarioState> {
     _iniciarTemporizador();
   }
 
-  // ---------------------------------------------------------------------------
-  // Ayudas
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<void> usarAyuda(AyudaTrivia ayuda) async {
     if (state.status != DiarioStatus.questionActive) return;
@@ -454,9 +454,9 @@ class DiarioCubit extends Cubit<DiarioState> {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Temporizador por pregunta
-  // ---------------------------------------------------------------------------
+
+
+
 
   void _iniciarTemporizador() {
     _detenerTemporizador();
@@ -482,9 +482,9 @@ class DiarioCubit extends Cubit<DiarioState> {
     _timerTemporizador = null;
   }
 
-  // ---------------------------------------------------------------------------
-  // Avance automático
-  // ---------------------------------------------------------------------------
+
+
+
 
   void _programarAvanceAutomatico() {
     _detenerAvanceAutomatico();
@@ -498,12 +498,12 @@ class DiarioCubit extends Cubit<DiarioState> {
     _timerAvanceAutomatico = null;
   }
 
-  // ---------------------------------------------------------------------------
-  // Finalización y recompensas
-  // ---------------------------------------------------------------------------
 
-  /// Calcula la semana y prepara la sesión pero NO registra en backend.
-  /// Las recompensas se entregan una sola vez en `reclamarRecompensas()`.
+
+
+
+
+
   Future<void> _finalizar() async {
     if (_recompensasRegistradas) return;
     _recompensasRegistradas = true;
@@ -554,7 +554,7 @@ class DiarioCubit extends Cubit<DiarioState> {
     await _store.guardar(progreso);
     if (isClosed) return;
 
-    // Si no hay recompensas, auto-reclamar (register backend como best-effort)
+
     final autoReclamado = xp == 0 && monedas == 0 && !semanaPendiente;
     final progresoGuardado = autoReclamado
         ? progreso.actualizarSesion(sesion.copyWith(recompensaReclamada: true))
@@ -595,8 +595,8 @@ class DiarioCubit extends Cubit<DiarioState> {
     );
   }
 
-  /// Registra las recompensas (una sola vez) en el backend. El backend calcula
-  /// la XP y las monedas; aquí solo se reclama con claves idempotentes.
+
+
   Future<void> _registrarEnBackend(
     int xp,
     int monedas,
@@ -638,9 +638,9 @@ class DiarioCubit extends Cubit<DiarioState> {
     }
   }
 
-  /// Reclama las recompensas de la partida del día. Llamado por el botón
-  /// "RECLAMAR RECOMPENSAS". El reclamo solo se ejecuta una vez y se
-  /// persiste antes de llamar al backend (anti-duplicado offline-first).
+
+
+
   Future<bool> reclamarRecompensas() async {
     if (!state.puedeReclamar) return false;
     final resultado = state.resultado;
@@ -648,7 +648,7 @@ class DiarioCubit extends Cubit<DiarioState> {
 
     _emit(state.copyWith(recompensaReclamando: true));
 
-    // Calcular semana
+
     var progreso = state.progreso;
     final semanaCompletada = progreso.semanaCompletadaEn(state.hoy);
     final semanaPendiente = semanaCompletada &&
@@ -661,7 +661,7 @@ class DiarioCubit extends Cubit<DiarioState> {
       monedasSemana = kMonedasSemanaCompletada;
     }
 
-    // 1) Persistir local PRIMERO (anti-duplicado offline)
+
     final sesionHoy = progreso.sesionDeDia(state.hoy);
     if (sesionHoy != null) {
       final sesionMarcada = sesionHoy.copyWith(recompensaReclamada: true);
@@ -669,7 +669,7 @@ class DiarioCubit extends Cubit<DiarioState> {
     }
     await _store.guardar(progreso);
 
-    // 2) Backend best-effort
+
     await _registrarEnBackend(
       resultado.xpGanados,
       resultado.monedasGanadas,
@@ -697,9 +697,9 @@ class DiarioCubit extends Cubit<DiarioState> {
     return true;
   }
 
-  // ---------------------------------------------------------------------------
-  // Ciclo de vida
-  // ---------------------------------------------------------------------------
+
+
+
 
   @override
   Future<void> close() {

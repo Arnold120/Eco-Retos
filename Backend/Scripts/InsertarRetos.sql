@@ -1,15 +1,15 @@
--- =====================================================================
--- Inserta (o actualiza) los 1000 retos del catálogo móvil en la tabla Reto.
--- Generado automáticamente a partir de los catálogos Dart del movil.
--- Ejecutar contra la base EcoRitos (o EcoRetos).
--- Idempotente: inserta los que no existen y actualiza el metadata de los que ya
--- fueron creados dinámicamente por la sincronización del movil.
--- =====================================================================
+
+
+
+
+
+
+
 USE EcoRitos;
 GO
 
--- ── Columnas adicionales para el catálogo completo del movil ──────────
--- Idempotente: se agregan solo si no existen (sin borrar datos).
+
+
 IF COL_LENGTH('Reto', 'Subcategoria') IS NULL ALTER TABLE Reto ADD Subcategoria NVARCHAR(200) NULL;
 IF COL_LENGTH('Reto', 'Tipo') IS NULL ALTER TABLE Reto ADD Tipo NVARCHAR(50) NULL;
 IF COL_LENGTH('Reto', 'TiempoMin') IS NULL ALTER TABLE Reto ADD TiempoMin INT NULL;

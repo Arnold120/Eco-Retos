@@ -50,7 +50,7 @@ namespace WebApi.Implementacion
                     }
                     catch
                     {
-                        // La notificacion no debe bloquear el seguimiento.
+
                     }
                 }
             }

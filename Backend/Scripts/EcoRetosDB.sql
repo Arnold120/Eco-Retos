@@ -68,9 +68,9 @@ CREATE TABLE Categoria (
 
 CREATE UNIQUE INDEX IX_Categoria_NombreCategoria ON Categoria(NombreCategoria);
 
--- ── Categorías oficiales del proyecto (LAS 7) ─────────────────────────────
--- IDs fijos 1-7. Son la taxonomía maestra: cada Reto, Trivia, Recurso y
--- movimiento de puntos queda vinculado a una de ellas mediante CategoriaId.
+
+
+
 SET IDENTITY_INSERT Categoria ON;
 INSERT INTO Categoria (CategoriaId, NombreCategoria, Descripcion) VALUES
     (1, 'Reciclaje',
@@ -97,8 +97,8 @@ CREATE TABLE Reto (
     Titulo NVARCHAR(200),
     Descripcion NVARCHAR(MAX),
     Instrucciones NVARCHAR(MAX),
-    -- ExperienciaRecompensa = XP que otorga el reto (sube de nivel).
-    -- MonedasRecompensa = Monedas Eco que otorga el reto (van al Monedero).
+
+
     ExperienciaRecompensa INT NOT NULL DEFAULT 0,
     MonedasRecompensa INT NOT NULL DEFAULT 0,
     Dificultad NVARCHAR(50),
@@ -108,14 +108,14 @@ CREATE TABLE Reto (
     CONSTRAINT FK_Reto_Categoria FOREIGN KEY (CategoriaId) REFERENCES Categoria(CategoriaId)
 );
 
--- Índice único por Codigo: acelera el upsert "verify-or-create" de los retos
--- del catálogo local (RetosController/registrar, asigna y sincroniza) y evita
--- duplicados cuando el usuario completa el reto desde el movil.
+
+
+
 CREATE UNIQUE INDEX IX_Reto_Codigo ON Reto(Codigo);
 
--- Para bases existentes creadas sin la columna Codigo, ejecutar:
---   ALTER TABLE Reto ADD Codigo NVARCHAR(50) NULL;
---   CREATE UNIQUE INDEX IX_Reto_Codigo ON Reto(Codigo) WHERE Codigo IS NOT NULL;
+
+
+
 
 CREATE INDEX IX_Reto_CategoriaId ON Reto(CategoriaId);
 CREATE INDEX IX_Reto_Estado ON Reto(Estado);
@@ -137,8 +137,8 @@ CREATE TABLE UsuarioReto (
 
 CREATE INDEX IX_UsuarioReto_UsuarioId ON UsuarioReto(UsuarioId);
 CREATE INDEX IX_UsuarioReto_RetoId ON UsuarioReto(RetoId);
--- Índice compuesto usado por el lookup "usuario y reto" (ObtenerPorUsuarioYRetoAsync
--- y la sincronizacion por lotes): evita escanear toda la tabla por participante.
+
+
 CREATE INDEX IX_UsuarioReto_UsuarioReto ON UsuarioReto(UsuarioId, RetoId);
 
 CREATE TABLE Trivia (
@@ -207,7 +207,7 @@ CREATE TABLE Material (
     NombreMaterial NVARCHAR(150),
     Descripcion NVARCHAR(500),
     Tipo NVARCHAR(100),
-    -- Precio de venta en Monedas Eco (no en XP).
+
     PrecioMonedas INT DEFAULT 0,
     CantidadDisponible INT DEFAULT 0,
     Imagen NVARCHAR(500),
@@ -231,10 +231,10 @@ CREATE INDEX IX_Inventario_UsuarioId ON Inventario(UsuarioId);
 CREATE TABLE Compra (
     CompraId INT PRIMARY KEY IDENTITY(1,1),
     UsuarioId INT,
-    -- Total pagado en Monedas Eco.
+
     TotalMonedas INT,
     FechaCompra DATETIME2 DEFAULT GETDATE(),
-    -- Clave de idempotencia opcional para evitar compras duplicadas por doble clic/reintento.
+
     ClaveIdempotencia NVARCHAR(120),
     CONSTRAINT FK_Compra_Usuario FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId)
 );
@@ -250,7 +250,7 @@ CREATE TABLE DetalleCompra (
     CompraId INT,
     MaterialId INT,
     Cantidad INT,
-    -- Precio unitario pagado en Monedas Eco (tomado del catálogo Material, no del cliente).
+
     PrecioUnitarioMonedas INT,
     CONSTRAINT FK_DetalleCompra_Compra FOREIGN KEY (CompraId) REFERENCES Compra(CompraId),
     CONSTRAINT FK_DetalleCompra_Material FOREIGN KEY (MaterialId) REFERENCES Material(MaterialId)
@@ -268,17 +268,17 @@ CREATE TABLE Publicacion (
     Estado NVARCHAR(50) DEFAULT 'PUBLICADA',
     Ubicacion NVARCHAR(200),
     Categoria NVARCHAR(50),
-    -- Si la publicacion es un compartido, apunta a la publicacion original.
+
     CompartidoDeId INT,
-    -- Marca las publicaciones compartidas cuyo original fue eliminado.
+
     CompartidoEliminado BIT NOT NULL DEFAULT 0,
-    -- PUBLICO | SEGUIDORES | SOLO_YO
+
     Visibilidad NVARCHAR(20) NOT NULL DEFAULT 'PUBLICO',
     Editada BIT NOT NULL DEFAULT 0,
     FechaEdicion DATETIME2,
     CONSTRAINT FK_Publicacion_Usuario FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId),
-    -- NO ACTION: evita rutas de cascada multiples entre Publicacion y sus
-    -- tablas hijas. El backend desvincula los compartidos antes de borrar.
+
+
     CONSTRAINT FK_Publicacion_Compartida FOREIGN KEY (CompartidoDeId) REFERENCES Publicacion(PublicacionId) ON DELETE NO ACTION
 );
 
@@ -294,7 +294,7 @@ CREATE TABLE PublicacionMultimedia (
     Url NVARCHAR(500) NOT NULL,
     Tipo NVARCHAR(20) NOT NULL DEFAULT 'imagen',
     Duracion NVARCHAR(20),
-    -- Imagen de portada del video (fotograma elegido por el usuario).
+
     Poster NVARCHAR(500),
     Orden INT NOT NULL DEFAULT 0,
     FechaCreacion DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -310,7 +310,7 @@ CREATE TABLE Comentario (
     UsuarioId INT,
     ComentarioTexto NVARCHAR(MAX),
     FechaComentario DATETIME2 DEFAULT GETDATE(),
-    -- Respuesta anidada: apunta al comentario padre (NULL si es de primer nivel).
+
     ComentarioPadreId INT,
     Editado BIT NOT NULL DEFAULT 0,
     CONSTRAINT FK_Comentario_Publicacion FOREIGN KEY (PublicacionId) REFERENCES Publicacion(PublicacionId),
@@ -419,7 +419,7 @@ CREATE TABLE Insignia (
     Descripcion NVARCHAR(500),
     Requisito NVARCHAR(500),
     Imagen NVARCHAR(500),
-    -- Monedas Eco que se acreditan al Monedero cuando el usuario obtiene la insignia.
+
     MonedasRecompensa INT DEFAULT 0
 );
 
@@ -437,9 +437,9 @@ CREATE TABLE UsuarioInsignia (
 
 CREATE INDEX IX_UsuarioInsignia_UsuarioId ON UsuarioInsignia(UsuarioId);
 
--- HistorialPuntos queda como ARCHIVO histórico del esquema anterior (XP y monedas
--- mezclados). La fuente de verdad actual es Monedero + HistorialMonedas (monedas)
--- y Progreso.Experiencia (XP). Ver Scripts\Migrar_Monedero.sql para la migración.
+
+
+
 CREATE TABLE HistorialPuntos (
     HistorialId INT PRIMARY KEY IDENTITY(1,1),
     UsuarioId INT,
@@ -455,9 +455,9 @@ CREATE TABLE HistorialPuntos (
 CREATE INDEX IX_HistorialPuntos_UsuarioId ON HistorialPuntos(UsuarioId);
 CREATE INDEX IX_HistorialPuntos_CategoriaId ON HistorialPuntos(CategoriaId);
 
--- ===========================================================================
--- MONEDERO (1 a 1 con Usuario): fuente única del saldo de Monedas Eco.
--- ===========================================================================
+
+
+
 CREATE TABLE Monedero (
     MonederoId INT PRIMARY KEY IDENTITY(1,1),
     UsuarioId INT NOT NULL,
@@ -470,10 +470,10 @@ CREATE TABLE Monedero (
 
 CREATE INDEX IX_Monedero_UsuarioId ON Monedero(UsuarioId);
 
--- ===========================================================================
--- HISTORIAL DE MONEDAS: auditoría de todos los movimientos monetarios.
--- Cantidad es firmada: positiva = ganancia, negativa = gasto.
--- ===========================================================================
+
+
+
+
 CREATE TABLE HistorialMonedas (
     HistorialMonedaId INT PRIMARY KEY IDENTITY(1,1),
     UsuarioId INT NOT NULL,
@@ -495,11 +495,11 @@ CREATE UNIQUE INDEX UX_HistorialMonedas_Idempotencia
 ON HistorialMonedas(UsuarioId, ClaveIdempotencia)
 WHERE ClaveIdempotencia IS NOT NULL;
 
--- ===========================================================================
--- RECOMPENSAS RECLAMADAS: idempotencia de recompensas (retos, trivias,
--- insignias...). Evita entregar dos veces la misma recompensa aunque la
--- recompensa no genere monedas.
--- ===========================================================================
+
+
+
+
+
 CREATE TABLE RecompensaReclamada (
     RecompensaId INT PRIMARY KEY IDENTITY(1,1),
     UsuarioId INT NOT NULL,
@@ -546,11 +546,11 @@ CREATE TABLE Notificacion (
     Tipo NVARCHAR(50),
     Leida BIT DEFAULT 0,
     Fecha DATETIME2 DEFAULT GETDATE(),
-    -- Recurso al que apunta la notificacion para navegar al tocarla.
-    -- ReferenciaTipo: PUBLICACION | COMENTARIO | USUARIO | CONVERSACION
+
+
     ReferenciaTipo NVARCHAR(30),
     ReferenciaId INT,
-    -- Usuario que genero la interaccion (like, comentario, seguimiento, mensaje).
+
     ActorUsuarioId INT,
     CONSTRAINT FK_Notificacion_Usuario FOREIGN KEY (UsuarioId) REFERENCES Usuario(UsuarioId),
     CONSTRAINT FK_Notificacion_Actor FOREIGN KEY (ActorUsuarioId) REFERENCES Usuario(UsuarioId)
@@ -563,7 +563,7 @@ CREATE INDEX IX_Notificacion_Referencia ON Notificacion(Tipo, ReferenciaId);
 CREATE TABLE Progreso (
     ProgresoId INT PRIMARY KEY IDENTITY(1,1),
     UsuarioId INT,
-    -- Experiencia (XP) total del usuario. Es independiente de las Monedas Eco.
+
     Experiencia INT NOT NULL DEFAULT 0,
     RetosCompletados INT DEFAULT 0,
     TriviasCompletadas INT DEFAULT 0,

@@ -12,8 +12,8 @@ class ChallengeCubit extends Cubit<ChallengeState> {
     : _repositorio = repositorio,
       super(const ChallengeState());
 
-  /// Carga el catálogo completo con el progreso persistido.
-  /// Flujo: Loading → Success / Error(retry).
+
+
   Future<void> cargar() async {
     emit(state.copyWith(isLoading: true, clearError: true));
     try {
@@ -34,7 +34,7 @@ class ChallengeCubit extends Cubit<ChallengeState> {
     }
   }
 
-  /// Descarta las aprobaciones ya celebradas por la UI.
+
   void limpiarAprobaciones() {
     if (state.aprobacionesRecientes.isEmpty) return;
     emit(state.copyWith(aprobacionesRecientes: const []));
@@ -51,7 +51,7 @@ class ChallengeCubit extends Cubit<ChallengeState> {
 
   Future<void> refresh() => cargar();
 
-  // ─── Búsqueda y filtros ────────────────────────────────────────────────
+
 
   void buscar(String termino) => emit(state.copyWith(busqueda: termino));
 
@@ -82,30 +82,30 @@ class ChallengeCubit extends Cubit<ChallengeState> {
   void cambiarSeccion(RetosSeccion seccion) =>
       emit(state.copyWith(seccion: seccion));
 
-  // ─── Acciones sobre un reto ────────────────────────────────────────────
 
-  /// Comienza un reto (En progreso). Devuelve el progreso actualizado.
+
+
   Future<RetoProgreso?> comenzar(Reto reto) async {
     final progreso = await _repositorio.comenzar(reto);
     _actualizar(progreso);
     return _estadoDe(reto.id);
   }
 
-  /// Marca un paso completado.
+
   Future<RetoProgreso?> avanzarPaso(Reto reto, int pasoCompletado) async {
     final progreso = await _repositorio.avanzarPaso(reto, pasoCompletado);
     _actualizar(progreso);
     return _estadoDe(reto.id);
   }
 
-  /// Envía evidencia (Pendiente de revisión) cuando el reto lo exige.
+
   Future<RetoProgreso?> enviarEvidencia(Reto reto, String evidencia) async {
     final progreso = await _repositorio.enviarEvidencia(reto, evidencia);
     _actualizar(progreso);
     return _estadoDe(reto.id);
   }
 
-  /// Completa de forma transaccional (anti doble recompensa).
+
   Future<CompletarResultado> completar(Reto reto) async {
     final resultado = await _repositorio.completar(reto);
     _actualizar(resultado.progreso);

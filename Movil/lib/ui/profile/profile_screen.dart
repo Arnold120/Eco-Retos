@@ -179,7 +179,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────────── Header ────────────────────────────────
+
 
   Widget _buildHeader(ProfileState state, BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -306,16 +306,16 @@ class ProfileScreen extends StatelessWidget {
   }
 
   NivelInfo _computeNivelInfo(ProfileState state) {
-    // Use real XP (RETO + TRIVIA) for level calculation
+
     final totalXp = state.xpTotal;
     final backendNivel = state.progreso?.nivelActual ?? 1;
     final backendPorcentaje = state.progreso?.porcentajeProgreso ?? 0.0;
 
-    // Prefer real XP calculation if we have total XP
+
     if (totalXp > 0) {
       return NivelInfo.fromTotalXp(totalXp);
     }
-    // Fallback to backend percentage
+
     return NivelInfo.fromBackendProgress(
       backendNivel,
       backendPorcentaje,
@@ -601,7 +601,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // ────────────────────────── Nivel / progreso ───────────────────────────
+
 
   Widget _buildNivelSection(ProfileState state, BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -752,7 +752,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────── Stats rápidas ─────────────────────────────
+
 
   Widget _buildQuickStatsSection(ProfileState state, BuildContext context) {
     final items = [
@@ -873,7 +873,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // ─────────────────────────── Insignias ─────────────────────────────────
+
 
   Widget _buildInsigniasSection(ProfileState state, BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1002,7 +1002,7 @@ class ProfileScreen extends StatelessWidget {
     AppColors.info,
   ];
 
-  // ──────────────────────── Accesos rápidos ──────────────────────────────
+
 
   Widget _buildActionsSection(ProfileState state, BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1202,7 +1202,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // ────────────────────────── Navegación ─────────────────────────────────
+
 
   void _goEdit(BuildContext context) {
     Navigator.of(context).push(
@@ -1274,7 +1274,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // ────────────────────────── Foto de perfil ─────────────────────────────
+
 
   Future<void> _cambiarFoto(BuildContext context) async {
     if (context.read<ProfileCubit>().state.subiendoFoto) return;
@@ -1376,7 +1376,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // ───────────────────────────── Helpers ─────────────────────────────────
+
 
   Widget _sectionTitle(
     BuildContext context,

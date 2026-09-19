@@ -34,7 +34,7 @@ Future<void> _registrar(String usuario, String correo) async {
       'Apellido': 'Chat',
     });
   } catch (_) {
-    // Ya existe.
+
   }
 }
 
@@ -49,7 +49,7 @@ Future<Map<String, dynamic>> _login(String correo) async {
 Options _auth(String token) =>
     Options(headers: {'Authorization': 'Bearer $token'});
 
-/// Bob abre una conversacion con el auditor y le envia un mensaje.
+
 Future<void> _prepararConversacion() async {
   await _registrar('auditor_qa_eco', _correoA);
   await _registrar('qa_bob', _correoB);
@@ -98,7 +98,7 @@ void main() {
       await avanzar(tester, const Duration(seconds: 12));
     }
 
-    // Muro -> Mensajes
+
     await tester.tap(find.text('Muro'));
     await avanzar(tester, const Duration(seconds: 6));
     await tester.tap(
@@ -109,13 +109,13 @@ void main() {
     );
     await avanzar(tester, const Duration(seconds: 6));
 
-    // Abrir la conversacion con Bob: debe ir a pantalla completa.
+
     expect(find.text('qa_bob'), findsWidgets,
         reason: 'La conversacion debe aparecer en la lista');
     await tester.tap(find.text('qa_bob').first);
     await avanzar(tester, const Duration(seconds: 6));
 
-    // El chat a pantalla completa muestra el mensaje mas reciente.
+
     expect(find.text(_mensaje), findsWidgets,
         reason: 'El mensaje mas reciente debe verse al abrir el chat');
     expect(find.byType(UserAvatar), findsWidgets,
@@ -123,7 +123,7 @@ void main() {
     expect(find.byTooltip('Volver a mensajes'), findsWidgets,
         reason: 'Debe poder volver a la lista');
 
-    // Enviar un mensaje desde la app: debe quedar visible el mas reciente.
+
     await tester.enterText(find.byType(TextField).last, _mensajeNuevo);
     await avanzar(tester, const Duration(seconds: 1));
     await tester.tap(find.byTooltip('Enviar mensaje'));
@@ -131,7 +131,7 @@ void main() {
     expect(find.text(_mensajeNuevo), findsWidgets,
         reason: 'Al enviar, el chat debe mostrar el mensaje mas reciente');
 
-    // Volver restaura la navegacion del Muro.
+
     await tester.tap(find.byTooltip('Volver a mensajes'));
     await avanzar(tester, const Duration(seconds: 5));
     expect(find.text('Muro Eco'), findsWidgets);

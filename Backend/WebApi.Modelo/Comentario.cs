@@ -9,7 +9,7 @@ namespace WebApi.Modelo
         public DateTime FechaComentario { get; set; }
         public int? ComentarioPadreId { get; set; }
         public bool Editado { get; set; }
-        /// <summary>ACTIVO | OCULTA (moderación: se conserva el registro).</summary>
+
         public string Estado { get; set; } = "ACTIVO";
     }
 }

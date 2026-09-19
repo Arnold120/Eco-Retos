@@ -2,7 +2,7 @@ using WebApi.Modelo;
 
 namespace WebApi.Interfaz
 {
-    /// <summary>Auditoría de acciones administrativas y de IA (solo inserción/lectura).</summary>
+
     public interface IAuditoriaService
     {
         Task RegistrarAsync(

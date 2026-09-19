@@ -1,10 +1,10 @@
 namespace WebApi.Modelo
 {
-    /// <summary>
-    /// Caso de soporte asistido por IA. Tabla aditiva creada por Scripts/Soporte_IA.sql.
-    /// Estados: NUEVO, IA_ATENDIENDO, EN_REVISION, RESUELTO_POR_IA, ESCALADO,
-    /// ASIGNADO, RESUELTO, CERRADO.
-    /// </summary>
+
+
+
+
+
     public class SupportCase
     {
         public int SupportCaseId { get; set; }
@@ -26,7 +26,7 @@ namespace WebApi.Modelo
         public DateTime FechaActualizacion { get; set; }
         public DateTime? FechaCierre { get; set; }
         public string? UsuarioNombre { get; set; }
-        /// <summary>La IA convirtió este caso en un reporte estructurado.</summary>
+
         public bool EsReporte { get; set; }
     }
 }

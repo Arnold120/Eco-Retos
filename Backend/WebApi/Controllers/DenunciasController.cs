@@ -66,7 +66,7 @@ namespace WebApi.Controllers
                 ReporteOrigen = "APP"
             });
 
-            // Aviso inmediato a los administradores activos (no bloquea el reporte).
+
             try
             {
                 var usuario = await _usuarioService.ObtenerPorIdAsync(usuarioId.Value);

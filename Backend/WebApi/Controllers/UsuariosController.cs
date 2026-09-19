@@ -111,7 +111,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        // [Authorize(Roles = "ADMIN")]
+
         [ProducesResponseType(typeof(UsuarioResponseDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Crear([FromBody] CrearUsuarioRequestDto dto)
@@ -141,7 +141,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Actualizar(int id, [FromBody] ActualizarUsuarioRequestDto dto)
         {
-            // Solo el propio usuario (o un administrador) puede editar la cuenta.
+
             var autenticadoId = User.ObtenerUsuarioId();
             if (autenticadoId is null)
                 return Unauthorized();
@@ -248,10 +248,10 @@ namespace WebApi.Controllers
             return Ok(new { mensaje = "Contrasena actualizada correctamente." });
         }
 
-        /// <summary>
-        /// Desactiva la propia cuenta. Exige la contrasena actual como
-        /// confirmacion; el usuario puede reactivarla contactando soporte.
-        /// </summary>
+
+
+
+
         [HttpPost("mi-cuenta/desactivar")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

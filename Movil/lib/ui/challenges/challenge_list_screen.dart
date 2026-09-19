@@ -99,7 +99,7 @@ class ChallengeListScreen extends StatelessWidget {
     );
   }
 
-  // ─── Modal de filtros ──────────────────────────────────────────────────
+
 
   void _abrirFiltros(BuildContext context) {
     final cubit = context.read<ChallengeCubit>();
@@ -170,7 +170,7 @@ class ChallengeListScreen extends StatelessWidget {
     );
   }
 
-  /// Celebra una sola vez los retos cuya evidencia fue aprobada por un admin.
+
   void _celebrarAprobaciones(BuildContext context, ChallengeState state) {
     final aprobaciones = state.aprobacionesRecientes;
     if (aprobaciones.isEmpty) return;
@@ -190,7 +190,7 @@ class ChallengeListScreen extends StatelessWidget {
   }
 }
 
-// ─── Selector de categorías (grid 2×N) ────────────────────────────────────
+
 
 class _SelectorCategorias extends StatelessWidget {
   final ChallengeCubit cubit;
@@ -246,7 +246,7 @@ class _SelectorCategorias extends StatelessWidget {
   }
 }
 
-/// Card compacta de categoría con efecto sutil al tocar.
+
 class _CategoriaCard extends StatefulWidget {
   final RetoCategoria categoria;
   final int cantidadRetos;
@@ -400,10 +400,10 @@ class _CategoriaCardState extends State<_CategoriaCard> {
   }
 }
 
-// ─── Retos de una categoría ───────────────────────────────────────────────
 
-/// Pastelillas dinámicas con filtros combinables (estado + dificultad),
-/// contador animado, ordenamiento, buscador y cards con acción clara.
+
+
+
 class _RetosDeCategoria extends StatefulWidget {
   final ChallengeCubit cubit;
   final ChallengeState state;
@@ -425,8 +425,8 @@ class _RetosDeCategoriaState extends State<_RetosDeCategoria> {
 
   _OrdenRetos _orden = _OrdenRetos.recientes;
 
-  /// Se incrementa cuando cambian los filtros: fuerza a que las cards
-  /// se re-monten y vuelvan a animar su entrada (fade + translateY).
+
+
   int _revision = 0;
 
   String _firmaAnterior = '';
@@ -454,7 +454,7 @@ class _RetosDeCategoriaState extends State<_RetosDeCategoria> {
     super.dispose();
   }
 
-  /// Firma de filtros (excluye la búsqueda para no re-animar con cada tecla).
+
   String _firma(ChallengeState state) =>
       '${state.seccion}|${state.dificultadSeleccionada}|'
       '${state.tipoSeleccionado}';
@@ -511,7 +511,7 @@ class _RetosDeCategoriaState extends State<_RetosDeCategoria> {
     );
   }
 
-  // ─── Header: buscador, grupos de filtros, activos y contador ────────────
+
 
   Widget _buildHeader(
     BuildContext context,
@@ -706,7 +706,7 @@ class _RetosDeCategoriaState extends State<_RetosDeCategoria> {
     );
   }
 
-  // ─── Ordenamiento ───────────────────────────────────────────────────────
+
 
   List<RetoProgreso> _aplicarOrden(List<RetoProgreso> lista) {
     if (_orden == _OrdenRetos.recientes) return lista;
@@ -779,7 +779,7 @@ class _RetosDeCategoriaState extends State<_RetosDeCategoria> {
     }
   }
 
-  // ─── Acciones ───────────────────────────────────────────────────────────
+
 
   void _limpiarBusqueda() {
     _busqueda.clear();
@@ -815,11 +815,11 @@ class _RetosDeCategoriaState extends State<_RetosDeCategoria> {
         ),
       ),
     );
-    // El detalle comparte el ChallengeCubit: los cambios se reflejan al volver.
+
   }
 }
 
-// ─── Filtros (chips / activos / limpiar) ──────────────────────────────────
+
 
 enum _OrdenRetos {
   recientes('Más recientes', Icons.history),
@@ -856,9 +856,9 @@ class _FiltroEtiqueta extends StatelessWidget {
   }
 }
 
-/// Chip de filtro: inactivo (fondo blanco, borde suave, texto oscuro) /
-/// activo (verde brillante, texto blanco y glow). Con escala al tocar, ripple
-/// y transición de color de ~180 ms. Alto mínimo 44 px.
+
+
+
 class _FiltroChip extends StatefulWidget {
   final String label;
   final IconData? icono;
@@ -957,7 +957,7 @@ class _FiltroChipState extends State<_FiltroChip> {
   }
 }
 
-/// Chip de filtro aplicado con una "×" para quitarlo individualmente.
+
 class _FiltroActivo extends StatelessWidget {
   final String label;
   final VoidCallback onEliminar;
@@ -1037,7 +1037,7 @@ class _LimpiarTodoBoton extends StatelessWidget {
   }
 }
 
-// ─── Título del AppBar con la categoría abierta ───────────────────────────
+
 
 class _AppBarCategoria extends StatelessWidget {
   final RetoCategoria categoria;
@@ -1075,10 +1075,10 @@ class _AppBarCategoria extends StatelessWidget {
   }
 }
 
-// ─── Cards de retos ───────────────────────────────────────────────────────
 
-/// Anima la entrada de cada card (fade + pequeño translateY) cuando cambian
-/// los filtros (el Key cambia y la card se re-monta).
+
+
+
 class _EntranceCard extends StatelessWidget {
   final Widget child;
 
@@ -1297,7 +1297,7 @@ class _Tag extends StatelessWidget {
   }
 }
 
-// ─── Diálogo de aprobación de evidencia ───────────────────────────────────
+
 
 class _AprobacionDialog extends StatelessWidget {
   final List<AprobacionReciente> aprobaciones;
@@ -1442,11 +1442,11 @@ class _AprobacionTile extends StatelessWidget {
   }
 }
 
-// ─── Colores adaptativos de categoría ─────────────────────────────────────
 
-/// Color de acento de una categoría ajustado al tema: más oscuro en claro
-/// para contrastar sobre blanco y más vivo en oscuro para destacar sobre
-/// superficies oscuras.
+
+
+
+
 Color _acentoCategoria(RetoCategoria categoria, bool isDark) {
   final base = Color(categoria.lightColor);
   return isDark
@@ -1454,11 +1454,11 @@ Color _acentoCategoria(RetoCategoria categoria, bool isDark) {
       : Color.lerp(base, Colors.black, 0.22)!;
 }
 
-/// Color de letra/icono que contrasta sobre el color de la categoría.
+
 Color _sobreCategoria(Color base) =>
     base.computeLuminance() > 0.5 ? AppColors.textPrimary : Colors.white;
 
-// ─── Extensiones visuales de categoría ────────────────────────────────────
+
 
 extension _RetoCategoriaVisual on RetoCategoria {
   IconData get icono {
@@ -1480,7 +1480,7 @@ extension _RetoCategoriaVisual on RetoCategoria {
     }
   }
 
-  /// Nombre sin el emoji decorativo (Ej. "♻️ Reciclaje" → "Reciclaje").
+
   String get nombreLimpio {
     final partes = nombre.split(' ');
     return partes.length > 1 ? partes.skip(1).join(' ') : nombre;

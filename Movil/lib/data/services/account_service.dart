@@ -2,7 +2,7 @@ import '../../core/constants/api_constants.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_helper.dart';
 
-/// Operaciones de la propia cuenta: datos, contraseña y desactivación.
+
 class AccountService {
   final ApiClient _client;
 

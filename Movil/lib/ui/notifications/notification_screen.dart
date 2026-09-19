@@ -13,9 +13,9 @@ import '../widgets/error_widget.dart' as eco;
 import '../widgets/loading_widget.dart';
 import 'cubit/notification_cubit.dart';
 
-/// Pantalla de notificaciones como ruta independiente.
-/// Reutiliza la misma vista y el mismo cubit que la version incrustada
-/// en Muro Eco: no existe un sistema paralelo.
+
+
+
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
@@ -41,7 +41,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 }
 
-/// Vista de notificaciones incrustable (Muro Eco) con las mismas acciones.
+
 class MuroNotificacionesView extends StatefulWidget {
   final void Function(int publicacionId)? onAbrirPublicacion;
   final void Function(int usuarioId)? onAbrirPerfil;

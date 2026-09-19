@@ -29,7 +29,7 @@ namespace WebApi.Dto
         public bool Leida { get; set; }
         public DateTime Fecha { get; set; }
 
-        /// <summary>PUBLICACION | COMENTARIO | USUARIO | CONVERSACION</summary>
+
         public string? ReferenciaTipo { get; set; }
         public int? ReferenciaId { get; set; }
         public int? ActorUsuarioId { get; set; }

@@ -14,11 +14,11 @@ namespace WebApi.Dto
 
     public class CrearCompraRequestDto
     {
-        /// <summary>
-        /// Clave opcional para evitar compras duplicadas por doble clic o
-        /// reintentos. Si ya existe una compra con la misma clave para el
-        /// usuario, se devuelve la compra original.
-        /// </summary>
+
+
+
+
+
         [StringLength(120, ErrorMessage = "La clave de idempotencia no puede superar los 120 caracteres.")]
         public string? ClaveIdempotencia { get; set; }
 
@@ -31,9 +31,9 @@ namespace WebApi.Dto
     {
         public int CompraId { get; set; }
         public int UsuarioId { get; set; }
-        /// <summary>Total pagado en Monedas Eco.</summary>
+
         public int TotalMonedas { get; set; }
-        /// <summary>Saldo de Monedas Eco después de la compra.</summary>
+
         public int SaldoRestante { get; set; }
         public DateTime FechaCompra { get; set; }
         public string? ClaveIdempotencia { get; set; }

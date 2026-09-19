@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    /// <summary>
-    /// Obtiene metadatos (Open Graph) de un enlace externo para construir la
-    /// vista previa en el compositor de publicaciones.
-    /// </summary>
+
+
+
+
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
@@ -65,8 +65,8 @@ namespace WebApi.Controllers
             {
                 var cliente = _httpClientFactory.CreateClient();
                 cliente.Timeout = TimeSpan.FromSeconds(8);
-                // Varios sitios (YouTube, Teams, medios) bloquean agentes
-                // desconocidos; se usa un agente de navegador realista.
+
+
                 cliente.DefaultRequestHeaders.UserAgent.ParseAdd(
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
                     "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");

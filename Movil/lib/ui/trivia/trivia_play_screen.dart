@@ -8,9 +8,9 @@ import 'cubit/trivia_cubit.dart';
 import 'cubit/trivia_state.dart';
 
 class TriviaPlayScreen extends StatelessWidget {
-  /// Instancia del [TriviaCubit] de la partida. Se pasa explícitamente porque
-  /// el cubit global vive dentro del subtree de la ruta "home" y una ruta
-  /// pusheada (esta pantalla) NO lo puede resolver por sí sola.
+
+
+
   final TriviaCubit? cubit;
 
   const TriviaPlayScreen({super.key, this.cubit});

@@ -57,7 +57,7 @@ namespace WebApi.Controllers
             return Ok(new { total });
         }
 
-        /// <summary>Abre (o crea) la conversacion con otro usuario.</summary>
+
         [HttpPost]
         [ProducesResponseType(typeof(ConversacionResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

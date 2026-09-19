@@ -16,7 +16,7 @@ import 'widgets/post_card.dart';
 import 'widgets/post_card_skeleton.dart';
 import 'widgets/post_helpers.dart';
 
-/// Abre el perfil publico de un usuario.
+
 void abrirPerfilUsuario(BuildContext context, int usuarioId) {
   Navigator.of(context).push(
     MaterialPageRoute(
@@ -164,7 +164,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final sec = isDark ? AppColorsDark.textSecondary : AppColors.textSecondary;
 
-    // Mantiene el boton de seguir alineado con el estado global del muro.
+
     final siguiendoGlobal = context.select<CommunityCubit, bool>(
       (c) => c.state.siguiendoIds.contains(perfil.usuarioId),
     );

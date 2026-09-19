@@ -42,7 +42,7 @@ class RetoResponse extends Equatable {
   final DateTime? fechaFin;
   final String estado;
 
-  // Metadata extendida del catálogo (columnas adicionales del backend).
+
   final String? subcategoria;
   final String? tipo;
   final int? tiempoMin;
@@ -125,10 +125,10 @@ class RetoResponse extends Equatable {
     );
   }
 
-  /// Convierte la respuesta del backend al modelo de dominio del catálogo.
-  ///
-  /// Los campos JSON (materiales, consejos, etiquetas...) y las instrucciones
-  /// (unidas por salto de línea) se decodifican a sus contrapartes de Dart.
+
+
+
+
   Reto toReto() {
     final categoria =
         RetoCategoria.porId(categoriaId) ?? RetoCategoria.reciclaje;
@@ -239,9 +239,9 @@ class UsuarioRetoResponse extends Equatable {
       evidencia: json['evidencia']?.toString(),
       motivoRechazo: json['motivoRechazo']?.toString(),
       puntosObtenidos: json['puntosObtenidos'] ?? 0,
-      // El backend expone la recompensa del reto como
-      // `experienciaRecompensaReto`; `puntosReto` se mantiene como respaldo
-      // por compatibilidad.
+
+
+
       puntosReto:
           json['experienciaRecompensaReto'] ?? json['puntosReto'] ?? 0,
       fechaInicio:
@@ -302,15 +302,15 @@ class UsuarioRetoResponse extends Equatable {
   ];
 }
 
-/// Parte un texto en líneas no vacías (instrucciones almacenadas con \n).
+
 List<String> _lineas(String texto) => texto
     .split('\n')
     .map((l) => l.trim())
     .where((l) => l.isNotEmpty)
     .toList();
 
-/// Decodifica un JSON de lista de strings (consejos, advertencias, requisitos,
-/// etiquetas). Si el valor viene como texto plano, lo parte por comas.
+
+
 List<String> _listaDesdeJson(String? json) {
   if (json == null || json.isEmpty) return const [];
   try {
@@ -326,7 +326,7 @@ List<String> _listaDesdeJson(String? json) {
       .toList();
 }
 
-/// Decodifica el JSON de materiales: [{"nombre": "...", "cantidad": n}].
+
 List<RetoMaterial> _materialesDesdeJson(String? json) {
   if (json == null || json.isEmpty) return const [];
   try {

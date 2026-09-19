@@ -2,13 +2,13 @@ import 'package:flutter/foundation.dart';
 
 import '../config/env_config.dart';
 
-/// Reescribe las URLs de archivos subidos a la API (`/api/Imagenes/...`) para
-/// que apunten al host actual del backend.
-///
-/// Los archivos se guardan con la URL absoluta del host que atendió la subida
-/// (túnel de desarrollo, localhost, etc.). Cuando ese host cambia, las URLs
-/// antiguas quedan muertas; esta función las rescata conservando la ruta.
-/// Las URLs externas (imágenes de Internet) se dejan intactas.
+
+
+
+
+
+
+
 String? resolverUrlMedia(String? url) {
   if (url == null || url.trim().isEmpty) return null;
   final texto = url.trim();

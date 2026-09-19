@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_theme.dart';
 import '../cubit/community_cubit.dart';
 
-/// Boton de seguir reutilizable con estados Seguir / Siguiendo / Procesando.
+
 class FollowButton extends StatelessWidget {
   final bool siguiendo;
   final bool cargando;
@@ -68,7 +68,7 @@ class FollowButton extends StatelessWidget {
   }
 }
 
-/// Boton de seguir conectado al CommunityCubit (estado global del muro).
+
 class CommunityFollowButton extends StatelessWidget {
   final int usuarioId;
   final bool compacto;

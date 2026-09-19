@@ -9,16 +9,16 @@ using WebApi.Modelo;
 
 namespace WebApi.Implementacion
 {
-    /// <summary>
-    /// Servicio de IA del soporte. Usa un proveedor compatible con la API de
-    /// OpenAI Chat Completions (texto + visión) configurado en el servidor.
-    ///
-    /// Seguridad: la clave se lee de Ia:ApiKey o la variable de entorno
-    /// Ia__ApiKey. Nunca se devuelve al cliente ni se registra en logs.
-    ///
-    /// Si no hay proveedor configurado o la llamada falla, se responde con las
-    /// reglas deterministas (ReglasSoporte) para que el módulo siga operativo.
-    /// </summary>
+
+
+
+
+
+
+
+
+
+
     public class ServicioIA : IServicioIA
     {
         private readonly IConfiguration _config;
@@ -59,7 +59,6 @@ namespace WebApi.Implementacion
 
         public bool Configurada => _apiKey.Length > 0;
 
-        /* ─── Chat de soporte ──────────────────────────────────────────────── */
 
         public async Task<ReglasSoporteDecision> AnalizarSoporteAsync(ContextoSoporteIA contexto)
         {
@@ -71,7 +70,7 @@ namespace WebApi.Implementacion
                 var prompt = ConstruirPromptSoporte(contexto);
                 var partes = new List<object> { new { type = "text", text = prompt } };
 
-                // Adjuntos del último mensaje del usuario para análisis visual.
+
                 var adjuntosRecientes = contexto.Historial
                     .Where(m => m.Remitente == "USUARIO")
                     .TakeLast(1)
@@ -193,10 +192,10 @@ namespace WebApi.Implementacion
             };
         }
 
-        /// <summary>
-        /// El administrador conserva la decision final. La IA nunca resuelve
-        /// casos sensibles y solo puede resolver si el usuario confirmo.
-        /// </summary>
+
+
+
+
         private static ReglasSoporteDecision AsegurarDecisionSegura(ReglasSoporteDecision decision, ContextoSoporteIA contexto)
         {
             var textoUsuario = string.Join(" ", contexto.Historial
@@ -270,7 +269,6 @@ namespace WebApi.Implementacion
             return ClavesConfirmacion.Any(k => t.Contains(k));
         }
 
-        /* ─── Evidencia de retos ───────────────────────────────────────────── */
 
         public async Task<EvaluacionIAEvidencia> EvaluarEvidenciaAsync(ContextoEvidenciaIA contexto)
         {
@@ -367,7 +365,7 @@ namespace WebApi.Implementacion
             };
         }
 
-        /// <summary>Reglas deterministas cuando no hay IA o falla. Nunca aprueba sola.</summary>
+
         private static EvaluacionIAEvidencia EvaluacionPorReglas(ContextoEvidenciaIA contexto)
         {
             var tipo = (contexto.RetoTipoEvidencia ?? string.Empty).Trim().ToUpperInvariant();
@@ -396,7 +394,7 @@ namespace WebApi.Implementacion
             if (pideCantidad && !texto.ToLowerInvariant().Contains("cantidad"))
                 faltantes.Add("Cantidad alcanzada");
 
-            // Evita duplicados manteniendo el orden.
+
             faltantes = faltantes.Distinct().ToList();
 
             var cumple = faltantes.Count == 0;
@@ -421,7 +419,6 @@ namespace WebApi.Implementacion
             };
         }
 
-        /* ─── Reportes de contenido ────────────────────────────────────────── */
 
         public async Task<AnalisisIAReporte> AnalizarReporteAsync(ContextoReporteIA contexto)
         {
@@ -523,7 +520,6 @@ namespace WebApi.Implementacion
             };
         }
 
-        /* ─── Llamada al proveedor ─────────────────────────────────────────── */
 
         private async Task<string> LlamarAsync(string systemPrompt, List<object> partesUsuario, int maxTokens)
         {
@@ -557,8 +553,8 @@ namespace WebApi.Implementacion
 
             if (!respuesta.IsSuccessStatusCode && conFormatoJson)
             {
-                // Algunos proveedores compatibles no admiten response_format:
-                // se reintenta una vez sin ese campo.
+
+
                 cuerpo.Remove("response_format");
                 return await EnviarAsync(cuerpo, conFormatoJson: false);
             }
@@ -580,20 +576,19 @@ namespace WebApi.Implementacion
             var mensaje = choices[0].GetProperty("message");
             var contenido = mensaje.GetProperty("content").GetString() ?? string.Empty;
 
-            // El modelo puede devolver texto alrededor del JSON; se extrae el objeto.
+
             var inicio = contenido.IndexOf('{');
             var fin = contenido.LastIndexOf('}');
             if (inicio >= 0 && fin > inicio) contenido = contenido[inicio..(fin + 1)];
             return contenido;
         }
 
-        /* ─── Preparación de imágenes ──────────────────────────────────────── */
 
-        /// <summary>
-        /// Convierte una URL de archivo del backend en data URL legible por el
-        /// modelo (evita que un tercero tenga que descargarla) cuando el archivo
-        /// vive en wwwroot. Si no se puede, devuelve la URL original.
-        /// </summary>
+
+
+
+
+
         private string? PrepararImagenParaModelo(string url)
         {
             if (string.IsNullOrWhiteSpace(url)) return url;
@@ -631,7 +626,7 @@ namespace WebApi.Implementacion
             return texto.Contains(".mp4") || texto.Contains(".mov") || texto.Contains(".webm") || texto.Contains(".m4v");
         }
 
-        /// <summary>Localiza wwwroot sin depender del contexto web (capa de servicios).</summary>
+
         private static string RaizWeb()
         {
             var candidatas = new[]
@@ -655,7 +650,6 @@ namespace WebApi.Implementacion
             _ => "application/octet-stream"
         };
 
-        /* ─── Utilidades de lectura/saneado ────────────────────────────────── */
 
         private static string LeerTexto(JsonElement raiz, params string[] claves)
         {
@@ -726,7 +720,7 @@ namespace WebApi.Implementacion
         private static string Recortar(string texto, int maximo)
             => texto.Length <= maximo ? texto : texto[..maximo];
 
-        /// <summary>Elimina emojis y separadores invisibles de los textos de la IA.</summary>
+
         public static string SinEmojis(string? texto)
         {
             if (string.IsNullOrEmpty(texto)) return string.Empty;

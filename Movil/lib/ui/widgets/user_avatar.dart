@@ -7,11 +7,11 @@ import '../auth/cubit/auth_cubit.dart';
 import '../auth/cubit/auth_state.dart';
 import '../profile/cubit/profile_cubit.dart';
 
-/// Avatar unico y consistente para toda la aplicacion.
-///
-/// - Si el usuario tiene fotografia real, siempre se muestra esa imagen.
-/// - Si no la tiene, se usa un placeholder determinista basado en su nombre
-///   (nunca cambia aleatoriamente entre pantallas).
+
+
+
+
+
 class UserAvatar extends StatelessWidget {
   final String nombre;
   final String? fotoUrl;
@@ -108,8 +108,8 @@ class UserAvatar extends StatelessWidget {
   }
 }
 
-/// Avatar del usuario autenticado. Lee la foto real desde ProfileCubit
-/// (y cae al nombre de AuthCubit) para que sea identica en toda la app.
+
+
 class CurrentUserAvatar extends StatelessWidget {
   final double radius;
   final VoidCallback? onTap;
@@ -133,7 +133,7 @@ class CurrentUserAvatar extends StatelessWidget {
         }
       }
     } catch (_) {
-      // ProfileCubit no esta disponible en este contexto (p. ej. dialogos).
+
     }
 
     if (nombre.isEmpty) nombre = 'Eco Héroe';
@@ -147,7 +147,7 @@ class CurrentUserAvatar extends StatelessWidget {
   }
 }
 
-/// Utilidad de estilo para el chip de estado (insignia verificada).
+
 class VerifiedDot extends StatelessWidget {
   final double size;
 

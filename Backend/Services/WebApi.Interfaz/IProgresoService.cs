@@ -7,18 +7,18 @@ namespace WebApi.Interfaz
     {
         Task<Progreso?> ObtenerProgresoDeUsuarioAsync(int usuarioId);
 
-        /// <summary>Crea la fila de progreso del usuario si no existe.</summary>
+
         Task<Progreso> ObtenerOCrearProgresoAsync(int usuarioId);
 
         Task<Progreso> CrearProgresoAsync(Progreso progreso);
         Task<bool> ActualizarProgresoAsync(Progreso progreso);
         Task<IEnumerable<Progreso>> ObtenerRankingAsync(int cantidad);
 
-        /// <summary>
-        /// Suma experiencia (XP) y recalcula nivel/porcentaje en la misma
-        /// operación. Cantidad debe ser mayor a cero. Acepta conexión/transacción
-        /// para participar de operaciones compuestas (recompensas).
-        /// </summary>
+
+
+
+
+
         Task<Progreso> AgregarExperienciaAsync(
             int usuarioId,
             int cantidad,

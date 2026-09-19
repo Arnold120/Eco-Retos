@@ -10,12 +10,12 @@ import '../services/gamification_service.dart';
 import '../services/reto_service.dart';
 import 'reto_progreso_local.dart';
 
-/// Repositorio de retos: único punto donde se fusiona el catálogo
-/// (contenido) con el progreso local persistido y el backend.
-///
-/// Reglas de oro:
-/// - La UI nunca consume `Reto` solo: siempre consume `RetoProgreso`.
-/// - El completado es transaccional (anti doble recompensa).
+
+
+
+
+
+
 class RetoRepository {
   final int usuarioId;
   final RetoService _retoService;
@@ -37,9 +37,9 @@ class RetoRepository {
        _insignias = insigniaService,
        _local = local ?? RetoProgresoLocal();
 
-  /// Carga el catálogo de retos desde el backend (una sola vez, compartido
-  /// entre llamadas concurrentes). Si no hay conexión, el catálogo queda
-  /// vacío o con lo ya cargado y se reintenta en la próxima carga.
+
+
+
   static Future<void> cargarCatalogo(RetoService retoService) {
     return RetoCatalogo.cargar(() async {
       final respuestas = await retoService.getRetos();
@@ -52,17 +52,17 @@ class RetoRepository {
     });
   }
 
-  /// Estados del servidor por retoBackendId (cuando el reto del catálogo
-  /// está vinculado a uno del backend). NO es la fuente primaria.
+
+
   Map<int, UsuarioRetoResponse> _backendRetos = {};
   bool _backendCargado = false;
 
   static const _idsBackendKey = 'reto_backend_ids_v1';
   static const _recompensasOkKey = 'reto_recompensa_ok_v1';
 
-  /// Retos del catálogo cuya recompensa ya fue reclamada al backend.
-  /// Evita reintentos innecesarios en cada carga (el servidor, además, es
-  /// idempotente por clave).
+
+
+
   Set<String> _recompensasOk = {};
   bool _recompensasOkCargadas = false;
 
@@ -88,8 +88,8 @@ class RetoRepository {
     }
   }
 
-  /// Traducción id de catálogo → RetoId del backend (auto-registrado).
-  /// Persistida para que la app funcione offline y no re-cree retos.
+
+
   Map<String, int> _backendIdsPorCodigo = {};
   bool _idsBackendCargados = false;
 
@@ -122,8 +122,8 @@ class RetoRepository {
     } catch (_) {}
   }
 
-  /// RetoId conocido para un reto del catálogo, sin hacer red: el fijado en
-  /// el catálogo o, si no, el auto-registrado por Codigo (cache persistida).
+
+
   int? _idBackendDeReto(Reto reto) {
     final fijo = reto.retoBackendId;
     if (fijo != null) return fijo;
@@ -139,8 +139,8 @@ class RetoRepository {
     };
   }
 
-  /// Retos cuya evidencia fue APROBADA por un admin desde la última carga:
-  /// la UI los celebra (la recompensa ya se otorgó aquí mismo).
+
+
   final List<AprobacionReciente> aprobacionesRecientes = [];
 
   Future<void> _cargarBackend() async {
@@ -151,9 +151,9 @@ class RetoRepository {
         for (final ur in misRetos)
           if (ur.retoId != 0) ur.retoId: ur,
       };
-      // Reconstruye el vínculo catálogo ↔ backend por Codigo: aunque se
-      // pierda la cache local (reinstalación u otro dispositivo), los retos
-      // completados en el servidor vuelven a mostrarse en la app.
+
+
+
       var cambios = false;
       for (final ur in misRetos) {
         final codigo = ur.codigo;
@@ -165,24 +165,24 @@ class RetoRepository {
       }
       if (cambios) await _guardarIdsBackend();
     } catch (_) {
-      // Offline o backend inaccesible: se usa exclusivamente el progreso local.
+
     } finally {
       _backendCargado = true;
     }
   }
 
-  /// Re-intenta la sincronización (p. ej. tras reconexión o al reabrir).
+
   Future<void> resincronizarBackend() async {
     _backendCargado = false;
     _backendRetos = {};
     await _cargarBackend();
   }
 
-  /// Todo el catálogo con el estado/progreso de cada reto.
-  ///
-  /// Además reconcilia con el backend: si un admin aprobó la evidencia de
-  /// un reto que aquí estaba "pendiente de revisión", este método lo
-  /// completa y otorga la recompensa (XP + ECO + logros) una sola vez.
+
+
+
+
+
   Future<List<RetoProgreso>> obtener() async {
     await RetoRepository.cargarCatalogo(_retoService);
     await _cargarIdsBackend();
@@ -195,9 +195,9 @@ class RetoRepository {
       final reconciliado = await _reconciliar(reto, local);
       lista.add(reconciliado);
 
-      // Solo los retos que el usuario realmente "hizo" se suben al backend
-      // (los 1000 del catálogo nunca se envían en masa). Los que ya existen
-      // por Codigo se reutilizan; los demás se crean. Todo en UN solo viaje.
+
+
+
       if (_backendCargado && _requiereSincronizacion(reto, reconciliado)) {
         porSincronizar.add(reconciliado);
       }
@@ -208,9 +208,9 @@ class RetoRepository {
     return lista;
   }
 
-  /// Un reto necesita sincronización solo si el usuario lo completó o lo
-  /// envió a revisión y el backend aún no refleja ese estado (ni el reto
-  /// ni su participación existen, o están desactualizados).
+
+
+
   bool _requiereSincronizacion(Reto reto, RetoProgreso progreso) {
     if (progreso.estado != RetoEstado.completado &&
         progreso.estado != RetoEstado.pendienteRevision) {
@@ -225,9 +225,9 @@ class RetoRepository {
         : existente.estado != 'EN_REVISION';
   }
 
-  /// Copia los retos "hechos" al backend en un solo lote (verificado/existente
-  /// o creado, y asignado a este usuario). Best-effort: si no hay conexión el
-  /// estado queda local y se reintenta al abrir.
+
+
+
   Future<void> _sincronizarLoteBackend(List<RetoProgreso> progresos) async {
     final items = <Map<String, dynamic>>[];
     for (final p in progresos) {
@@ -241,7 +241,7 @@ class RetoRepository {
             : p.reto.descripcion,
         'ExperienciaRecompensa': p.reto.xp,
         'MonedasRecompensa': p.reto.monedas,
-        // Compatibilidad con backend anterior.
+
         'Puntos': p.reto.xp,
         'Dificultad': _dificultadBackend(p.reto.dificultad),
         'Estado': p.estado == RetoEstado.completado
@@ -265,7 +265,7 @@ class RetoRepository {
       }
       await _guardarIdsBackend();
     } catch (_) {
-      // Sin conexión: los estados quedan locales y se reintentan en la próxima.
+
     }
   }
 
@@ -274,8 +274,8 @@ class RetoRepository {
     final backend = backendId == null ? null : _backendRetos[backendId];
     if (backend == null) return local;
 
-    // ✅ El reto ya está completado en el servidor (aprobado por un admin o
-    // completado desde otro dispositivo): reflejarlo también en local.
+
+
     if (backend.estado == 'COMPLETADO' &&
         local.estado != RetoEstado.completado) {
       final aprobadoPorAdmin =
@@ -292,16 +292,16 @@ class RetoRepository {
       );
       await _local.guardar(completo);
       if (aprobadoPorAdmin) {
-        // La recompensa se paga una sola vez: tras esto el estado local ya es
-        // `completado` y esta rama no volverá a ejecutarse.
+
+
         final logros = await _otorgarRecompensa(reto);
         aprobacionesRecientes.add(AprobacionReciente(completo, logros));
       }
       return completo;
     }
 
-    // ❌ El admin rechazó la evidencia: informar el motivo y liberar el
-    // reto para que el estudiante pueda reenviarla.
+
+
     if (backend.estado == 'RECHAZADO' && local.estado != RetoEstado.rechazado) {
       final rechazado = local.copyWith(
         estado: RetoEstado.rechazado,
@@ -344,7 +344,7 @@ class RetoRepository {
     };
   }
 
-  /// Comienza un reto: pasa a "En progreso" y persiste.
+
   Future<RetoProgreso> comenzar(Reto reto) async {
     final anterior = await _local.progresoDe(reto);
     if (anterior != null &&
@@ -362,7 +362,7 @@ class RetoRepository {
     return progreso;
   }
 
-  /// Marca un paso como completado.
+
   Future<RetoProgreso> avanzarPaso(Reto reto, int pasoCompletado) async {
     final local =
         await _local.progresoDe(reto) ??
@@ -380,7 +380,7 @@ class RetoRepository {
     return nuevo;
   }
 
-  /// Registra evidencia y pasa el reto a "Pendiente de revisión".
+
   Future<RetoProgreso> enviarEvidencia(Reto reto, String evidencia) async {
     final local =
         await _local.progresoDe(reto) ??
@@ -400,10 +400,10 @@ class RetoRepository {
     return nuevo;
   }
 
-  /// Completa un reto de forma TRANSACCIONAL.
-  ///
-  /// Devuelve [CompletadoNuevo] la primera vez (recompensa otorgada) o
-  /// [CompletoYa] si ya estaba completado (NO se vuelve a otorgar XP).
+
+
+
+
   Future<CompletarResultado> completar(Reto reto) async {
     final previo = await _local.progresoDe(reto);
     if (previo?.estado == RetoEstado.completado) {
@@ -431,20 +431,20 @@ class RetoRepository {
       } catch (_) {}
     }
 
-    // Recompensa real en la economía del usuario (XP + monedas + contador).
-    // Best-effort: un fallo aquí no bloquea la finalización del reto.
+
+
     final logros = await _otorgarRecompensa(reto);
 
     return CompletadoNuevo(completo, logros: logros);
   }
 
-  /// Otorga la recompensa económica del reto y, de paso, evalúa y otorga
-  /// las insignias/logros por retos completados.
-  ///
-  /// La XP y las Monedas Eco las calcula el backend desde la configuración
-  /// del reto. Antes de reclamar se asegura de que el reto y la participación
-  /// existan y estén en COMPLETADO (esto también actualiza en el backend la
-  /// recompensa del reto con los valores del catálogo local).
+
+
+
+
+
+
+
   Future<List<InsigniaResponse>> _otorgarRecompensa(Reto reto) async {
     try {
       var backendId = _idBackendDeReto(reto);
@@ -453,8 +453,8 @@ class RetoRepository {
         _backendCargado = false;
         if (respuesta.retoId != 0) backendId = respuesta.retoId;
       } catch (_) {
-        // Sin conexión: el reclamo fallará y se reintentará al reconciliar
-        // la próxima aprobación/carga (el servidor es idempotente).
+
+
       }
       if (backendId != null) {
         await _monedero.reclamarRecompensa(
@@ -468,16 +468,16 @@ class RetoRepository {
       }
       await _progreso.incrementarRetos(usuarioId);
     } catch (_) {
-      // Un fallo aquí no rompe el completado.
+
     }
     return _otorgarInsigniasPorRetos();
   }
 
-  /// Insignias de progreso por retos completados.
-  ///
-  /// Consulta el catálogo real de insignias del backend, deduce cuántos
-  /// retos exige cada una (p. ej. "Completar 5 retos") y otorga todas las
-  /// que el usuario ya haya cumplido y aún no tenga.
+
+
+
+
+
   Future<List<InsigniaResponse>> _otorgarInsigniasPorRetos() async {
     final otorgadas = <InsigniaResponse>[];
     try {
@@ -493,8 +493,8 @@ class RetoRepository {
         if (requerido == null || total < requerido) continue;
         await _insignias.otorgarInsignia(usuarioId, ins.insigniaId);
         await _progreso.incrementarInsignias(usuarioId);
-        // La recompensa de la insignia (Monedas Eco) la acredita el backend
-        // una sola vez por insignia.
+
+
         try {
           await _monedero.reclamarRecompensa(
             tipo: 'INSIGNIA',
@@ -506,13 +506,13 @@ class RetoRepository {
         yaObtuvo.add(ins.insigniaId);
       }
     } catch (_) {
-      // Sin conexión o catálogo vacío: los logros se evalúan la próxima vez.
+
     }
     return otorgadas;
   }
 
-  /// Deduce el número de retos que exige una insignia a partir de su
-  /// requisito/nombre/descripción ("Completar 5 retos", "Logra 10 retos"...).
+
+
   int? _requisitoRetos(InsigniaResponse ins) {
     final texto = '${ins.requisito} ${ins.nombreInsignia} ${ins.descripcion}'
         .toLowerCase();
@@ -533,17 +533,17 @@ class RetoRepository {
   }
 
   void _sincronizarBackend(Reto reto, RetoProgreso progreso) {
-    // Best-effort: jamás bloquea la interacción del usuario.
+
     _asignarRetoBackend(reto, 'INICIADO').then<void>(
       (_) {},
       onError: (Object error, StackTrace stackTrace) {},
     );
   }
 
-  /// Verifica (o crea) el reto en el backend y asegura la participación del
-  /// usuario en UNA sola llamada, aplicando el estado solicitado. Reemplaza
-  /// la secuencia anterior de 2-4 llamadas (registrar + consultar + participar
-  /// + completar) por un solo viaje; el cache de ids se actualiza al vuelo.
+
+
+
+
   Future<UsuarioRetoResponse> _asignarRetoBackend(
     Reto reto,
     String estado, {
@@ -574,21 +574,21 @@ class RetoRepository {
   }
 }
 
-/// Resultado del completado: distingue recompensa otorgada vs duplicado.
+
 sealed class CompletarResultado {
   final RetoProgreso progreso;
   const CompletarResultado(this.progreso);
 }
 
-/// Recompensa otorgada correctamente (primera vez).
+
 class CompletadoNuevo extends CompletarResultado {
-  /// Insignias/logros desbloqueados al completar este reto.
+
   final List<InsigniaResponse> logros;
 
   const CompletadoNuevo(super.progreso, {this.logros = const []});
 }
 
-/// El reto ya había sido completado: NO se vuelve a otorgar recompensa.
+
 class CompletoYa extends CompletarResultado {
   const CompletoYa(super.progreso);
 }

@@ -46,7 +46,7 @@ namespace WebApi.Implementacion
             return lista;
         }
 
-        /// <summary>Evidencias enviadas por estudiantes y aún no decididas por un admin.</summary>
+
         public async Task<IEnumerable<UsuarioReto>> ObtenerEvidenciasPendientesAsync()
         {
             var lista = new List<UsuarioReto>();
@@ -62,7 +62,7 @@ namespace WebApi.Implementacion
             return lista;
         }
 
-        /// <summary>Todas las evidencias enviadas por estudiantes (cualquier estado).</summary>
+
         public async Task<IEnumerable<UsuarioReto>> ObtenerEvidenciasAsync()
         {
             var lista = new List<UsuarioReto>();
@@ -173,7 +173,7 @@ namespace WebApi.Implementacion
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        /// <summary>Acepta la evidencia: el reto queda COMPLETADO con sus puntos.</summary>
+
         public async Task<bool> AprobarEvidenciaAsync(int usuarioRetoId, int puntosObtenidos)
         {
             using var connection = new SqlConnection(_connectionString);
@@ -186,7 +186,7 @@ namespace WebApi.Implementacion
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        /// <summary>Rechaza la evidencia: el estudiante deberá volver a hacerla.</summary>
+
         public async Task<bool> RechazarEvidenciaAsync(int usuarioRetoId, string motivo)
         {
             using var connection = new SqlConnection(_connectionString);
@@ -211,12 +211,12 @@ namespace WebApi.Implementacion
             return await command.ExecuteNonQueryAsync() > 0;
         }
 
-        /// <summary>
-        /// Sincronizacion por lotes en UNA conexion y UNA transaccion.
-        /// Por cada item: verifica (o crea) el reto por Codigo, asegura la
-        /// participacion del usuario y aplica el estado final. Devuelve los
-        /// datos ya resueltos para que el controlador no re-consulte por item.
-        /// </summary>
+
+
+
+
+
+
         public async Task<IEnumerable<UsuarioRetoSincronizado>> SincronizarParticipacionesAsync(
             int usuarioId,
             IEnumerable<RetoSincronizacion> participaciones)
@@ -288,8 +288,8 @@ namespace WebApi.Implementacion
 
             if (reto is null) return null;
 
-            // Mantiene las recompensas alineadas con el catálogo local: los
-            // retos creados antes del Monedero quedaron con 0 monedas.
+
+
             if (reto.ExperienciaRecompensa != item.ExperienciaRecompensa ||
                 reto.MonedasRecompensa != item.MonedasRecompensa)
             {
@@ -384,7 +384,7 @@ namespace WebApi.Implementacion
             };
         }
 
-        /// <summary>Refleja en la DB el estado final que trae el item sincronizado.</summary>
+
         private async Task AplicarEstadoSincronizadoAsync(
             SqlConnection connection,
             SqlTransaction transaction,

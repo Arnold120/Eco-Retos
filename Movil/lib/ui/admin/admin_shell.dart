@@ -10,9 +10,9 @@ import '../auth/cubit/auth_state.dart';
 import 'admin_home_screen.dart';
 import 'cubit/admin_panel_cubit.dart';
 
-/// Shell del administrador: interfaz totalmente separada de la del
-/// estudiante. Si el rol es ADMIN se muestra esta pantalla al iniciar
-/// sesión; el estudiante nunca la ve (y viceversa).
+
+
+
 class AdminShell extends StatefulWidget {
   const AdminShell({super.key});
 

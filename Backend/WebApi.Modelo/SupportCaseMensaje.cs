@@ -1,6 +1,6 @@
 namespace WebApi.Modelo
 {
-    /// <summary>Mensaje de un caso de soporte (USUARIO, IA o ADMIN).</summary>
+
     public class SupportCaseMensaje
     {
         public int SupportCaseMensajeId { get; set; }

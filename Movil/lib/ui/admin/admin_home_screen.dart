@@ -10,8 +10,8 @@ import 'cubit/admin_evidence_cubit.dart';
 import 'cubit/admin_panel_cubit.dart';
 import 'cubit/admin_panel_state.dart';
 
-/// Página principal del panel de administración: métricas y acceso a los
-/// módulos de gestión. Interfaz completamente separada del lado estudiante.
+
+
 class AdminHomeScreen extends StatefulWidget {
   final int usuarioIdActual;
   final String nombreAdmin;

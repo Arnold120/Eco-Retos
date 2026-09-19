@@ -6,10 +6,10 @@ import '../../core/constants/api_constants.dart';
 import '../../core/network/api_client.dart';
 import '../../core/network/api_exception.dart';
 
-/// Resultado de una subida de multimedia.
+
 class MediaSubida {
   final String url;
-  final String tipo; // imagen | video
+  final String tipo; 
 
   const MediaSubida({required this.url, required this.tipo});
 }
@@ -45,9 +45,9 @@ class ImagenService {
   static bool esVideo(String path) =>
       extensionesVideo.contains(extensionDe(path));
 
-  /// Sube una imagen o un video. [onProgress] recibe 0.0 – 1.0.
-  /// La subida va por streaming (MultipartFile.fromFile) y no carga el
-  /// archivo completo en memoria.
+
+
+
   Future<MediaSubida> subirMedia(
     File archivo, {
     void Function(double progreso)? onProgress,
@@ -92,7 +92,7 @@ class ImagenService {
       onSendProgress: (enviados, total) {
         if (total > 0) onProgress?.call(enviados / total);
       },
-      // Los videos pueden tardar varios minutos en conexiones lentas.
+
       options: Options(
         sendTimeout: const Duration(minutes: 10),
         receiveTimeout: const Duration(minutes: 10),

@@ -11,7 +11,6 @@ namespace WebApi.Modelo
         public string Estado { get; set; } = "PENDIENTE";
         public DateTime Fecha { get; set; }
 
-        /* Resolución administrativa (columnas agregadas por Soporte_Mejoras.sql) */
         public string? Accion { get; set; }
         public string? MotivoResolucion { get; set; }
         public int? AdminUsuarioId { get; set; }

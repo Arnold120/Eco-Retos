@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ProgresoResponse extends Equatable {
   final int progresoId;
   final int usuarioId;
-  /// Experiencia (XP) total. Es independiente de las Monedas Eco.
+
   final int experiencia;
   final int retosCompletados;
   final int triviasCompletadas;
@@ -58,7 +58,7 @@ class ProgresoResponse extends Equatable {
       ];
 }
 
-/// Saldo único de Monedas Eco + resumen de XP/nivel del usuario autenticado.
+
 class SaldoMonederoResponse extends Equatable {
   final int saldo;
   final int experiencia;
@@ -98,7 +98,7 @@ class SaldoMonederoResponse extends Equatable {
       ];
 }
 
-/// Resultado de reclamar una recompensa en el backend (XP y/o monedas).
+
 class RecompensaResponse extends Equatable {
   final bool duplicado;
   final int experienciaGanada;
@@ -142,7 +142,7 @@ class RecompensaResponse extends Equatable {
       ];
 }
 
-/// Resultado de un gasto de Monedas Eco.
+
 class GastoMonedasResponse extends Equatable {
   final int saldo;
   final int cantidad;
@@ -211,7 +211,7 @@ class InsigniaResponse extends Equatable {
   final String descripcion;
   final String requisito;
   final String? imagen;
-  /// Monedas Eco que se acreditan al obtener la insignia.
+
   final int monedasRecompensa;
 
   const InsigniaResponse({
@@ -282,13 +282,13 @@ class UsuarioInsigniaResponse extends Equatable {
       ];
 }
 
-/// Movimiento de Monedas Eco (auditoría del monedero).
+
 class MovimientoMonedaResponse extends Equatable {
   final int historialMonedaId;
   final int usuarioId;
   final int? categoriaId;
   final String nombreCategoria;
-  /// Positivo = ganancia, negativo = gasto.
+
   final int cantidad;
   final String tipo;
   final String descripcion;
@@ -338,7 +338,7 @@ class MovimientoMonedaResponse extends Equatable {
       ];
 }
 
-/// Monedas ganadas por categoría oficial (estadísticas).
+
 class CategoriaMonedas extends Equatable {
   final int categoriaId;
   final String nombreCategoria;
@@ -406,7 +406,7 @@ class RankingItem extends Equatable {
   List<Object?> get props => [position, nombreUsuario, puntos, nivel];
 }
 
-/// Plant rarity levels
+
 enum PlantaRareza {
   comun,
   pocoComun,
@@ -415,20 +415,20 @@ enum PlantaRareza {
   legendaria,
 }
 
-/// Extension methods for PlantaRareza
+
 extension PlantaRarezaExtension on PlantaRareza {
   Color get rarezaColor {
     switch (this) {
       case PlantaRareza.comun:
-        return const Color(0xFF9E9E9E); // Gris
+        return const Color(0xFF9E9E9E); 
       case PlantaRareza.pocoComun:
-        return const Color(0xFF4CAF50); // Verde
+        return const Color(0xFF4CAF50); 
       case PlantaRareza.rara:
-        return const Color(0xFF2196F3); // Azul
+        return const Color(0xFF2196F3); 
       case PlantaRareza.epica:
-        return const Color(0xFF9C27B0); // Púrpura
+        return const Color(0xFF9C27B0); 
       case PlantaRareza.legendaria:
-        return const Color(0xFFFFC107); // Dorado
+        return const Color(0xFFFFC107); 
     }
   }
 
@@ -448,7 +448,7 @@ extension PlantaRarezaExtension on PlantaRareza {
   }
 }
 
-/// Plant evolution stages
+
 enum PlantaEtapa {
   semilla,
   brote,
@@ -457,7 +457,7 @@ enum PlantaEtapa {
   arbol,
 }
 
-/// Plant model for the garden gamification
+
 class PlantaJardin extends Equatable {
   final String id;
   final String nombre;
@@ -469,11 +469,11 @@ class PlantaJardin extends Equatable {
   final int nivelRequerido;
   final int jardinNivelRequerido;
   final String descripcion;
-  final List<String> cuidadosRequeridos; // riego, sol, abono, etc.
+  final List<String> cuidadosRequeridos; 
   final int tiempoCrecimientoHoras;
   final bool desbloqueada;
   final DateTime? fechaDesbloqueo;
-  final int progresoCrecimiento; // 0-100
+  final int progresoCrecimiento; 
 
   const PlantaJardin({
     required this.id,
@@ -547,15 +547,15 @@ class PlantaJardin extends Equatable {
   Color get rarezaColor {
     switch (rareza) {
       case PlantaRareza.comun:
-        return const Color(0xFF9E9E9E); // Gris
+        return const Color(0xFF9E9E9E); 
       case PlantaRareza.pocoComun:
-        return const Color(0xFF4CAF50); // Verde
+        return const Color(0xFF4CAF50); 
       case PlantaRareza.rara:
-        return const Color(0xFF2196F3); // Azul
+        return const Color(0xFF2196F3); 
       case PlantaRareza.epica:
-        return const Color(0xFF9C27B0); // Púrpura
+        return const Color(0xFF9C27B0); 
       case PlantaRareza.legendaria:
-        return const Color(0xFFFFC107); // Dorado
+        return const Color(0xFFFFC107); 
     }
   }
 
@@ -645,10 +645,10 @@ class PlantaJardin extends Equatable {
       ];
 }
 
-/// Catalogo de plantas predefinidas
+
 class CatalogoPlantas {
   static List<PlantaJardin> get catalogoCompleto => [
-    // Plantas comunes
+
     PlantaJardin(
       id: 'planta_comun_1',
       nombre: 'Helecho común',
@@ -677,7 +677,7 @@ class CatalogoPlantas {
       cuidadosRequeridos: ['sol', 'poco_riego'],
       tiempoCrecimientoHoras: 24,
     ),
-    // Plantas poco comunes
+
     PlantaJardin(
       id: 'planta_poco_comun_1',
       nombre: 'Orquídea morada',
@@ -706,7 +706,7 @@ class CatalogoPlantas {
       cuidadosRequeridos: ['sol', 'riego_moderado', 'poda'],
       tiempoCrecimientoHoras: 72,
     ),
-    // Plantas raras
+
     PlantaJardin(
       id: 'planta_rara_1',
       nombre: 'Rosa azul',
@@ -721,7 +721,7 @@ class CatalogoPlantas {
       cuidadosRequeridos: ['riego_puro', 'luz_lunar', 'abono_especial'],
       tiempoCrecimientoHoras: 120,
     ),
-    // Plantas épicas
+
     PlantaJardin(
       id: 'planta_epica_1',
       nombre: 'Árbol de la vida',
@@ -736,7 +736,7 @@ class CatalogoPlantas {
       cuidadosRequeridos: ['agua_vida', 'luz_solar', 'canto_verde'],
       tiempoCrecimientoHoras: 240,
     ),
-    // Plantas legendarias
+
     PlantaJardin(
       id: 'planta_legendaria_1',
       nombre: 'Flor del Edén',

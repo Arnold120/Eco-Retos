@@ -7,10 +7,10 @@ import '../../../data/models/garden/plant_growth.dart';
 import '../../../data/repositories/garden_repository.dart';
 import 'plant_art.dart';
 
-/// Cantero visual del jardín: una escena viva (cielo, colinas, luz y
-/// partículas) con los espacios ocupados por plantas animadas y los libres
-/// para sembrar. Usa un único controlador de animación para toda la escena,
-/// así el costo en GPU se mantiene bajo.
+
+
+
+
 class GardenBed extends StatefulWidget {
   final List<PlantGrowth> plantas;
   final int maxSlots;
@@ -136,9 +136,9 @@ class _GardenBedState extends State<GardenBed>
   }
 }
 
-// -----------------------------------------------------------------------------
-// Escena de fondo (cielo, colinas, luz y partículas)
-// -----------------------------------------------------------------------------
+
+
+
 
 class _EscenaPainter extends CustomPainter {
   final Animation<double> animacion;
@@ -168,7 +168,7 @@ class _EscenaPainter extends CustomPainter {
         ).createShader(rect),
     );
 
-    // Sol/luna con resplandor tenue.
+
     final astro = Offset(w * 0.88, h * 0.07);
     final ambito = h * 0.14;
     canvas.drawCircle(
@@ -191,7 +191,7 @@ class _EscenaPainter extends CustomPainter {
             .withValues(alpha: 0.75),
     );
 
-    // Nubes suaves que cruzan el cielo.
+
     final nubeBase = isDark ? const Color(0xFF3C4E5A) : Colors.white;
     for (var i = 0; i < 3; i++) {
       final velocidad = 0.018 + i * 0.006;
@@ -204,7 +204,7 @@ class _EscenaPainter extends CustomPainter {
       );
     }
 
-    // Colinas traseras.
+
     final colinaLejos = Path()
       ..moveTo(0, h * 0.52)
       ..quadraticBezierTo(w * 0.22, h * 0.42, w * 0.45, h * 0.5)
@@ -233,7 +233,7 @@ class _EscenaPainter extends CustomPainter {
             .withValues(alpha: 0.9),
     );
 
-    // Partículas ambientales: polen de día, luciérnagas de noche.
+
     final mota = isDark ? const Color(0xFFD8F28A) : const Color(0xFFFFFDF0);
     for (var i = 0; i < 16; i++) {
       final semilla = ((i * 61) % 97) / 97;
@@ -249,7 +249,7 @@ class _EscenaPainter extends CustomPainter {
       );
     }
 
-    // Mariposa que pasea durante el día.
+
     if (!isDark) {
       final ciclo = (t * 0.6) % 1.0;
       final bx = w * (-0.06 + 1.12 * ciclo);
@@ -257,7 +257,7 @@ class _EscenaPainter extends CustomPainter {
       _mariposa(canvas, Offset(bx, by), h * 0.02, t);
     }
 
-    // Viñeta para dar profundidad.
+
     canvas.drawRect(
       rect,
       Paint()
@@ -332,9 +332,9 @@ class _EscenaPainter extends CustomPainter {
       oldDelegate.isDark != isDark;
 }
 
-// -----------------------------------------------------------------------------
-// Piezas del cantero
-// -----------------------------------------------------------------------------
+
+
+
 
 class _PlotTile extends StatefulWidget {
   final PlantGrowth planta;

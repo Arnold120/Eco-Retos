@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-/// Rol del sistema tal como lo devuelve `GET /api/roles` (solo ADMIN).
+
 class RolResponse extends Equatable {
   final int rolId;
   final String nombreRol;
@@ -26,7 +26,7 @@ class RolResponse extends Equatable {
   List<Object?> get props => [rolId, nombreRol, descripcion];
 }
 
-/// Usuario tal como lo devuelve `GET /api/usuarios` (incluye roles).
+
 class UsuarioAdminResponse extends Equatable {
   final int usuarioId;
   final String nombreUsuario;
@@ -97,7 +97,7 @@ class UsuarioAdminResponse extends Equatable {
   ];
 }
 
-/// Conteos globales (`GET /api/usuarios/totales`).
+
 class UsuariosTotalesResponse extends Equatable {
   final int total;
   final int activos;

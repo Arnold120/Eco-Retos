@@ -224,7 +224,7 @@ ORDER BY ISNULL(c.FechaUltimoMensaje, c.FechaCreacion) DESC";
                 }
                 catch
                 {
-                    // La notificacion no debe bloquear el envio.
+
                 }
             }
 

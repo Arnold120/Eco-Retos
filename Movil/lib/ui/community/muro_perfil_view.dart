@@ -10,9 +10,9 @@ import 'widgets/post_media.dart';
 import 'widgets/post_card_skeleton.dart';
 import 'widgets/post_helpers.dart';
 
-/// Perfil estilo red social dentro del Muro Eco: foto grande, datos reales
-/// del usuario y sus publicaciones ordenadas de la mas reciente a la mas
-/// antigua.
+
+
+
 class MuroPerfilView extends StatefulWidget {
   final int usuarioId;
 
@@ -198,12 +198,12 @@ class _MuroPerfilViewState extends State<MuroPerfilView> {
             nombre: perfil.nombreUsuario,
             fotoUrl: perfil.fotoPerfil,
             radius: 46,
-            // Al tocar la foto se abre el visor; ahi esta el menu ⋮ con
-            // la opcion de descargar la imagen original.
+
+
             onTap: perfil.fotoPerfil == null
                 ? null
                 : () => abrirVisorMultimedia(
-                      // El visor incluye el menu ⋮ con "Descargar".
+
                       context,
                       [
                         (

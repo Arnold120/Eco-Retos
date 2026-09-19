@@ -3,16 +3,16 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_helper.dart';
 import '../models/admin/admin_models.dart';
 
-/// Operaciones exclusivas del administrador sobre usuarios y roles.
-///
-/// Todos sus endpoints exigen el rol ADMIN en el backend; cualquier otro
-/// rol recibe 403.
+
+
+
+
 class UsuariosService {
   final ApiClient _client;
 
   UsuariosService(this._client);
 
-  /// Todos los usuarios con sus roles.
+
   Future<List<UsuarioAdminResponse>> listarUsuarios() {
     return ApiHelper.getList(
       _client,
@@ -21,7 +21,7 @@ class UsuariosService {
     );
   }
 
-  /// Conteos globales (total, activos, inactivos).
+
   Future<UsuariosTotalesResponse> obtenerTotales() {
     return ApiHelper.get(
       _client,
@@ -30,7 +30,7 @@ class UsuariosService {
     );
   }
 
-  /// Catálogo de roles del sistema (para asignar/quitar roles).
+
   Future<List<RolResponse>> listarRoles() {
     return ApiHelper.getList(
       _client,
@@ -39,7 +39,7 @@ class UsuariosService {
     );
   }
 
-  /// Activa una cuenta.
+
   Future<void> activar(int usuarioId) {
     return ApiHelper.postVoid(
       _client,
@@ -47,7 +47,7 @@ class UsuariosService {
     );
   }
 
-  /// Desactiva una cuenta (el usuario ya no podrá acceder).
+
   Future<void> desactivar(int usuarioId) {
     return ApiHelper.postVoid(
       _client,
@@ -55,7 +55,7 @@ class UsuariosService {
     );
   }
 
-  /// Asigna un rol a un usuario.
+
   Future<void> asignarRol(int usuarioId, int rolId) {
     return ApiHelper.postVoid(
       _client,
@@ -64,7 +64,7 @@ class UsuariosService {
     );
   }
 
-  /// Quita un rol a un usuario.
+
   Future<void> quitarRol(int usuarioId, int rolId) {
     return ApiHelper.delete(
       _client,

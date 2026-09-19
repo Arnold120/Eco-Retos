@@ -12,9 +12,9 @@ import '../settings/settings_screen.dart';
 import 'user_avatar.dart';
 import 'user_menu.dart';
 
-/// Acciones globales del header: busqueda y menu de usuario.
-/// Mensajes y notificaciones viven en la barra de navegacion principal,
-/// por eso no se duplican aqui.
+
+
+
 class GlobalHeaderActions extends StatelessWidget {
   const GlobalHeaderActions({super.key});
 

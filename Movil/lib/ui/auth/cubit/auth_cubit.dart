@@ -28,8 +28,8 @@ class AuthCubit extends Cubit<AuthState> {
       }
 
       final decoded = JwtDecoder.decode(token);
-      // Los claims del backend .NET usan URIs largas; se buscan por
-      // fragmento para no depender del nombre exacto.
+
+
       final usuarioId =
           int.tryParse(AuthCubit.claimDelToken(decoded, const [
                 'nameidentifier',
@@ -54,7 +54,7 @@ class AuthCubit extends Cubit<AuthState> {
         return;
       }
 
-      // Roles persistentes de la sesión; si faltan, se intentan leer del JWT.
+
       var roles = await _authService.getRoles();
       if (roles.isEmpty) roles = AuthCubit.rolesDelToken(decoded);
 
@@ -108,7 +108,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  /// Extrae el codigo HTTP del error de red sin depender del tipo concreto.
+
   static int _statusDe(Object error) {
     if (error is ApiException) return error.statusCode;
     final coincidencia = RegExp(r'\b(400|401|403|404|409|500)\b')
@@ -166,8 +166,8 @@ class AuthCubit extends Cubit<AuthState> {
     emit(const AuthUnauthenticated());
   }
 
-  /// Busca un claim por fragmento de clave (los claims de .NET vienen como
-  /// URIs largas: ".../claims/nameidentifier", ".../claims/name", etc.).
+
+
   static String? claimDelToken(
     Map<String, dynamic> decoded,
     List<String> fragmentos,
@@ -186,15 +186,15 @@ class AuthCubit extends Cubit<AuthState> {
     return null;
   }
 
-  /// El claim `role` del JWT puede venir como string único o lista.
+
   static List<String> rolesDe(Object? claim) {
     if (claim == null) return const [];
     if (claim is List) return claim.map((e) => e.toString()).toList();
     return [claim.toString()];
   }
 
-  /// Localiza el rol del payload del JWT sin depender del nombre exacto
-  /// del claim ("role", "roles", URI completa de los claims de Windows...).
+
+
   static List<String> rolesDelToken(Map<String, dynamic> decoded) {
     for (final entry in decoded.entries) {
       if (entry.key.toLowerCase().contains('role')) {

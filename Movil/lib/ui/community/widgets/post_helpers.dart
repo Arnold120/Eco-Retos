@@ -48,7 +48,7 @@ String formatCount(int count) {
   return '$count';
 }
 
-/// Primera URL absoluta dentro de un texto (para vista previa de enlaces).
+
 String? primerEnlace(String texto) {
   final match = RegExp(r'https?://[^\s<>()]+', caseSensitive: false)
       .firstMatch(texto);
@@ -90,8 +90,8 @@ Color primaryOf(BuildContext context) =>
         ? AppColorsDark.primary
         : AppColors.primary;
 
-/// Centra el contenido y limita su ancho para mantener una lectura comoda
-/// en tablet y escritorio.
+
+
 class AnchoLectura extends StatelessWidget {
   final Widget child;
   final double maxWidth;
@@ -154,7 +154,7 @@ class PostCardContainer extends StatelessWidget {
   }
 }
 
-/// Texto con hashtags y menciones resaltados y plegado "Ver más".
+
 class ExpandableRichText extends StatefulWidget {
   final String texto;
   final TextStyle? baseStyle;

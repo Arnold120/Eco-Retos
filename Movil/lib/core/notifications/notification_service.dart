@@ -4,17 +4,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-/// Canal Android con sonido propio. El id incluye versión porque los canales
-/// de Android son inmutables: si se cambia el sonido hay que crear uno nuevo.
+
+
 const String kCanalNotificacionesId = 'eco_reto_notificaciones_v1';
 const String kCanalNotificacionesNombre = 'Notificaciones Eco-Retos';
 const String kCanalNotificacionesDescripcion =
     'Avisos de retos, comunidad, mensajes y soporte con el sonido de la app.';
 const String kSonidoNotificacion = 'notificacion';
 
-/// Maneja las notificaciones locales que se muestran aunque la app esté en
-/// primer plano, segundo plano o cerrada. También centraliza el sonido
-/// `res/raw/notificacion.mp3` mediante el canal de Android.
+
+
+
 class NotificationService {
   NotificationService._();
 
@@ -26,10 +26,10 @@ class NotificationService {
   final StreamController<String> _aperturas =
       StreamController<String>.broadcast();
 
-  /// Payload de las notificaciones que el usuario toca.
+
   Stream<String> get aperturas => _aperturas.stream;
 
-  /// Permite a otros servicios (por ejemplo FCM) notificar una apertura.
+
   void emitirApertura(String payload) {
     if (payload.isNotEmpty) _aperturas.add(payload);
   }
@@ -37,7 +37,7 @@ class NotificationService {
   bool _inicializado = false;
   int _contador = 0;
 
-  /// Payload de una notificación local que abrió la app estando cerrada.
+
   String? payloadInicial;
 
   AndroidNotificationChannel get _canal => const AndroidNotificationChannel(
@@ -65,8 +65,8 @@ class NotificationService {
         ticker: 'Eco-Retos',
       );
 
-  /// Inicializa el plugin, crea el canal con `notificacion.mp3` y engancha los
-  /// toques del usuario. Se puede llamar varias veces sin efectos duplicados.
+
+
   Future<void> init({bool background = false}) async {
     if (_inicializado) return;
 
@@ -96,8 +96,8 @@ class NotificationService {
       await androidPlugin?.createNotificationChannel(_canal);
     }
 
-    // Si la app se abrió desde una notificación local con la app cerrada,
-    // se guarda el payload para navegar cuando haya sesión.
+
+
     try {
       final detalles = await _plugin.getNotificationAppLaunchDetails();
       final payload = detalles?.notificationResponse?.payload;
@@ -107,7 +107,7 @@ class NotificationService {
         payloadInicial = payload;
       }
     } catch (_) {
-      // Sin detalles de arranque: no es crítico.
+
     }
 
     _inicializado = true;
@@ -116,7 +116,7 @@ class NotificationService {
     }
   }
 
-  /// Muestra una notificación local con el sonido obligatorio de la app.
+
   Future<void> mostrar({
     required String titulo,
     required String cuerpo,
@@ -144,15 +144,15 @@ class NotificationService {
     );
   }
 
-  /// Interpreta un mensaje de FCM y lo muestra como notificación local.
-  ///
-  /// - Mensajes de datos (data-only): se muestran siempre con `notificacion.mp3`.
-  /// - Mensajes con bloque `notification` en primer plano: Android no los
-  ///   muestra solo, así que también se muestran aquí.
-  /// - Mensajes con bloque `notification` en segundo plano/cerrada: los
-  ///   muestra el sistema usando el canal por defecto configurado en el
-  ///   AndroidManifest (`eco_reto_notificaciones_v1`), por lo que NO se
-  ///   duplican desde la app.
+
+
+
+
+
+
+
+
+
   Future<void> mostrarDesdeMensaje(
     RemoteMessage mensaje, {
     bool primerPlano = false,
@@ -172,7 +172,7 @@ class NotificationService {
 
     final tieneBloqueNotification = mensaje.notification != null;
     if (tieneBloqueNotification && !primerPlano) {
-      // El sistema ya la muestra con el canal por defecto.
+
       return;
     }
 
@@ -185,8 +185,8 @@ class NotificationService {
     );
   }
 
-  /// Pide permiso de notificaciones en Android 13+ (por si el flujo de
-  /// permisos de la app aún no lo solicitó).
+
+
   Future<bool> solicitarPermisoAndroid() async {
     if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return true;
     final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
@@ -194,15 +194,15 @@ class NotificationService {
     return await androidPlugin?.requestNotificationsPermission() ?? true;
   }
 
-  /// Cancela todas las notificaciones mostradas.
+
   Future<void> cancelarTodas() => _plugin.cancelAll();
 }
 
-/// Callback que ejecuta Android cuando el usuario toca una notificación con la
-/// app cerrada. Debe ser de nivel superior y con anotación de entry-point.
+
+
 @pragma('vm:entry-point')
 void _respuestaEnSegundoPlano(NotificationResponse respuesta) {
-  // La app se abrirá y `getInitialMessage` de FCM entrega el payload.
+
   debugPrint(
     'Notificación tocada en segundo plano: ${respuesta.payload ?? ''}',
   );

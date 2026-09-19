@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../widgets/confetti_widget.dart';
 
-/// Mini pantalla de felicitación animada que aparece al reclamar recompensas.
-///
-/// Entra con un modal bottom sheet con efecto de escala + desvanecido, confeti,
-/// contadores animados desde 0 hasta el valor real de cada recompensa y un
-/// botón CONTINUAR. Muestra los números EXACTOS que se entregaron.
+
+
+
+
+
 class RecompensaCelebracionSheet extends StatelessWidget {
   final int xp;
   final int monedas;
@@ -32,8 +32,8 @@ class RecompensaCelebracionSheet extends StatelessWidget {
     required this.onContinuar,
   });
 
-  /// Abre el sheet como modal y devuelve el sheet instanciado (para usarlo en
-  /// [showModalBottomSheet]).
+
+
   static Future<void> mostrar(
     BuildContext context, {
     required int xp,
@@ -302,7 +302,7 @@ class RecompensaCelebracionSheet extends StatelessWidget {
   }
 }
 
-/// Insignia con contador animado de 0 al valor real de la recompensa.
+
 class _BadgeRecompensa extends StatelessWidget {
   final IconData icono;
   final Color color;

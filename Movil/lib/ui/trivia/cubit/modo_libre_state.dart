@@ -3,35 +3,35 @@ import 'package:equatable/equatable.dart';
 import '../../../data/models/challenge/challenge_models.dart';
 import '../trivia_question_generator.dart';
 
-/// Fases por las que pasa el flujo de Modo Libre.
+
 enum ModoLibreStatus {
-  /// Precarga de categorías y preguntas al abrir la pantalla.
+
   cargando,
 
-  /// Pantalla de configuración de la partida.
+
   configurando,
 
-  /// Una pregunta está visible y se puede responder.
+
   jugando,
 
-  /// La pregunta fue respondida o el tiempo se agotó: se muestra el feedback.
+
   retroalimentacion,
 
-  /// Partida terminada, pantalla de resultados.
+
   resultados,
 
-  /// Ocurrió un error recuperable (pantalla amigable con reintento).
+
   error,
 
-  /// No hay suficientes preguntas para la configuración elegida.
+
   sinPreguntas,
 }
 
-/// Configuración de una partida de Modo Libre.
-///
-/// `dificultad` usa los valores reales de la base de datos
-/// (`Facil`, `Intermedia`, `Dificil`). `tiempoPorPregunta` es `null` cuando
-/// no hay límite de tiempo.
+
+
+
+
+
 class ModoLibreConfiguracion extends Equatable {
   final int? categoriaId;
   final String? dificultad;
@@ -75,7 +75,7 @@ class ModoLibreConfiguracion extends Equatable {
   ];
 }
 
-/// Estado inmutable del flujo de Modo Libre.
+
 class ModoLibreState extends Equatable {
   final ModoLibreStatus status;
   final bool isLoading;
@@ -102,10 +102,10 @@ class ModoLibreState extends Equatable {
   final int monedasGanadas;
   final int monedasDisponibles;
 
-  /// La recompensa de la partida ya fue reclamada (entrega única).
+
   final bool recompensaReclamada;
 
-  /// Hay un reclamo de recompensas en curso (estado del botón).
+
   final bool recompensaReclamando;
 
   const ModoLibreState({

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Dto
 {
-    /// <summary>Saldo del usuario autenticado + resumen de XP/nivel.</summary>
+
     public class MonederoSaldoResponseDto
     {
         public int Saldo { get; set; }
@@ -19,7 +19,7 @@ namespace WebApi.Dto
         public int UsuarioId { get; set; }
         public int? CategoriaId { get; set; }
         public string NombreCategoria { get; set; } = string.Empty;
-        /// <summary>Positivo = ganancia, negativo = gasto.</summary>
+
         public int Cantidad { get; set; }
         public string Tipo { get; set; } = string.Empty;
         public string Descripcion { get; set; } = string.Empty;
@@ -27,7 +27,7 @@ namespace WebApi.Dto
         public DateTime Fecha { get; set; }
     }
 
-    /// <summary>Monedas ganadas por categoría oficial (para estadísticas).</summary>
+
     public class CategoriaMonedasResponseDto
     {
         public int CategoriaId { get; set; }
@@ -37,7 +37,7 @@ namespace WebApi.Dto
 
     public class ReclamarRecompensaRequestDto
     {
-        /// <summary>TRIVIA, TRIVIA_SEMANA, RETO o INSIGNIA.</summary>
+
         [Required(ErrorMessage = "El tipo de recompensa es obligatorio.")]
         [StringLength(50, ErrorMessage = "El tipo no puede superar los 50 caracteres.")]
         public string Tipo { get; set; } = string.Empty;
@@ -49,19 +49,19 @@ namespace WebApi.Dto
         [Range(1, 7, ErrorMessage = "La categoría debe estar entre 1 y 7.")]
         public int? CategoriaId { get; set; }
 
-        /// <summary>Trivia: puntuación obtenida por el usuario.</summary>
+
         [Range(0, 100000, ErrorMessage = "La puntuación es inválida.")]
         public int? Puntuacion { get; set; }
 
-        /// <summary>Trivia: total de preguntas respondidas.</summary>
+
         [Range(1, 100, ErrorMessage = "El total de preguntas debe estar entre 1 y 100.")]
         public int? TotalPreguntas { get; set; }
 
-        /// <summary>Reto: id del reto en el backend.</summary>
+
         [Range(1, int.MaxValue, ErrorMessage = "El reto es inválido.")]
         public int? RetoId { get; set; }
 
-        /// <summary>Insignia: id de la insignia.</summary>
+
         [Range(1, int.MaxValue, ErrorMessage = "La insignia es inválida.")]
         public int? InsigniaId { get; set; }
 

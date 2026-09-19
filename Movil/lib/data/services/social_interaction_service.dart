@@ -3,13 +3,13 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_helper.dart';
 import '../models/social/social_models.dart';
 
-/// Reacciones (me gusta) sobre publicaciones y comentarios.
+
 class ReaccionService {
   final ApiClient _client;
 
   ReaccionService(this._client);
 
-  /// Alterna la reaccion y devuelve el estado resultante con el total.
+
   Future<ResultadoReaccion> alternar({
     int? publicacionId,
     int? comentarioId,
@@ -28,7 +28,7 @@ class ReaccionService {
   }
 }
 
-/// Relacion de seguimiento entre usuarios.
+
 class SeguimientoService {
   final ApiClient _client;
 
@@ -42,7 +42,7 @@ class SeguimientoService {
     );
   }
 
-  /// Usuarios que sigue [usuarioId] (para menciones y listados).
+
   Future<List<UsuarioResumen>> getSiguiendo(int usuarioId) {
     return ApiHelper.getList(
       _client,
@@ -51,7 +51,7 @@ class SeguimientoService {
     );
   }
 
-  /// Seguidores de [usuarioId].
+
   Future<List<UsuarioResumen>> getSeguidores(int usuarioId) {
     return ApiHelper.getList(
       _client,
@@ -88,13 +88,13 @@ class SeguimientoService {
   }
 }
 
-/// Publicaciones guardadas por el usuario autenticado.
+
 class GuardadoService {
   final ApiClient _client;
 
   GuardadoService(this._client);
 
-  /// Alterna el guardado y devuelve true si la publicacion quedo guardada.
+
   Future<bool> alternar(int publicacionId) async {
     final response = await _client.dio.post(
       '${ApiConstants.guardados}/$publicacionId',
@@ -105,7 +105,7 @@ class GuardadoService {
   }
 }
 
-/// Reportes de contenido inapropiado.
+
 class DenunciaService {
   final ApiClient _client;
 

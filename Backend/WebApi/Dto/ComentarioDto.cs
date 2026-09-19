@@ -15,7 +15,7 @@ namespace WebApi.Dto
         [Required(ErrorMessage = "El comentario es obligatorio.")]
         public string ComentarioTexto { get; set; } = string.Empty;
 
-        /// <summary>Comentario padre al que responde. Null para comentarios de primer nivel.</summary>
+
         public int? ComentarioPadreId { get; set; }
     }
 

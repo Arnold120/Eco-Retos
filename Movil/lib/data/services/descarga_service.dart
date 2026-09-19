@@ -9,12 +9,12 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_exception.dart';
 import '../../core/utils/media_url.dart';
 
-/// Descarga archivos multimedia del muro al dispositivo.
-///
-/// Android: guarda en la carpeta publica `Download/EcoReto/imagenes` y
-/// `Download/EcoReto/videos` usando MediaStore (sin permisos desde
-/// Android 10; el plugin los solicita en versiones anteriores).
-/// Escritorio/iOS: usa la carpeta de Descargas con la misma estructura.
+
+
+
+
+
+
 class DescargaService {
   static const String carpetaApp = 'EcoReto';
 
@@ -58,10 +58,10 @@ class DescargaService {
     }
 
     if (Platform.isAndroid) {
-      // Ruta publica: /storage/emulated/0/Download/EcoReto/{imagenes|videos}
-      // MediaStore copia el archivo y ELIMINA el temporal; por eso si el
-      // temporal ya no existe, la descarga se completo aunque el plugin no
-      // devuelva informacion.
+
+
+
+
       try {
         await MediaStore.ensureInitialized();
         MediaStore.appFolder = carpetaApp;
@@ -79,7 +79,7 @@ class DescargaService {
         await _marcarPermisoIntentado();
       }
 
-      // Si el temporal desaparecio, MediaStore ya guardo el archivo.
+
       if (!await temporal.exists()) {
         return 'Download/$carpetaApp/$subcarpeta/$nombre';
       }
@@ -111,9 +111,9 @@ class DescargaService {
     );
   }
 
-  /// Recuerda si ya se intento guardar en la carpeta publica. MediaStore
-  /// solicita el permiso automaticamente solo la primera vez (Android <= 12);
-  /// desde Android 13 no se necesita ningun permiso.
+
+
+
   Future<bool> _permisoYaIntentado() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -128,7 +128,7 @@ class DescargaService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('permiso_almacenamiento_solicitado', true);
     } catch (_) {
-      // Preferencia secundaria.
+
     }
   }
 
@@ -159,7 +159,7 @@ class DescargaService {
           .replaceAll(RegExp(r'[^A-Za-z0-9_\-]'), '_');
       nombre = '${base}_${DateTime.now().millisecondsSinceEpoch}.$extension';
     }
-    // Evita nombres repetidos al descargar el mismo archivo dos veces.
+
     final punto = nombre.lastIndexOf('.');
     if (punto > 0) {
       final base = nombre.substring(0, punto);

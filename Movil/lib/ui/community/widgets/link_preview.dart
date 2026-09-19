@@ -7,10 +7,10 @@ import '../../../data/models/social/enlace_preview.dart';
 import '../../../data/services/enlace_service.dart';
 import 'post_helpers.dart';
 
-/// Vista previa de un enlace pegada en una publicacion.
-///
-/// Intenta obtener metadatos (Open Graph) desde el backend. Si no es posible,
-/// muestra una version degradada elegante con el dominio y la URL.
+
+
+
+
 class LinkPreviewCard extends StatefulWidget {
   final String url;
   final bool permitirQuitar;

@@ -47,7 +47,7 @@ class ConversationState extends Equatable {
       [mensajes, isLoading, isLoadingMore, isSending, hasMore, error];
 }
 
-/// Hilo de una conversacion con actualizacion periodica (polling).
+
 class ConversationCubit extends Cubit<ConversationState> {
   final int conversacionId;
   final int usuarioId;
@@ -137,7 +137,7 @@ class ConversationCubit extends Cubit<ConversationState> {
     try {
       await _service.marcarLeidos(conversacionId);
     } catch (_) {
-      // Indicador secundario: no interrumpe la lectura.
+
     }
   }
 
@@ -175,7 +175,7 @@ class ConversationCubit extends Cubit<ConversationState> {
       emit(state.copyWith(mensajes: lista));
       if (nuevos.isNotEmpty) await marcarLeidos();
     } catch (_) {
-      // Se reintenta en el siguiente ciclo.
+
     }
   }
 }

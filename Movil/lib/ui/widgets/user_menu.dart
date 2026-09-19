@@ -6,8 +6,8 @@ import '../auth/cubit/auth_cubit.dart';
 import '../auth/cubit/auth_state.dart';
 import 'user_avatar.dart';
 
-/// Menu de usuario accesible desde el header: Mi perfil, Mensajes,
-/// Notificaciones, Búsqueda, Configuración y Cerrar sesión.
+
+
 Future<void> showUserMenu(
   BuildContext context, {
   required VoidCallback onMiPerfil,
@@ -170,7 +170,7 @@ class _Opcion extends StatelessWidget {
   }
 }
 
-/// Confirma el cierre de sesión antes de ejecutarlo.
+
 Future<void> confirmarCerrarSesion(BuildContext context) async {
   final confirmado = await showDialog<bool>(
     context: context,

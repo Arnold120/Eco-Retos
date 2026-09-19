@@ -47,17 +47,17 @@ import 'ui/notifications/cubit/notification_cubit.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // FCM en segundo plano/cerrada. Este registro no necesita la Activity y
-  // debe hacerse antes de runApp (requisito de firebase_messaging).
+
+
   try {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   } catch (e) {
     debugPrint('No se pudo registrar el handler de FCM: $e');
   }
 
-  // IMPORTANTE: las notificaciones locales y FCM se inicializan DESPUÉS del
-  // primer frame (ver _EcoRetoAppState). Hacerlo antes de runApp puede colgar
-  // la app en Android porque la Activity todavía no está adjunta.
+
+
+
   runApp(const EcoRetoApp());
 }
 
@@ -80,8 +80,8 @@ class _EcoRetoAppState extends State<EcoRetoApp> {
     });
   }
 
-  /// Inicializa los servicios de notificación una vez que hay UI y Activity.
-  /// Nunca bloquea el arranque: cada fallo se registra y la app continúa.
+
+
   Future<void> _inicializarNotificaciones() async {
     try {
       await NotificationService.instance.init();
@@ -160,8 +160,8 @@ class AppEntry extends StatefulWidget {
 class _AppEntryState extends State<AppEntry> {
   bool _splashDone = false;
 
-  /// Evita mostrar la pantalla de carga durante un intento de login: asi el
-  /// formulario no se destruye y el error se ve en la misma pantalla.
+
+
   bool _estadoInicialResuelto = false;
 
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
@@ -182,23 +182,23 @@ class _AppEntryState extends State<AppEntry> {
     super.dispose();
   }
 
-  /// Refresca el contador y la lista cuando llega un push en primer plano.
+
   void _refrescarNotificaciones() {
     if (!mounted) return;
     try {
       context.read<NotificationCubit>().loadNotificaciones();
     } catch (_) {
-      // Todavía no hay sesión: el cubit se crea al autenticarse.
+
     }
   }
 
-  /// Abre la pantalla de notificaciones al tocar un push (solo con sesión).
+
   void _abrirNotificaciones(String payload) {
     if (!mounted) return;
     final auth = context.read<AuthCubit>().state;
     if (auth is! Authenticated) return;
 
-    // Consumido: evita una segunda navegación desde la comprobación inicial.
+
     PushService.instance.payloadInicial = null;
     NotificationService.instance.payloadInicial = null;
 
@@ -211,11 +211,11 @@ class _AppEntryState extends State<AppEntry> {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
 
-    // IMPORTANTE: se construye UN solo MaterialApp estable y el contenido de
-    // arranque se decide dentro de `home`. Si se alternara entre devolver el
-    // MaterialApp o un contenedor distinto (BlocBuilder, etc.), el framework
-    // reutiliza el Navigator por su GlobalKey y la ruta inicial queda ligada
-    // al estado anterior: la app se quedaba cargando en el splash.
+
+
+
+
+
     return MaterialApp(
       title: 'Eco Retos',
       navigatorKey: _navKey,
@@ -223,7 +223,7 @@ class _AppEntryState extends State<AppEntry> {
       darkTheme: AppTheme.dark,
       themeMode: themeProvider.themeMode,
       debugShowCheckedModeBanner: false,
-      // Modo daltonico: filtro de correccion de color para toda la app.
+
       builder: (context, child) {
         if (child == null) return const SizedBox.shrink();
         if (!themeProvider.modoDaltonico) return child;
@@ -248,8 +248,8 @@ class _AppEntryState extends State<AppEntry> {
       );
     }
 
-    // Los permisos obligatorios se piden despues del splash y antes de
-    // mostrar la pantalla de inicio o el login.
+
+
     return PermissionGate(
       child: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
@@ -273,8 +273,8 @@ class _AppEntryState extends State<AppEntry> {
           if (state is Authenticated) {
             _estadoInicialResuelto = true;
 
-            // Si la app se abrió tocando una notificación (FCM o local) con la
-            // app cerrada, se navega a Notificaciones una vez que hay sesión.
+
+
             WidgetsBinding.instance.addPostFrameCallback((_) {
               final pendiente = PushService.instance.payloadInicial ??
                   NotificationService.instance.payloadInicial;
@@ -285,8 +285,8 @@ class _AppEntryState extends State<AppEntry> {
               }
             });
 
-            // Los cubits viven por encima del Navigator para que cualquier ruta
-            // (perfil, publicación, mensajes) comparta el mismo estado.
+
+
             return MultiBlocProvider(
               providers: [
                 BlocProvider(
@@ -355,8 +355,8 @@ class _AppEntryState extends State<AppEntry> {
             );
           }
 
-          // Incluye AuthLoading durante un intento de login: el formulario
-          // permanece visible con su boton en estado "cargando".
+
+
           _estadoInicialResuelto = true;
           return const LoginScreen();
         },

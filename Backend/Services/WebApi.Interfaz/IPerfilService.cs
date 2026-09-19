@@ -11,7 +11,7 @@ namespace WebApi.Interfaz
         Task<bool> EliminarAsync(int perfilId);
         Task<IEnumerable<Perfil>> ObtenerPorCentroEducativoAsync(string centroEducativo);
 
-        /// <summary>Perfiles de varios usuarios en una sola consulta (clave: UsuarioId).</summary>
+
         Task<Dictionary<int, Perfil>> ObtenerPorUsuariosAsync(IEnumerable<int> usuarioIds);
     }
 }

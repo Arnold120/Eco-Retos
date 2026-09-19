@@ -9,12 +9,12 @@ using WebApi.Modelo;
 
 namespace WebApi.Controllers
 {
-    /// <summary>
-    /// Módulo de soporte asistido por IA (aditivo).
-    /// - Rutas de usuario: requieren JWT (cualquier rol).
-    /// - Rutas admin: requieren rol ADMIN validado por el backend.
-    /// - El código de sesión permite abrir la web desde Flutter sin exponer el JWT.
-    /// </summary>
+
+
+
+
+
+
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
@@ -54,9 +54,8 @@ namespace WebApi.Controllers
         private int? UsuarioActual => User.ObtenerUsuarioId();
         private string NombreActual => User.Identity?.Name ?? "Admin";
 
-        /* ─── Sesión desde Flutter (código de un solo uso) ─────────────────── */
 
-        /// <summary>Crea un código de un solo uso (90 s) para abrir la web sin exponer el JWT.</summary>
+
         [HttpPost("sesion/codigo")]
         public IActionResult CrearCodigoSesion()
         {
@@ -68,7 +67,7 @@ namespace WebApi.Controllers
             return Ok(new CodigoSesionResponseDto { Codigo = codigo, ExpiraEnSegundos = SegundosCodigoSesion });
         }
 
-        /// <summary>Canjea el código por un JWT nuevo. Un solo uso y expira en 90 s.</summary>
+
         [HttpPost("sesion/canjear")]
         [AllowAnonymous]
         public async Task<IActionResult> CanjearCodigo([FromBody] CanjearCodigoRequestDto dto)
@@ -123,7 +122,6 @@ namespace WebApi.Controllers
                 .Replace("+", "-").Replace("/", "_").TrimEnd('=');
         }
 
-        /* ─── Configuración de soporte ─────────────────────────────────────── */
 
         [HttpGet("config")]
         public async Task<IActionResult> ObtenerConfig() => Ok(await _soporte.ObtenerConfigAsync());
@@ -136,7 +134,6 @@ namespace WebApi.Controllers
             return Ok(await _soporte.ObtenerConfigAsync());
         }
 
-        /* ─── Casos (usuario) ──────────────────────────────────────────────── */
 
         [HttpPost("casos")]
         public async Task<IActionResult> CrearCaso([FromBody] CrearCasoRequestDto dto)
@@ -211,7 +208,6 @@ namespace WebApi.Controllers
             return Ok(new { mensaje = "Mensajes marcados como leídos." });
         }
 
-        /* ─── Casos (admin) ───────────────────────────────────────────────── */
 
         [HttpGet("admin/casos")]
         [Authorize(Roles = "ADMIN")]
@@ -240,12 +236,11 @@ namespace WebApi.Controllers
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Dashboard() => Ok(await _soporte.ObtenerDashboardAsync());
 
-        /// <summary>Resumen ligero para la actualización automática del panel.</summary>
+
         [HttpGet("admin/resumen")]
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Resumen() => Ok(await _soporte.ObtenerResumenAdminAsync());
 
-        /* ─── Reportes y moderación ────────────────────────────────────────── */
 
         [HttpGet("reportes")]
         [Authorize(Roles = "ADMIN")]
@@ -268,10 +263,10 @@ namespace WebApi.Controllers
             return ok ? Ok(new { mensaje = "Reporte actualizado." }) : NotFound(new { mensaje = "Reporte no encontrado." });
         }
 
-        /// <summary>
-        /// Análisis de IA del reporte (recomendación). No aplica acciones:
-        /// la decisión final es del administrador.
-        /// </summary>
+
+
+
+
         [HttpPost("reportes/{id:int}/analizar")]
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> AnalizarReporte(int id)
@@ -290,7 +285,6 @@ namespace WebApi.Controllers
                 : BadRequest(new { mensaje = "No se pudo aplicar la acción (objetivo/acción inválidos o contenido inexistente)." });
         }
 
-        /* ─── Evidencias de retos ──────────────────────────────────────────── */
 
         [HttpGet("evidencias")]
         [Authorize(Roles = "ADMIN")]
@@ -305,10 +299,10 @@ namespace WebApi.Controllers
             return evidencia is null ? NotFound(new { mensaje = "Evidencia no encontrada." }) : Ok(evidencia);
         }
 
-        /// <summary>
-        /// Evalúa la evidencia con IA y guarda el resultado en auditoría.
-        /// No aprueba ni rechaza: el administrador conserva la decisión final.
-        /// </summary>
+
+
+
+
         [HttpPost("evidencias/{id:int}/analizar")]
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> AnalizarEvidencia(int id)
@@ -325,7 +319,6 @@ namespace WebApi.Controllers
             return ok ? Ok(new { mensaje = "Evidencia actualizada." }) : BadRequest(new { mensaje = "No se pudo actualizar la evidencia." });
         }
 
-        /* ─── Administradores ──────────────────────────────────────────────── */
 
         [HttpGet("admins")]
         [Authorize(Roles = "ADMIN")]
@@ -376,7 +369,6 @@ namespace WebApi.Controllers
             }
         }
 
-        /* ─── Auditoría ────────────────────────────────────────────────────── */
 
         [HttpGet("auditoria")]
         [Authorize(Roles = "ADMIN")]
@@ -397,7 +389,7 @@ namespace WebApi.Controllers
             }));
         }
 
-        /// <summary>Registra el acceso al panel administrativo (auditoría explícita).</summary>
+
         [HttpPost("auditoria/acceso")]
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> RegistrarAcceso()

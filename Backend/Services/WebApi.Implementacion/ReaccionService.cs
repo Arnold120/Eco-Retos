@@ -87,7 +87,7 @@ namespace WebApi.Implementacion
                         }
                         catch
                         {
-                            // La notificacion no debe bloquear la reaccion.
+
                         }
                     }
                 }

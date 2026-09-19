@@ -5,11 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../catalogos/retos/reto_model.dart';
 import '../catalogos/retos/retos_catalogo.dart';
 
-/// Almacén local de progreso de retos (SharedPreferences).
-///
-/// Garantiza que los estados no se pierdan al cerrar la app y que el
-/// sistema funcione incluso sin conexión (el contenido vive en el
-/// catálogo; aquí solo se guardan ids y estados).
+
+
+
+
+
 class RetoProgresoLocal {
   static const _key = 'reto_progreso_v1';
 
@@ -46,7 +46,7 @@ class RetoProgresoLocal {
         }
       }
     } catch (_) {
-      // Preferencias corruptas: se ignora y se parte de cero.
+
       _memoria.clear();
     } finally {
       _cargado = true;

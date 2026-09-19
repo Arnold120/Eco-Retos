@@ -1,8 +1,7 @@
 namespace WebApi.Modelo
 {
-    /* DTOs del módulo de soporte.
-       Viven en WebApi.Modelo para que la capa WebApi.Interfaz pueda usarlos
-       sin crear una dependencia circular con WebApi.Dto. */
+
+
 
     public class AdjuntoSoporteDto
     {
@@ -11,7 +10,6 @@ namespace WebApi.Modelo
         public string Nombre { get; set; } = string.Empty;
     }
 
-    /* ─── Casos (usuario) ──────────────────────────────────────────────────── */
 
     public class CrearCasoRequestDto
     {
@@ -82,7 +80,6 @@ namespace WebApi.Modelo
         public DecisionIAResponseDto? Ia { get; set; }
     }
 
-    /* ─── Casos (admin) ────────────────────────────────────────────────────── */
 
     public class ActualizarCasoAdminRequestDto
     {
@@ -97,12 +94,11 @@ namespace WebApi.Modelo
         public List<AdjuntoSoporteDto> Adjuntos { get; set; } = new();
     }
 
-    /* ─── Reportes / moderación ────────────────────────────────────────────── */
 
     public class ReporteSoporteResponseDto
     {
         public int Id { get; set; }
-        public string Tipo { get; set; } = "DENUNCIA"; // DENUNCIA | SOPORTE
+        public string Tipo { get; set; } = "DENUNCIA"; 
         public int UsuarioId { get; set; }
         public string UsuarioNombre { get; set; } = string.Empty;
         public string? UsuarioCorreo { get; set; }
@@ -119,8 +115,7 @@ namespace WebApi.Modelo
         public string? AdminNombre { get; set; }
         public DateTime Fecha { get; set; }
 
-        /* Contenido reportado (según la tabla real: Publicacion o Comentario) */
-        /// <summary>PUBLICACION | COMENTARIO</summary>
+
         public string? ContenidoTipo { get; set; }
         public int? ContenidoId { get; set; }
         public string? ContenidoTexto { get; set; }
@@ -132,7 +127,6 @@ namespace WebApi.Modelo
         public List<AdjuntoSoporteDto> ContenidoMultimedia { get; set; } = new();
         public string? Enlace { get; set; }
 
-        /* Resolución administrativa (Soporte_Mejoras.sql) */
         public string? MotivoResolucion { get; set; }
         public DateTime? FechaResolucion { get; set; }
         public int? CasoId { get; set; }
@@ -147,16 +141,15 @@ namespace WebApi.Modelo
 
     public class ModerarContenidoRequestDto
     {
-        /// <summary>PUBLICACION | COMENTARIO</summary>
+
         public string Objetivo { get; set; } = string.Empty;
         public int Id { get; set; }
-        /// <summary>OCULTAR (publicación) | ELIMINAR (comentario)</summary>
+
         public string Accion { get; set; } = string.Empty;
         public string? Motivo { get; set; }
         public int? ReporteId { get; set; }
     }
 
-    /* ─── Evidencias de retos ──────────────────────────────────────────────── */
 
     public class EvidenciaSoporteResponseDto
     {
@@ -166,38 +159,37 @@ namespace WebApi.Modelo
         public string? UsuarioCorreo { get; set; }
         public int RetoId { get; set; }
         public string Reto { get; set; } = string.Empty;
-        /// <summary>Descripción real del reto (Reto.Descripcion).</summary>
+
         public string? RetoDescripcion { get; set; }
-        /// <summary>Instrucciones reales del reto (Reto.Instrucciones).</summary>
+
         public string? RetoInstrucciones { get; set; }
-        /// <summary>Requisitos reales del reto en JSON (Reto.Requisitos).</summary>
+
         public string? RetoRequisitos { get; set; }
-        /// <summary>Tipo de evidencia solicitada (Reto.Evidencia: FOTO, TEXTO, VIDEO, CANTIDAD...).</summary>
+
         public string? RetoTipoEvidencia { get; set; }
         public int? RetoCantidadObjetivo { get; set; }
         public string Estado { get; set; } = "EN_REVISION";
-        /// <summary>Texto crudo guardado en UsuarioReto.Evidencia.</summary>
+
         public string? Evidencia { get; set; }
-        /// <summary>Texto limpio de la evidencia (sin las URLs).</summary>
+
         public string? EvidenciaTexto { get; set; }
-        /// <summary>Adjuntos reales detectados dentro de la evidencia.</summary>
+
         public List<AdjuntoSoporteDto> EvidenciaAdjuntos { get; set; } = new();
         public string? MotivoRechazo { get; set; }
         public int PuntosObtenidos { get; set; }
         public DateTime Fecha { get; set; }
         public DateTime? FechaCompletado { get; set; }
-        /// <summary>Última evaluación de IA almacenada (si existe).</summary>
+
         public EvaluacionIAEvidencia? EvaluacionIA { get; set; }
     }
 
     public class DecidirEvidenciaRequestDto
     {
-        public string Estado { get; set; } = "COMPLETADO"; // COMPLETADO | RECHAZADO
+        public string Estado { get; set; } = "COMPLETADO"; 
         public string? MotivoRechazo { get; set; }
         public int PuntosObtenidos { get; set; }
     }
 
-    /* ─── Administradores ──────────────────────────────────────────────────── */
 
     public class AdminUsuarioResponseDto
     {
@@ -219,7 +211,7 @@ namespace WebApi.Modelo
     public class CrearAdminResultDto
     {
         public AdminUsuarioResponseDto? Admin { get; set; }
-        /// <summary>Solo si se creó un usuario nuevo con contraseña generada.</summary>
+
         public string? ContrasenaTemporal { get; set; }
         public bool UsuarioExistente { get; set; }
     }
@@ -229,7 +221,6 @@ namespace WebApi.Modelo
         public bool Activo { get; set; }
     }
 
-    /* ─── Configuración / dashboard / sesión ───────────────────────────────── */
 
     public class GuardarConfigRequestDto
     {
@@ -253,11 +244,11 @@ namespace WebApi.Modelo
         public List<SupportAuditLogDto> ActividadReciente { get; set; } = new();
     }
 
-    /// <summary>
-    /// Resumen ligero para el sondeo (polling) del panel: contadores y
-    /// marcas de la última novedad. Permite detectar cambios sin recargar
-    /// listas completas ni perder filtros.
-    /// </summary>
+
+
+
+
+
     public class ResumenAdminSoporteResponseDto
     {
         public int CasosNuevos { get; set; }
@@ -274,7 +265,7 @@ namespace WebApi.Modelo
         public DateTime? UltimoReporteFecha { get; set; }
         public DateTime? UltimaEvidenciaFecha { get; set; }
         public DateTime FechaConsulta { get; set; } = DateTime.Now;
-        /// <summary>Huella estable del resumen para comparar en el frontend.</summary>
+
         public string Firma { get; set; } = string.Empty;
     }
 

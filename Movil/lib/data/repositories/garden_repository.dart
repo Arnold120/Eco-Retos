@@ -9,7 +9,7 @@ import '../services/gamification_service.dart';
 import 'garden_local_store.dart';
 import 'trivias_diario_local.dart';
 
-/// Una planta que subió de etapa tras aplicar el tiempo transcurrido.
+
 class MejoraEtapa {
   final PlantGrowth planta;
   final EtapaCrecimiento anterior;
@@ -24,7 +24,7 @@ class MejoraEtapa {
   });
 }
 
-/// Una planta que se perdió por descuido (sed o plaga sin tratar).
+
 class PlantaPerdida {
   final PlantGrowth planta;
   final String motivo;
@@ -32,7 +32,7 @@ class PlantaPerdida {
   const PlantaPerdida({required this.planta, required this.motivo});
 }
 
-/// Resultado de cargar el jardín: mezcla datos locales con backend.
+
 class GardenSnapshot {
   final JardinResponse? jardin;
   final List<PlantGrowth> plantas;
@@ -59,7 +59,7 @@ class GardenSnapshot {
   });
 }
 
-/// Resultado genérico de una acción del jardín.
+
 class ResultadoJardin {
   final bool exito;
   final String? mensaje;
@@ -78,7 +78,7 @@ class ResultadoJardin {
   });
 }
 
-/// Resultado de intentar sembrar una planta nueva.
+
 class ResultadoSiembra {
   final bool exito;
   final String? mensaje;
@@ -97,12 +97,12 @@ class ResultadoSiembra {
   });
 }
 
-/// Repositorio del jardín: fusiona backend, sistema de Monedas Eco existente
-/// (MonederoService), racha diaria (`DiarioStore`) y almacén local.
-///
-/// El crecimiento se calcula con tiempo real: horas acumuladas + tiempo
-/// transcurrido desde `ultimaActualizacion`. Las herramientas aceleran el
-/// crecimiento, y las plagas (ocasionales) lo pausan hasta usar insecticida.
+
+
+
+
+
+
 class GardenRepository {
   final int usuarioId;
   final JardinService _jardinService;
@@ -152,7 +152,7 @@ class GardenRepository {
       );
     }
 
-    // Saldo único de Monedas Eco (fuente de verdad: backend).
+
     var monedas = 0;
     try {
       final saldo = await _monederoService.getSaldo();
@@ -203,9 +203,9 @@ class GardenRepository {
     );
   }
 
-  /// Retira del jardín las plantas que ya no pueden recuperarse o cuya
-  /// especie dejó de estar disponible. Devuelve la lista para avisar al
-  /// usuario.
+
+
+
   Future<List<PlantaPerdida>> removerPerdidas() async {
     final perdidas = <PlantaPerdida>[];
     final vivas = <PlantGrowth>[];
@@ -234,9 +234,9 @@ class GardenRepository {
     return perdidas;
   }
 
-  // ---------------------------------------------------------------------------
-  // Cuidados
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<ResultadoJardin?> regar(String plantaId) async {
     if (!_inventario.regadera) {
@@ -312,7 +312,7 @@ class GardenRepository {
       );
     }
 
-    // Curar una plaga siempre está permitido.
+
     if (!planta.tienePlaga) {
       if (!planta.enCrecimiento) {
         return ResultadoJardin(
@@ -341,7 +341,7 @@ class GardenRepository {
       proximaRevisionPlaga: ahora.add(
         GardenGrowthConfig.ventanaProteccionPlaga,
       ),
-      // El insecticida preventivo también acelera el crecimiento.
+
       horasCrecimiento: planta.tienePlaga
           ? consolidada.horasCrecimiento
           : consolidada.horasCrecimiento +
@@ -406,9 +406,9 @@ class GardenRepository {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Compras
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<ResultadoJardin> comprarHerramienta(
     HerramientaJardin herramienta,
@@ -510,8 +510,8 @@ class GardenRepository {
       _ => 'planta',
     };
 
-    // La planta se crea primero para disponer de un id estable que se usa como
-    // clave de idempotencia del pago (evita cobros duplicados por reintentos).
+
+
     final planta = PlantGrowth.crearDesdeEspecie(
       especie: especie,
       slot: _primerSlotLibre(),
@@ -579,7 +579,7 @@ class GardenRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      // Compensación: deja el contador del jardín como estaba.
+
       try {
         await _jardinService.actualizarJardin(usuarioId, base);
       } catch (_) {}
@@ -605,8 +605,8 @@ class GardenRepository {
     );
   }
 
-  /// Si el desbloqueo por racha ocurrió sin espacio libre, permite reclamar
-  /// la planta carnívora cuando se libere un espacio.
+
+
   Future<ResultadoSiembra> reclamarCarnicora({
     JardinResponse? jardinActual,
     required int monedasActuales,
@@ -658,9 +658,9 @@ class GardenRepository {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Internos
-  // ---------------------------------------------------------------------------
+
+
+
 
   List<MejoraEtapa> _acumularTiempo(DateTime ahora) {
     final mejoras = <MejoraEtapa>[];

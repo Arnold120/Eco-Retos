@@ -1,6 +1,6 @@
 namespace WebApi.Modelo
 {
-    /// <summary>Registro de auditoría de acciones de soporte/moderación.</summary>
+
     public class SupportAuditLog
     {
         public long AuditLogId { get; set; }

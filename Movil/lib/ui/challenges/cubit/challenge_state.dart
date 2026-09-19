@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../data/catalogos/retos/reto_model.dart';
 
-/// Sección/estado visible del listado de retos.
+
 enum RetosSeccion {
   todos('Todos'),
   enProgreso('En progreso'),
@@ -17,18 +17,18 @@ class ChallengeState extends Equatable {
   final bool isLoading;
   final String? error;
 
-  // Búsqueda y filtros.
+
   final String busqueda;
   final RetoDificultad? dificultadSeleccionada;
   final RetoCategoria? categoriaSeleccionada;
   final RetoTipo? tipoSeleccionado;
   final RetosSeccion seccion;
 
-  // Reto del día (🔥).
+
   final RetoProgreso? retoDelDia;
 
-  /// Retos cuya evidencia fue aprobada por un admin (recompensa ya pagada);
-  /// la lista los celebra una sola vez.
+
+
   final List<AprobacionReciente> aprobacionesRecientes;
 
   const ChallengeState({
@@ -44,9 +44,9 @@ class ChallengeState extends Equatable {
     this.aprobacionesRecientes = const [],
   });
 
-  // ─── Datos derivados ────────────────────────────────────────────────────
 
-  /// Lista visible tras aplicar búsqueda, filtros y sección.
+
+
   List<RetoProgreso> get retosFiltrados {
     var lista = retos;
 
@@ -104,7 +104,7 @@ class ChallengeState extends Equatable {
   int get totalPendientes =>
       retos.where((r) => r.estado != RetoEstado.completado).length;
 
-  /// XP acumulada solo por retos completados (economía transparente).
+
   int get xpGanado => retos
       .where((r) => r.estado == RetoEstado.completado)
       .fold(0, (acc, r) => acc + r.reto.xp);
@@ -113,7 +113,7 @@ class ChallengeState extends Equatable {
       .where((r) => r.estado == RetoEstado.completado)
       .fold(0, (acc, r) => acc + r.reto.monedas);
 
-  /// Nivel local estimado (1 XP por punto → 100 por nivel).
+
   int get nivelEstimado => 1 + (xpGanado ~/ 100);
 
   ChallengeState copyWith({

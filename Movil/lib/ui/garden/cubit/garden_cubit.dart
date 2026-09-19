@@ -10,9 +10,9 @@ import '../../../data/repositories/garden_repository.dart';
 import '../../../data/services/gamification_service.dart';
 import 'garden_state.dart';
 
-/// Cubit de Mi Jardín Virtual. Reutiliza los servicios existentes (Dio) y
-/// delega las reglas al [GardenRepository]: crecimiento por tiempo real,
-/// herramientas, plagas y desbloqueo por racha.
+
+
+
 class GardenCubit extends Cubit<GardenState> {
   final int usuarioId;
   final GardenRepository _repository;
@@ -70,7 +70,7 @@ class GardenCubit extends Cubit<GardenState> {
 
   Future<void> refresh() => loadGarden();
 
-  /// Revisa (sin red) si alguna planta se perdió por descuido y la retira.
+
   Future<void> revisarPerdidas() async {
     try {
       final perdidas = await _repository.removerPerdidas();

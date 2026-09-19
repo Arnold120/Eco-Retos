@@ -2,16 +2,16 @@ using System.Text.RegularExpressions;
 
 namespace WebApi.Implementacion.Helpers
 {
-    /// <summary>
-    /// Interpreta el campo UsuarioReto.Evidencia que envía la app Flutter:
-    ///
-    ///   Cantidad: 3
-    ///   Comentario: texto libre
-    ///   Fotos: https://..., https://...
-    ///
-    /// También admite texto plano y URLs sueltas. Separa texto, imágenes,
-    /// videos y enlaces sin inventar datos.
-    /// </summary>
+
+
+
+
+
+
+
+
+
+
     public static class EvidenciaParser
     {
         private static readonly Regex UrlRegex = new(@"https?://[^\s,;]+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -50,7 +50,7 @@ namespace WebApi.Implementacion.Helpers
 
                 if (esLineaFotos)
                 {
-                    // Los adjuntos no aportan texto a la evidencia.
+
                     continue;
                 }
 

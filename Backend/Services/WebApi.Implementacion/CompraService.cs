@@ -70,7 +70,7 @@ namespace WebApi.Implementacion
             return await reader.ReadAsync() ? Mapear(reader) : null;
         }
 
-        /// <summary>Método legado (sin transacción). Usar CrearCompraCompletaAsync.</summary>
+
         public async Task<Compra> CrearCompraAsync(Compra compra)
         {
             using var connection = new SqlConnection(_connectionString);
@@ -136,7 +136,7 @@ namespace WebApi.Implementacion
             using var transaction = connection.BeginTransaction();
             try
             {
-                // 1) Bloquear materiales y leer precios/stock reales del catálogo.
+
                 var materiales = new Dictionary<int, Material>();
                 var nombresParametros = new List<string>();
                 using (var command = new SqlCommand(
@@ -182,7 +182,7 @@ namespace WebApi.Implementacion
                 if (total <= 0)
                     return FalloConRollback(transaction, "El total de la compra debe ser mayor a cero.");
 
-                // 2) Cobrar con el Monedero (valida saldo de forma atómica).
+
                 var cobro = await _monederoService.GastarMonedasAsync(
                     usuarioId,
                     total,
@@ -195,7 +195,7 @@ namespace WebApi.Implementacion
                 if (!cobro.Exito)
                     return FalloConRollback(transaction, cobro.Mensaje ?? "Saldo insuficiente.");
 
-                // 3) Crear la compra y sus detalles.
+
                 var compra = new Compra
                 {
                     UsuarioId = usuarioId,
@@ -243,7 +243,7 @@ namespace WebApi.Implementacion
                     }
                     detallesCreados.Add(detalle);
 
-                    // 4) Inventario (upsert dentro de la misma transacción).
+
                     using (var actualizarInventario = new SqlCommand(
                         "UPDATE Inventario SET Cantidad = Cantidad + @Cantidad OUTPUT INSERTED.InventarioId " +
                         "WHERE UsuarioId = @UsuarioId AND MaterialId = @MaterialId",
@@ -267,7 +267,7 @@ namespace WebApi.Implementacion
                         }
                     }
 
-                    // 5) Descontar stock del catálogo.
+
                     using (var descontar = new SqlCommand(
                         "UPDATE Material SET CantidadDisponible = CantidadDisponible - @Cantidad " +
                         "WHERE MaterialId = @MaterialId AND CantidadDisponible >= @Cantidad",
@@ -281,7 +281,7 @@ namespace WebApi.Implementacion
                     }
                 }
 
-                // 6) Contador de progreso (materiales obtenidos).
+
                 using (var progreso = new SqlCommand(
                     "UPDATE Progreso SET MaterialesObtenidos = MaterialesObtenidos + @Total WHERE UsuarioId = @UsuarioId",
                     connection,

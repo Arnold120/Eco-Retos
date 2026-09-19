@@ -54,7 +54,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        // [Authorize(Roles = "ADMIN")]
+
         [ProducesResponseType(typeof(RolResponseDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Crear([FromBody] CrearRolRequestDto dto)

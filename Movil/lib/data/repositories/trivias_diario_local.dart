@@ -4,11 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/trivia/diario_models.dart';
 
-/// Almacén local del progreso del Modo Diario (SharedPreferences).
-///
-/// Los datos se guardan por usuario con la clave `trivias_diario_v1_<id>`,
-/// siguiendo el mismo patrón de [RetoProgresoLocal]: carga perezosa con caché
-/// en memoria y tolerancia a preferencias corruptas (se reinicia desde cero).
+
+
+
+
+
 class DiarioStore {
   final int usuarioId;
 
@@ -39,7 +39,7 @@ class DiarioStore {
         }
       }
     } catch (_) {
-      // Preferencias corruptas: se parte de cero.
+
       _memoria = null;
     } finally {
       _cargado = true;

@@ -6,13 +6,13 @@ using WebApi.Modelo;
 
 namespace WebApi.Implementacion
 {
-    /// <summary>
-    /// Única puerta de entrada al saldo de Monedas Eco. Garantiza:
-    ///  - Saldo nunca negativo (CHECK + UPDATE condicional atómico).
-    ///  - Movimiento registrado en HistorialMonedas junto al saldo (transacción).
-    ///  - Concurrencia segura (el UPDATE con "Saldo >= @Cantidad" es atómico).
-    ///  - Idempotencia opcional por ClaveIdempotencia.
-    /// </summary>
+
+
+
+
+
+
+
     public class MonederoService : IMonederoService
     {
         private readonly string _connectionString;
@@ -33,7 +33,7 @@ namespace WebApi.Implementacion
             await CrearMonederoSiNoExisteAsync(connection, null, usuarioId);
         }
 
-        /// <summary>Crea el monedero si no existe. Puede participar de una transacción.</summary>
+
         internal static async Task CrearMonederoSiNoExisteAsync(
             SqlConnection connection,
             SqlTransaction? transaction,

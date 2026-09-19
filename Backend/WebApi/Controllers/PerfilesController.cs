@@ -32,7 +32,7 @@ namespace WebApi.Controllers
             _logger = logger;
         }
 
-        /// <summary>Perfil publico de un usuario con contadores sociales.</summary>
+
         [HttpGet("usuario/{usuarioId:int}/publico")]
         [ProducesResponseType(typeof(PerfilPublicoResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -123,10 +123,10 @@ namespace WebApi.Controllers
             if (perfil is null)
                 return NotFound(new { mensaje = $"No se encontro el perfil con id {id}." });
 
-            // Solo se actualizan los campos enviados; si un valor llega vacio o
-            // nulo se conserva el existente. Evita el 400 cuando el perfil fue
-            // creado sin nombre/apellido (registro por defecto) y el movil
-            // reenvia cadenas vacias.
+
+
+
+
             perfil.Nombre = string.IsNullOrWhiteSpace(dto.Nombre) ? perfil.Nombre : dto.Nombre.Trim();
             perfil.Apellido = string.IsNullOrWhiteSpace(dto.Apellido) ? perfil.Apellido : dto.Apellido.Trim();
             if (dto.Carnet is not null)

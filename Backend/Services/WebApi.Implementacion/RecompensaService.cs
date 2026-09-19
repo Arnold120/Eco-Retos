@@ -6,12 +6,12 @@ using WebApi.Modelo;
 
 namespace WebApi.Implementacion
 {
-    /// <summary>
-    /// Recompensas centralizadas. Las cantidades de XP y Monedas se resuelven
-    /// en el backend (configuración de Reto/Insignia o constantes de trivia) y
-    /// nunca se confían al cliente. Cada recompensa se reclama una sola vez
-    /// gracias a la clave de idempotencia.
-    /// </summary>
+
+
+
+
+
+
     public class RecompensaService : IRecompensaService
     {
         private readonly IMonederoService _monederoService;
@@ -77,7 +77,7 @@ namespace WebApi.Implementacion
             if (claveIdempotencia.Length > 120)
                 return Fallo("La clave de idempotencia no puede superar los 120 caracteres.");
 
-            // 1) Calcular la recompensa desde la configuración del backend.
+
             var calculo = await CalcularRecompensaAsync(
                 usuarioId, tipoNormalizado, puntuacion, totalPreguntas, retoId, insigniaId);
             if (!calculo.Exito)
@@ -89,7 +89,7 @@ namespace WebApi.Implementacion
                 ? calculo.Descripcion
                 : descripcion!.Trim();
 
-            // 2) Aplicar en una sola transacción: idempotencia + XP + monedero.
+
             using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
             using var transaction = connection.BeginTransaction();

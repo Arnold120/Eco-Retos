@@ -530,11 +530,11 @@ class _AchievementsScreenState extends State<AchievementsScreen>
   }
 
   double? _calculateProgress(InsigniaResponse insignia) {
-    // Parse requirement to calculate progress
-    // This is a simplified version - in reality, you'd need backend support
+
+
     final requisito = insignia.requisito.toLowerCase();
     if (requisito.contains('reto') || requisito.contains('trivia')) {
-      // Return null if we can't calculate - would need more data
+
       return null;
     }
     return null;

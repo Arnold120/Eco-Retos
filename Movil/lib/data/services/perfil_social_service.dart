@@ -3,7 +3,7 @@ import '../../core/network/api_client.dart';
 import '../../core/network/api_helper.dart';
 import '../models/social/social_models.dart';
 
-/// Perfil publico de un usuario con contadores sociales.
+
 class PerfilSocialService {
   final ApiClient _client;
 

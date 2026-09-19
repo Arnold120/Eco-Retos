@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../gamification/gamification_models.dart';
 import 'plant_growth.dart';
 
-/// Tipo de planta para la UI y las animaciones.
+
 enum PlantaTipo { planta, arbol, flor, suculenta, hierba, decorativa, especial }
 
 extension PlantaTipoX on PlantaTipo {
@@ -34,8 +34,8 @@ extension PlantaTipoX on PlantaTipo {
   }
 }
 
-/// Especie que el usuario puede comprar/plantar. Cada especie apunta a uno de
-/// los GLB optimizados de `assets/plants/`.
+
+
 class EspecieJardin extends Equatable {
   final String id;
   final String nombre;
@@ -84,9 +84,9 @@ class EspecieJardin extends Equatable {
   List<Object?> get props => [id, nombre, modelo, tipo, rareza, precio];
 }
 
-/// Catálogo de plantas del jardín virtual. Los precios están equilibrados con
-/// las Monedas Eco del resto de la aplicación (regadera 50, abono 25,
-/// insecticida 30).
+
+
+
 class CatalogoJardin {
   const CatalogoJardin._();
 

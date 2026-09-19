@@ -61,9 +61,9 @@ class AmbientCategories {
 
 typedef MultimediaItem = ({
   String url,
-  String tipo, // imagen | video
+  String tipo, 
   String? duracion,
-  String? poster, // portada del video (fotograma elegido)
+  String? poster, 
 });
 
 class PublicacionResponse extends Equatable {
@@ -91,14 +91,14 @@ class PublicacionResponse extends Equatable {
   final List<MultimediaItem> multimedia;
   final List<String> etiquetas;
 
-  // Compartidos
+
   final int? compartidoDeId;
   final String? compartidoDeNombreUsuario;
   final String? compartidoDeContenido;
   final String? compartidoDeImagen;
   final bool compartidoEliminado;
 
-  // Campos de logros / iniciativas
+
   final int xpOtorgado;
   final int monedasOtorgadas;
   final String? retoRelacionado;

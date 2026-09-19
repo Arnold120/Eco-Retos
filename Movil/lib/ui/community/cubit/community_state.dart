@@ -45,7 +45,7 @@ class CommunityState extends Equatable {
     this.procesando = const {},
   });
 
-  /// Publicaciones visibles con los filtros locales aplicados.
+
   List<PublicacionResponse> get feed {
     var lista = publicaciones
         .where((p) => !ocultadasIds.contains(p.publicacionId))
@@ -53,7 +53,7 @@ class CommunityState extends Equatable {
 
     switch (filtro) {
       case MuroFiltro.paraTi:
-        // Cronologico estricto: lo mas reciente arriba.
+
         lista.sort((a, b) => b.fechaPublicacion.compareTo(a.fechaPublicacion));
       case MuroFiltro.populares:
         lista.sort((a, b) =>

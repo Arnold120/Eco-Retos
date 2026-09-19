@@ -2,26 +2,26 @@ import 'dart:math';
 
 import 'package:equatable/equatable.dart';
 
-/// Segundos disponibles para responder cada pregunta del Modo Diario.
+
 const Duration kTiempoPorPreguntaDiario = Duration(seconds: 30);
 
-/// Cantidad fija de preguntas que compone la partida diaria.
+
 const int kPreguntasPorDia = 3;
 
-/// Semanas consecutivas completando la trivia diaria necesarias para subir
-/// de dificultad en una categoría.
+
+
 const int kSemanasParaSubirDificultad = 3;
 
-/// XP extra por completar los 7 días de una semana, entregada una sola vez.
+
 const int kXpSemanaCompletada = 100;
 
-/// Monedas extra por completar los 7 días de una semana, entregada una vez.
+
 const int kMonedasSemanaCompletada = 50;
 
-/// Dificultades reales de la base de datos (`Facil`, `Intermedia`, `Dificil`).
-///
-/// Además de la etiqueta legible para la UI expone la dificultad siguiente en
-/// el orden creciente, usada por la progresión del Modo Diario.
+
+
+
+
 enum DificultadTrivia {
   facil('Facil', 'Fácil'),
   intermedia('Intermedia', 'Normal'),
@@ -29,10 +29,10 @@ enum DificultadTrivia {
 
   const DificultadTrivia(this.valorDb, this.etiqueta);
 
-  /// Valor tal y como se guarda en la tabla `Trivia`.
+
   final String valorDb;
 
-  /// Etiqueta legible para mostrar al usuario.
+
   final String etiqueta;
 
   static DificultadTrivia desdeDb(String? valor) {
@@ -48,7 +48,7 @@ enum DificultadTrivia {
     }
   }
 
-  /// Dificultad superior, o `null` si esta es la máxima.
+
   DificultadTrivia? get siguiente {
     switch (this) {
       case DificultadTrivia.facil:
@@ -61,10 +61,10 @@ enum DificultadTrivia {
   }
 }
 
-/// Ayudas disponibles en las partidas de trivia.
-///
-/// `pista` elimina una opción incorrecta, `cincuentaCincuenta` elimina dos y
-/// `saltar` descarta la pregunta actual (solo disponible en Modo Libre).
+
+
+
+
 enum AyudaTrivia {
   pista(50, 'Pista'),
   cincuentaCincuenta(80, '50/50'),
@@ -72,7 +72,7 @@ enum AyudaTrivia {
 
   const AyudaTrivia(this.costo, this.nombre);
 
-  /// Monedas que cuesta activar la ayuda.
+
   final int costo;
 
   final String nombre;
@@ -85,63 +85,63 @@ enum AyudaTrivia {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Helpers de fecha
-// ---------------------------------------------------------------------------
+
+
+
 
 String _dosDigitos(int n) => n.toString().padLeft(2, '0');
 
-/// Clave de fecha `aaaa-mm-dd` usada para persistir y comparar días.
+
 String fechaClave(DateTime fecha) =>
     '${fecha.year}-${_dosDigitos(fecha.month)}-${_dosDigitos(fecha.day)}';
 
-/// Devuelve el lunes (a medianoche) de la semana que contiene [fecha].
+
 DateTime inicioSemana(DateTime fecha) {
   final base = DateTime(fecha.year, fecha.month, fecha.day);
   return base.subtract(Duration(days: base.weekday - DateTime.monday));
 }
 
-/// Clave única de la semana (el lunes de su `aaaa-mm-dd`), usada para saber
-/// si la recompensa semanal ya fue entregada.
+
+
 String claveSemana(DateTime fecha) => fechaClave(inicioSemana(fecha));
 
-/// Categoría asignada al día según `DateTime.weekday` (Lunes→1 ... Domingo→7).
+
 int indiceCategoriaDelDia(DateTime fecha) => fecha.weekday;
 
 bool esMismoDia(DateTime a, DateTime b) => fechaClave(a) == fechaClave(b);
 
-/// Devuelve `true` si [actual] es el día inmediatamente posterior a [anterior].
+
 bool esDiaConsecutivo(DateTime anterior, DateTime actual) {
   final siguiente = DateTime(anterior.year, anterior.month, anterior.day + 1);
   return fechaClave(siguiente) == fechaClave(actual);
 }
 
-/// Devuelve `true` si entre ambas fechas hay exactamente [dias] de diferencia.
+
 bool esDiferenciaDeDias(DateTime a, DateTime b, {required int dias}) {
   final base = DateTime(a.year, a.month, a.day);
   final otro = DateTime(b.year, b.month, b.day);
   return base.difference(otro).inDays.abs() == dias;
 }
 
-// ---------------------------------------------------------------------------
-// Recompensas
-// ---------------------------------------------------------------------------
 
-/// La XP entregada coincide con los puntos obtenidos.
+
+
+
+
 int calcularXp(int puntos) => puntos;
 
-/// Las monedas se obtienen a razón de 1 por cada 10 puntos.
+
 int calcularMonedas(int puntos) => puntos ~/ 10;
 
-// ---------------------------------------------------------------------------
-// Progreso por categoría
-// ---------------------------------------------------------------------------
 
-/// Progreso individual de una categoría en el Modo Diario.
-///
-/// `semanasCompletadasConsecutivas` acumula semanas seguidas completadas;
-/// al llegar a [kSemanasParaSubirDificultad] la dificultad sube y el contador
-/// se reinicia. `cicloDificultad` cuenta cuántas veces subió la dificultad.
+
+
+
+
+
+
+
+
 class ProgresoCategoriaDiario extends Equatable {
   final int categoriaId;
   final String categoriaNombre;
@@ -242,7 +242,7 @@ class ProgresoCategoriaDiario extends Equatable {
     );
   }
 
-  /// Actualiza las estadísticas acumuladas tras finalizar una partida.
+
   ProgresoCategoriaDiario registrarPartida({
     required int aciertos,
     required int respuestas,
@@ -256,10 +256,10 @@ class ProgresoCategoriaDiario extends Equatable {
     );
   }
 
-  /// Registra una semana completada. Si viene después de una semana contigua
-  /// (exactamente 7 días) suma al contador; cuando se alcanzan
-  /// [kSemanasParaSubirDificultad] sube la dificultad, incrementa el ciclo y
-  /// reinicia el contador.
+
+
+
+
   ProgresoCategoriaDiario registrarSemanaCompletada(DateTime fechaCompletado) {
     final ultima = fechaUltimaSemanaCompletada;
     final contigua =
@@ -300,16 +300,16 @@ class ProgresoCategoriaDiario extends Equatable {
       ];
 }
 
-// ---------------------------------------------------------------------------
-// Sesión diaria
-// ---------------------------------------------------------------------------
 
-/// Resultado de una pregunta dentro de la sesión diaria.
-///
-/// `resuelta` es `true` cuando la pregunta llegó a su estado final (respondida
-/// o tiempo agotado) y `respuestaLetra` guarda la letra elegida o `null` si el
-/// tiempo se agotó. Ambos permiten reanudar una sesión a medias.
-/// `ayudaUsada` guarda el nombre de `AyudaTrivia` que se aplicó, si usó alguna.
+
+
+
+
+
+
+
+
+
 class SesionPreguntaDiaria extends Equatable {
   final int triviaId;
   final int categoriaId;
@@ -335,7 +335,7 @@ class SesionPreguntaDiaria extends Equatable {
     this.ayudaUsada,
   });
 
-  /// El usuario respondió una letra (no aplica cuando se agotó el tiempo).
+
   bool get respondida => respuestaLetra != null;
 
   bool get esCorrecta =>
@@ -383,7 +383,7 @@ class SesionPreguntaDiaria extends Equatable {
     );
   }
 
-  /// Marca la pregunta como resuelta sin respuesta (tiempo agotado).
+
   SesionPreguntaDiaria marcarSinRespuesta() {
     return copyWith(resuelta: true, limpiarRespuesta: true);
   }
@@ -425,17 +425,17 @@ class SesionPreguntaDiaria extends Equatable {
       ];
 }
 
-/// Sesión del Modo Diario correspondiente a un día.
-///
-/// `completada` no depende de los aciertos: el día se considera completado
-/// cuando se respondieron todas las preguntas disponibles.
+
+
+
+
 class SesionDiario extends Equatable {
   final DateTime fecha;
   final int? categoriaId;
   final String dificultad;
   final List<SesionPreguntaDiaria> preguntas;
 
-  /// Indica si la recompensa del día ya fue reclamada (entrega única).
+
   final bool recompensaReclamada;
 
   const SesionDiario({
@@ -501,11 +501,11 @@ class SesionDiario extends Equatable {
       [fecha, categoriaId, dificultad, preguntas, recompensaReclamada];
 }
 
-// ---------------------------------------------------------------------------
-// Racha
-// ---------------------------------------------------------------------------
 
-/// Racha global de días consecutivos completando la trivia diaria.
+
+
+
+
 class RachaDiario extends Equatable {
   final int actual;
   final int mejor;
@@ -517,8 +517,8 @@ class RachaDiario extends Equatable {
     this.fechaUltimaCompletada,
   });
 
-  /// Registra un día completado. Suma si es consecutivo al anterior, se
-  /// reinicia a 1 si hubo un hueco y no hace nada si ya se repitió el mismo día.
+
+
   RachaDiario registrarDiaCompletado(DateTime hoy) {
     final ultima = fechaUltimaCompletada;
     if (ultima != null && esMismoDia(ultima, hoy)) return this;
@@ -567,19 +567,19 @@ class RachaDiario extends Equatable {
   List<Object?> get props => [actual, mejor, fechaUltimaCompletada];
 }
 
-// ---------------------------------------------------------------------------
-// Progreso global del Modo Diario
-// ---------------------------------------------------------------------------
 
-/// Estado global persistido del Modo Diario de un usuario.
+
+
+
+
 class ProgresoDiario extends Equatable {
   final Map<int, ProgresoCategoriaDiario> categorias;
 
-  /// Sesiones por clave de fecha `aaaa-mm-dd`.
+
   final Map<String, SesionDiario> sesiones;
   final RachaDiario racha;
 
-  /// Clave de la última semana (lunes `aaaa-mm-dd`) que recibió recompensa.
+
   final String? semanaUltimaRecompensada;
 
   const ProgresoDiario({
@@ -591,13 +591,13 @@ class ProgresoDiario extends Equatable {
 
   ProgresoCategoriaDiario? categoriaDe(int categoriaId) => categorias[categoriaId];
 
-  /// Sesión del día [hoy], si ya fue iniciada.
+
   SesionDiario? sesionDeDia(DateTime hoy) {
     final clave = fechaClave(hoy);
     return sesiones.containsKey(clave) ? sesiones[clave] : null;
   }
 
-  /// Cantidad de días completados dentro de la semana que contiene [ref].
+
   int diasCompletadosEnSemana(DateTime ref) {
     final inicio = inicioSemana(ref);
     return sesiones.values.where((s) {
@@ -609,15 +609,15 @@ class ProgresoDiario extends Equatable {
   bool semanaCompletadaEn(DateTime ref) =>
       diasCompletadosEnSemana(ref) >= 7;
 
-  /// Registra la sesión del día (iniciada o finalizada).
+
   ProgresoDiario registrarSesion(SesionDiario sesionDia) {
     return copyWith(
       sesiones: {...sesiones, fechaClave(sesionDia.fecha): sesionDia},
     );
   }
 
-  /// Actualiza racha, estadísticas de categoría y la sesión tras finalizar
-  /// la partida del día.
+
+
   ProgresoDiario completarDia({
     required SesionDiario sesionFinal,
     required ProgresoCategoriaDiario categoriaActualizada,
@@ -642,8 +642,8 @@ class ProgresoDiario extends Equatable {
     return copyWith(semanaUltimaRecompensada: claveSemana(referencia));
   }
 
-  /// Reemplaza la sesión persistida de un día (p. ej. al reclamar la
-  /// recompensa) conservando el resto del progreso.
+
+
   ProgresoDiario actualizarSesion(SesionDiario sesionActualizada) {
     return copyWith(
       sesiones: {
@@ -715,13 +715,13 @@ class ProgresoDiario extends Equatable {
       ];
 }
 
-// ---------------------------------------------------------------------------
-// Fuente única global de la racha diaria
-// ---------------------------------------------------------------------------
 
-/// Racha efectiva del Modo Diario. Fuente única que deben consultar Inicio,
-/// Perfil, Trivias y los resultados: conserva el valor mientras la última vez
-/// fue hoy o ayer; si quedó un día sin completar, se muestra en 0.
+
+
+
+
+
+
 int rachaEfectivaDiaria(ProgresoDiario progreso, DateTime hoy) {
   final ultima = progreso.racha.fechaUltimaCompletada;
   if (ultima == null) return 0;

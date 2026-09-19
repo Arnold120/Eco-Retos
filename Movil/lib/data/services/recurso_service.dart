@@ -119,9 +119,9 @@ class CompraService {
 
   CompraService(this._client);
 
-  /// Compra transaccional: el backend valida stock y saldo, cobra del
-  /// Monedero, actualiza inventario y registra el movimiento. El usuario sale
-  /// del token; el precio, del catálogo del servidor.
+
+
+
   Future<CompraResponse> createCompra({
     required List<DetalleCompraItem> detalles,
     String? claveIdempotencia,

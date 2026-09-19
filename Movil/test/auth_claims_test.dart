@@ -4,7 +4,7 @@ import 'package:eco_reto/ui/auth/cubit/auth_cubit.dart';
 
 void main() {
   group('AuthCubit.claimDelToken', () {
-    // Claims reales que emite el backend .NET (URIs largas).
+
     final token = <String, dynamic>{
       'sub': '28',
       'jti': 'abc',

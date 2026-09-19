@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    /// <summary>
-    /// Subida de imagenes para publicaciones, retos, trivias, etc.
-    /// El archivo se guarda en wwwroot/imagenes y se devuelve su URL publica.
-    /// </summary>
+
+
+
+
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
@@ -32,7 +32,7 @@ namespace WebApi.Controllers
             _logger = logger;
         }
 
-        /// <summary>POST api/Imagenes con multipart/form-data (campo "archivo").</summary>
+
         [HttpPost]
         [Consumes("multipart/form-data")]
         [RequestSizeLimit(101L * 1024 * 1024)]
@@ -40,10 +40,10 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Subir([FromForm] SubirImagenRequest request)
         {
-            // Swashbuckle no admite [FromForm] directamente sobre IFormFile
-            // (SwaggerGeneratorException "as [FromForm] attribute used with IFormFile");
-            // se usa un DTO con [FromForm] y el campo "archivo" del formulario del movil
-            // se vincula a SubirImagenRequest.Archivo (el binding es case-insensitive).
+
+
+
+
             var archivo = request.Archivo;
             if (archivo is null || archivo.Length == 0)
                 return BadRequest(new { mensaje = "No se recibio ningun archivo." });
@@ -92,11 +92,11 @@ namespace WebApi.Controllers
             });
         }
 
-        /// <summary>
-        /// GET api/Imagenes/archivo/{añoMes}/{nombre} — sirve la imagen sin depender
-        /// de UseStaticFiles (evita 404 por webroot/directorio de ejecución).
-        /// Público: las imágenes se muestran con Image.network sin token.
-        /// </summary>
+
+
+
+
+
         [HttpGet("archivo/{subcarpeta}/{nombre}")]
         [AllowAnonymous]
         [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
@@ -138,11 +138,11 @@ namespace WebApi.Controllers
     {
         public string Url { get; set; } = "";
         public string Ruta { get; set; } = "";
-        /// <summary>imagen | video</summary>
+
         public string Tipo { get; set; } = "imagen";
     }
 
-    /// <summary>DTO multipart: el cliente envia el archivo en el campo "archivo".</summary>
+
     public class SubirImagenRequest
     {
         public IFormFile? Archivo { get; set; }

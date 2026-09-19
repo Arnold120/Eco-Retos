@@ -77,7 +77,7 @@ class ChallengeDetailScreen extends StatelessWidget {
     return RetoProgreso(reto: reto);
   }
 
-  // ─── Secciones ─────────────────────────────────────────────────────────
+
 
   Widget _buildHero(BuildContext context, RetoProgreso progreso) {
     final base = Color(reto.categoria.lightColor);
@@ -504,7 +504,7 @@ class ChallengeDetailScreen extends StatelessWidget {
     );
   }
 
-  // ─── Acciones ──────────────────────────────────────────────────────────
+
 
   Widget _buildAcciones(
     BuildContext context,
@@ -772,9 +772,9 @@ class ChallengeDetailScreen extends StatelessWidget {
   }
 }
 
-// ─── Helpers de UI ────────────────────────────────────────────────────────
 
-/// Color de texto para contenido que va directo sobre el fondo del Scaffold.
+
+
 Color _textoSobreFondo(BuildContext context, {bool secundario = false}) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   if (secundario) {
@@ -920,7 +920,7 @@ class _PanelCompletado extends StatelessWidget {
   }
 }
 
-// ─── Evidencia con fotos ──────────────────────────────────────────────────
+
 
 class _EvidenciaSheet extends StatefulWidget {
   final Reto reto;
@@ -946,7 +946,7 @@ class _EvidenciaSheetState extends State<_EvidenciaSheet> {
 
   bool get _esCantidad => widget.reto.evidencia == RetoTipoEvidencia.cantidad;
 
-  /// Tipos que exigen al menos una fotografía como evidencia visual.
+
   bool get _requiereFoto =>
       widget.reto.evidencia == RetoTipoEvidencia.foto ||
       widget.reto.evidencia == RetoTipoEvidencia.galeria ||
@@ -1372,7 +1372,7 @@ class _EvidenciaSheetState extends State<_EvidenciaSheet> {
   }
 }
 
-// ─── Celebración al completar ─────────────────────────────────────────────
+
 
 class _CelebracionSheet extends StatelessWidget {
   final String titulo;

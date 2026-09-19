@@ -28,14 +28,14 @@ SesionDiario _sesionCompletada(DateTime fecha, int categoriaId) {
 }
 
 void main() {
-  // ---------------------------------------------------------------------------
-  // Helpers de fecha
-  // ---------------------------------------------------------------------------
+
+
+
 
   group('Helpers de fecha', () {
     test('indiceCategoriaDelDia mapea weekday 1-7', () {
-      expect(indiceCategoriaDelDia(DateTime(2026, 9, 7)), 1); // lunes
-      expect(indiceCategoriaDelDia(DateTime(2026, 9, 13)), 7); // domingo
+      expect(indiceCategoriaDelDia(DateTime(2026, 9, 7)), 1); 
+      expect(indiceCategoriaDelDia(DateTime(2026, 9, 13)), 7); 
     });
 
     test('inicioSemana devuelve el lunes de la semana', () {
@@ -98,9 +98,9 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Recompensas
-  // ---------------------------------------------------------------------------
+
+
+
 
   group('Recompensas', () {
     test('calcularXp y calcularMonedas siguen la fórmula 150/150/15', () {
@@ -113,9 +113,9 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Racha
-  // ---------------------------------------------------------------------------
+
+
+
 
   group('RachaDiario', () {
     test('registrarDiaCompletado incrementa solo si es día consecutivo', () {
@@ -125,16 +125,16 @@ void main() {
       racha = racha.registrarDiaCompletado(lunes);
       expect(racha.actual, 1);
 
-      // Mismo día: no vuelve a contar.
+
       racha = racha.registrarDiaCompletado(lunes);
       expect(racha.actual, 1);
 
-      // Día siguiente: incrementa.
+
       final martes = DateTime(2026, 9, 8);
       racha = racha.registrarDiaCompletado(martes);
       expect(racha.actual, 2);
 
-      // Hueco de un día: se reinicia a 1.
+
       final jueves = DateTime(2026, 9, 10);
       racha = racha.registrarDiaCompletado(jueves);
       expect(racha.actual, 1);
@@ -153,9 +153,9 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Dificultad por categoría
-  // ---------------------------------------------------------------------------
+
+
+
 
   group('ProgresoCategoriaDiario', () {
     test('sube de dificultad tras kSemanas semanas completadas seguidas', () {
@@ -183,14 +183,14 @@ void main() {
         categoriaNombre: 'Lunes',
       );
 
-      cat = cat.registrarSemanaCompletada(DateTime(2026, 9, 7)); // semana 1
+      cat = cat.registrarSemanaCompletada(DateTime(2026, 9, 7)); 
       expect(cat.semanasCompletadasConsecutivas, 1);
 
-      // 2 días después: rompe la contigüidad y vuelve a contar desde 1.
+
       cat = cat.registrarSemanaCompletada(DateTime(2026, 9, 9));
       expect(cat.semanasCompletadasConsecutivas, 1);
 
-      // Hueco entre 09-09 y 09-12: tampoco suma.
+
       cat = cat.registrarSemanaCompletada(DateTime(2026, 9, 12));
       expect(cat.semanasCompletadasConsecutivas, 1);
 
@@ -216,9 +216,9 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Sesión
-  // ---------------------------------------------------------------------------
+
+
+
 
   group('SesionPreguntaDiaria', () {
     test('responder correcta otorga puntos y es resuelta', () {
@@ -283,9 +283,9 @@ void main() {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Progreso diario
-  // ---------------------------------------------------------------------------
+
+
+
 
   group('ProgresoDiario', () {
     test('diasCompletadosEnSemana cuenta las sesiones de la semana', () {
@@ -298,7 +298,7 @@ void main() {
 
       expect(progreso.diasCompletadosEnSemana(lunes), 2);
 
-      // La semana anterior queda fuera.
+
       expect(progreso.diasCompletadosEnSemana(DateTime(2026, 8, 31)), 0);
     });
 

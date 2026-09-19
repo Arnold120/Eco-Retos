@@ -7,7 +7,7 @@ namespace WebApi.Modelo
         public string Descripcion { get; set; } = string.Empty;
         public string Requisito { get; set; } = string.Empty;
         public string? Imagen { get; set; }
-        /// <summary>Monedas Eco que se acreditan al obtener la insignia.</summary>
+
         public int MonedasRecompensa { get; set; }
     }
 }

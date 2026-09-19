@@ -7,9 +7,9 @@ import '../design/eco_widgets.dart';
 import 'cubit/admin_evidence_cubit.dart';
 import 'cubit/admin_evidence_state.dart';
 
-/// Panel de administración: revisa la evidencia enviada por los
-/// estudiantes (fotos + comentario) y decide aprobarla (el reto se
-/// completa y otorga puntos) o rechazarla (el estudiante debe rehacerla).
+
+
+
 class AdminEvidenceScreen extends StatefulWidget {
   const AdminEvidenceScreen({super.key});
 

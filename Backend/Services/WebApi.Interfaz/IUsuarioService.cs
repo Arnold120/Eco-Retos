@@ -9,7 +9,7 @@ namespace WebApi.Interfaz
         Task<IEnumerable<Usuario>> ObtenerInactivosAsync();
         Task<Usuario?> ObtenerPorIdAsync(int usuarioId);
 
-        /// <summary>Usuarios por lote en una sola consulta (clave: UsuarioId).</summary>
+
         Task<Dictionary<int, Usuario>> ObtenerPorIdsAsync(IEnumerable<int> usuarioIds);
         Task<Usuario?> ObtenerPorCorreoAsync(string correo);
         Task<Usuario?> ObtenerPorNombreUsuarioAsync(string nombreUsuario);
@@ -23,7 +23,7 @@ namespace WebApi.Interfaz
         Task<bool> ExisteCorreoAsync(string correo);
         Task<bool> ExisteNombreUsuarioAsync(string nombreUsuario);
 
-        /// <summary>Busca usuarios activos por nombre de usuario (para el buscador global).</summary>
+
         Task<IEnumerable<Usuario>> BuscarAsync(string termino, int limite);
         Task<int> ObtenerTotalActivosAsync();
         Task<int> ObtenerTotalAsync();

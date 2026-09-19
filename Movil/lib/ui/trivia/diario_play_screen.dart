@@ -6,8 +6,8 @@ import 'cubit/diario_cubit.dart';
 import 'cubit/diario_state.dart';
 import 'widgets/trivia_ui.dart';
 
-/// Pantalla de juego del Modo Diario: pregunta con opciones A-D, temporizador
-/// de 30 segundos y barra de ayudas (pista y 50/50).
+
+
 class DiarioPlayScreen extends StatelessWidget {
   final DiarioState state;
 

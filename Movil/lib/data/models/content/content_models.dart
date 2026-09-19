@@ -58,7 +58,7 @@ class MaterialResponse extends Equatable {
   final String nombreMaterial;
   final String descripcion;
   final String tipo;
-  /// Precio de venta en Monedas Eco.
+
   final int precioMonedas;
   final int cantidadDisponible;
   final String? imagen;
@@ -135,9 +135,9 @@ class InventarioResponse extends Equatable {
 class CompraResponse extends Equatable {
   final int compraId;
   final int usuarioId;
-  /// Total pagado en Monedas Eco.
+
   final int totalMonedas;
-  /// Saldo de Monedas Eco después de la compra (lo devuelve el backend).
+
   final int saldoRestante;
   final DateTime fechaCompra;
 

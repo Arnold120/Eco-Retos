@@ -10,8 +10,8 @@ import 'widgets/post_card.dart';
 import 'widgets/post_card_skeleton.dart';
 import 'widgets/post_helpers.dart';
 
-/// Pantalla de detalle de una publicacion (destino de notificaciones y
-/// enlaces internos). Carga la publicacion por id y muestra comentarios.
+
+
 class PostDetailScreen extends StatefulWidget {
   final int publicacionId;
 

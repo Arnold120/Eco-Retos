@@ -9,8 +9,8 @@ import '../widgets/user_avatar.dart';
 import 'conversation_screen.dart';
 import 'cubit/messages_cubit.dart';
 
-/// Pantalla de mensajes como ruta independiente. Reutiliza la misma vista
-/// incrustable del Muro Eco y el mismo cubit global.
+
+
 class MessagesScreen extends StatelessWidget {
   final int usuarioId;
 
@@ -25,12 +25,12 @@ class MessagesScreen extends StatelessWidget {
   }
 }
 
-/// Lista de conversaciones incrustable (Muro Eco).
+
 class MuroMensajesView extends StatefulWidget {
   final int usuarioId;
 
-  /// Si viene, la conversacion se abre dentro del Muro Eco.
-  /// Si no, se abre como pantalla independiente.
+
+
   final void Function(ConversacionResumen)? onAbrir;
 
   const MuroMensajesView({

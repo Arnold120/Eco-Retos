@@ -9,8 +9,8 @@ import '../../messages/conversation_screen.dart';
 import '../cubit/community_cubit.dart';
 import 'post_helpers.dart';
 
-/// Dialogo real de compartir: publicar en el muro, copiar enlace o
-/// enviar por mensaje directo.
+
+
 Future<void> showShareDialog(
   BuildContext context, {
   required PublicacionResponse post,

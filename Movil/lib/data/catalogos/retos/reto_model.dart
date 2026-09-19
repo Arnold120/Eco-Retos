@@ -1,8 +1,8 @@
-/// Modelo de dominio del catálogo de retos ecológicos.
-///
-/// Vive en `data/` completamente separado de la UI. Las pantallas consumen
-/// este catálogo (nunca lo definen). El catálogo es agnóstico del backend:
-/// puede crecer de 10 a 10,000 retos sin modificar la interfaz.
+
+
+
+
+
 library;
 
 import '../../models/gamification/gamification_models.dart';
@@ -26,8 +26,8 @@ class RetoMaterial {
   String toString() => '$nombre ×$cantidad';
 }
 
-/// Las 7 categorías oficiales del proyecto (Ids 1-7). Son la taxonomía
-/// maestra: backend, catálogo, puntos y estadísticas giran en torno a estas.
+
+
 enum RetoCategoria {
   reciclaje(
     1,
@@ -87,17 +87,17 @@ enum RetoCategoria {
     this.lightColor,
   );
 
-  /// ID oficial de la categoría en el backend (1-7).
+
   final int categoriaId;
 
   final String id;
 
   final String nombre;
 
-  /// Descripción oficial usada también en la tabla Categoria del backend.
+
   final String descripcion;
 
-  /// Color de la categoría en el formato light/dark del Design System.
+
   final int lightColor;
 
   String get emoji => nombre.split(' ').first;
@@ -112,8 +112,8 @@ enum RetoCategoria {
 
 enum RetoDificultad { facil, intermedio, dificil, experto }
 
-/// Convierte el nombre almacenado en el backend (FACIL, INTERMEDIO, ...) al
-/// enum del catálogo. Desconocido → dificultad más baja (fácil).
+
+
 RetoDificultad retoDificultadDesde(String? nombre) {
   for (final d in RetoDificultad.values) {
     if (d.name.toUpperCase() == (nombre ?? '').toUpperCase()) return d;
@@ -135,7 +135,7 @@ extension RetoDificultadInfo on RetoDificultad {
     }
   }
 
-  /// XP multiplicado por dificultad: Fácil ×1, Intermedio ×2, etc.
+
   int get xpMultiplier {
     switch (this) {
       case RetoDificultad.facil:
@@ -163,8 +163,8 @@ enum RetoTipo {
   investigacion,
 }
 
-/// Convierte el nombre almacenado en el backend (INDIVIDUAL, CANTIDAD, ...)
-/// al enum del catálogo. Desconocido → tipo genérico (individual).
+
+
 RetoTipo retoTipoDesde(String? nombre) {
   for (final t in RetoTipo.values) {
     if (t.name.toUpperCase() == (nombre ?? '').toUpperCase()) return t;
@@ -201,8 +201,8 @@ extension RetoTipoInfo on RetoTipo {
 
 enum RetoTipoEvidencia { foto, galeria, video, texto, cantidad, respuesta }
 
-/// Convierte el nombre almacenado en el backend (FOTO, GALERIA, VIDEO, ...)
-/// al enum del catálogo. Desconocido → evidencia visual (foto).
+
+
 RetoTipoEvidencia retoTipoEvidenciaDesde(String? nombre) {
   for (final e in RetoTipoEvidencia.values) {
     if (e.name.toUpperCase() == (nombre ?? '').toUpperCase()) return e;
@@ -273,8 +273,8 @@ extension RetoEstadoInfo on RetoEstado {
   }
 }
 
-/// Representa un reto del catálogo. Contenido puro: sin lógica de negocio
-/// ni referencias a la interfaz.
+
+
 class Reto {
   final String id;
   final String titulo;
@@ -339,8 +339,8 @@ class Reto {
   int get hashCode => id.hashCode;
 }
 
-/// Vista combinada: reto del catálogo + progreso/estado del usuario.
-/// Es la unidad que consume la UI (no usa el catalogo en bruto).
+
+
 class RetoProgreso {
   final Reto reto;
   final RetoEstado estado;
@@ -363,8 +363,8 @@ class RetoProgreso {
   });
 
   double get porcentaje {
-    // Si el reto tiene pasos seleccionables, el progreso se mide sobre ellos:
-    // marcar TODOS los pasos = 100% (independiente del objetivo de cantidad).
+
+
     final totalPasos = reto.instrucciones.length;
     if (totalPasos > 0) {
       final pasos = (pasosCompletadas ?? progresoActual).clamp(0, totalPasos);
@@ -401,8 +401,8 @@ class RetoProgreso {
   }
 }
 
-/// Reto aprobado automáticamente por el panel admin, pendiente de que la
-/// UI celebre la recompensa al estudiante (XP/ECOs y logros desbloqueados).
+
+
 class AprobacionReciente {
   final RetoProgreso progreso;
   final List<InsigniaResponse> logros;

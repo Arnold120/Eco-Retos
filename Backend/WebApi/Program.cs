@@ -6,14 +6,14 @@ using WebApi.Interfaz;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Permite subir videos de hasta 100 MB (las imagenes mantienen su limite).
+
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.Limits.MaxRequestBodySize = 110L * 1024 * 1024;
 });
 
-// Detrás de ngrok/proxy TLS: respeta X-Forwarded-Proto/Host para generar URLs
-// https correctas en las respuestas (evita contenido mixto en la web).
+
+
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders =
@@ -26,9 +26,9 @@ builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddMemoryCache();
 
-// Soporte web (aditivo): CORS restringido solo a los orígenes del centro de soporte.
-// Los orígenes pueden sobreescribirse con la configuración Cors:Origenes (o la
-// variable de entorno Cors__Origenes__0, __1, ...).
+
+
+
 var origenesSoporte = builder.Configuration.GetSection("Cors:Origenes").Get<string[]>()
     ?? new[] { "https://eco-retos-soporte.netlify.app", "http://localhost:5173" };
 builder.Services.AddCors(options =>
@@ -74,7 +74,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Registro de servicios
+
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IRolService, RolService>();
 builder.Services.AddScoped<IUsuarioRolService, UsuarioRolService>();
@@ -111,12 +111,12 @@ builder.Services.AddScoped<IDetalleCompraService, DetalleCompraService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-// Módulo de soporte con IA (aditivo: tablas SupportCase/SupportAuditLog).
+
 builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();
 builder.Services.AddScoped<IServicioIA, ServicioIA>();
 builder.Services.AddScoped<ISoporteService, SoporteService>();
 
-// Autenticacion JWT
+
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException("Jwt:Key not configured.");
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "EcoRetos";
@@ -148,12 +148,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Debe ir antes de UseHttpsRedirection para leer los headers del proxy.
+
 app.UseForwardedHeaders();
 
 app.UseHttpsRedirection();
 
-// CORS para el centro de soporte web (aditivo).
+
 app.UseCors("soporte");
 
 app.UseStaticFiles();

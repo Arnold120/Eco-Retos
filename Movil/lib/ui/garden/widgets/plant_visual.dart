@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../data/models/gamification/gamification_models.dart';
 import '../../../data/models/garden/garden_catalog.dart';
 
-/// Forma de las hojas dibujadas de forma procedural.
+
 enum FormaHoja {
   oval,
   lanceolada,
@@ -15,7 +15,7 @@ enum FormaHoja {
   espada,
 }
 
-/// Porte (arquitectura de crecimiento) de la planta adulta.
+
 enum Porte {
   erecto,
   frondoso,
@@ -27,8 +27,8 @@ enum Porte {
   flotante,
 }
 
-/// Perfil visual procedural de una especie. Es un dato puro (const) que el
-/// painter usa para dar identidad propia a cada planta en todo su ciclo.
+
+
 class PlantProfile {
   final Color semilla;
   final Color semillaDetalle;
@@ -47,7 +47,7 @@ class PlantProfile {
   final bool floresAdultas;
   final bool frutosAdultos;
 
-  /// Si es verdadero, el porte trepador se dibuja como planta colgante.
+
   final bool colgante;
 
   const PlantProfile({
@@ -70,8 +70,8 @@ class PlantProfile {
     this.colgante = false,
   });
 
-  /// Aplica el golpe de la sed a un color: apaga la saturación hacia un tono
-  /// pardo y reduce su brillo.
+
+
   Color marchitar(Color c, double sed) {
     if (sed <= 0) return c;
     final apagado = Color.lerp(c, const Color(0xFFA8A48E), sed.clamp(0.0, 1.0));
@@ -79,7 +79,7 @@ class PlantProfile {
   }
 }
 
-/// Resolver determinista especie -> perfil visual.
+
 class PlantArtProfile {
   const PlantArtProfile._();
 

@@ -48,8 +48,8 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> loadDashboard() async {
     emit(state.copyWith(isLoading: true, error: null));
     try {
-      // El catálogo de retos ahora vive en el backend: se carga aquí (y en
-      // el ChallengeCubit) compartiendo un único viaje a GET /api/Retos.
+
+
       await RetoRepository.cargarCatalogo(_retoService);
       final results = await Future.wait([
         _categoriaService.getCategorias(),
@@ -57,7 +57,7 @@ class HomeCubit extends Cubit<HomeState> {
         _progresoService.getProgreso(usuarioId),
         _jardinService.getJardin(usuarioId),
         _diarioStore.cargar(),
-        // Saldo único de Monedas Eco + XP/nivel (fuente de verdad: backend).
+
         _monederoService.getSaldo(),
         _notificacionService.getConteoNoLeidas(usuarioId),
         _publicacionService.getRecientes(5),

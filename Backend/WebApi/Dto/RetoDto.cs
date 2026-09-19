@@ -97,7 +97,7 @@ namespace WebApi.Dto
         public bool EsEspecial { get; set; }
     }
 
-    /// <summary>Registro automático de un reto del catálogo local en el backend (upsert por Codigo).</summary>
+
     public class RegistrarRetoCatalogoRequestDto
     {
         [Required(ErrorMessage = "El codigo es obligatorio.")]
@@ -125,11 +125,11 @@ namespace WebApi.Dto
         public string Dificultad { get; set; } = string.Empty;
     }
 
-    /// <summary>
-    /// Verifica (o crea) un reto del catálogo local y lo asigna al usuario en
-    /// un solo viaje. El endpoint vive en Retos para que el "push" del reto
-    /// sea responsabilidad del módulo de retos.
-    /// </summary>
+
+
+
+
+
     public class AsignarRetoRequestDto
     {
         [Required(ErrorMessage = "El usuario es obligatorio.")]
@@ -160,7 +160,7 @@ namespace WebApi.Dto
         [StringLength(50, ErrorMessage = "La dificultad no puede superar los 50 caracteres.")]
         public string Dificultad { get; set; } = string.Empty;
 
-        /// <summary>Estado final de la participación: INICIADO, EN_REVISION o COMPLETADO.</summary>
+
         [StringLength(50, ErrorMessage = "El estado no puede superar los 50 caracteres.")]
         public string Estado { get; set; } = "INICIADO";
 

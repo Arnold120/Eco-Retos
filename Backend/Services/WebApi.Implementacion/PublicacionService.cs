@@ -14,7 +14,7 @@ namespace WebApi.Implementacion
             "PublicacionId, UsuarioId, Contenido, Imagen, Tipo, FechaPublicacion, Estado, " +
             "Ubicacion, Categoria, CompartidoDeId, CompartidoEliminado, Visibilidad, Editada, FechaEdicion";
 
-        /// <summary>Clausula de visibilidad. Espera los parametros @Espectador.</summary>
+
         private const string ClausulaVisibilidad =
             "AND (Visibilidad = 'PUBLICO' " +
             "OR UsuarioId = @Espectador " +
@@ -240,8 +240,8 @@ namespace WebApi.Implementacion
 
             try
             {
-                // Los compartidos conservan su fila pero marcan el original como
-                // eliminado (el FK es NO ACTION para evitar rutas de cascada).
+
+
                 using (var marcar = new SqlCommand(
                     "UPDATE Publicacion SET CompartidoEliminado = 1, CompartidoDeId = NULL WHERE CompartidoDeId = @PublicacionId", connection, transaction))
                 {
@@ -249,7 +249,7 @@ namespace WebApi.Implementacion
                     await marcar.ExecuteNonQueryAsync();
                 }
 
-                // Reacciones de la publicacion y de sus comentarios.
+
                 using (var reacciones = new SqlCommand(
                     "DELETE FROM Reaccion WHERE PublicacionId = @PublicacionId " +
                     "OR ComentarioId IN (SELECT ComentarioId FROM Comentario WHERE PublicacionId = @PublicacionId)", connection, transaction))
@@ -258,8 +258,8 @@ namespace WebApi.Implementacion
                     await reacciones.ExecuteNonQueryAsync();
                 }
 
-                // Las respuestas se eliminan antes que sus comentarios raiz
-                // porque el FK de respuestas es NO ACTION.
+
+
                 using (var respuestas = new SqlCommand(
                     "DELETE FROM Comentario WHERE PublicacionId = @PublicacionId AND ComentarioPadreId IS NOT NULL", connection, transaction))
                 {

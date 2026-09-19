@@ -8,11 +8,11 @@ using WebApi.Modelo;
 
 namespace WebApi.Implementacion
 {
-    /// <summary>
-    /// Servicio del módulo de soporte. Reutiliza los servicios existentes de
-    /// notificaciones, usuarios/roles y evidencias de retos; solo lee/escribe
-    /// las tablas nuevas SupportCase, SupportCaseMensaje y SupportAuditLog.
-    /// </summary>
+
+
+
+
+
     public class SoporteService : ISoporteService
     {
         private readonly string _connectionString;
@@ -70,7 +70,6 @@ namespace WebApi.Implementacion
             _ia = ia;
         }
 
-        /* ─── Utilidades internas ──────────────────────────────────────────── */
 
         private static string Normalizar(string? valor, string[] validos, string porDefecto)
         {
@@ -181,7 +180,6 @@ namespace WebApi.Implementacion
             return await reader.ReadAsync() ? MapearCaso(reader) : null;
         }
 
-        /* ─── Configuración ────────────────────────────────────────────────── */
 
         public async Task<Dictionary<string, string>> ObtenerConfigAsync()
         {
@@ -219,7 +217,6 @@ namespace WebApi.Implementacion
                 "Configuración de soporte actualizada");
         }
 
-        /* ─── Casos (usuario) ──────────────────────────────────────────────── */
 
         public async Task<SupportCaseResponseDto> CrearCasoAsync(int usuarioId, string nombreUsuario, CrearCasoRequestDto dto)
         {
@@ -255,7 +252,7 @@ namespace WebApi.Implementacion
                 casoId = Convert.ToInt32(await command.ExecuteScalarAsync());
             }
 
-            // Mensaje inicial del usuario (la descripción) + respuesta inmediata de la IA.
+
             var primerMensaje = descripcion.Length > 0 ? descripcion : dto!.Titulo.Trim();
             await InsertarMensajeAsync(casoId, "USUARIO", usuarioId, primerMensaje, null, null, false);
             var decision = await _ia.AnalizarSoporteAsync(new ContextoSoporteIA
@@ -471,7 +468,6 @@ namespace WebApi.Implementacion
             await command.ExecuteNonQueryAsync();
         }
 
-        /* ─── Casos (admin) ────────────────────────────────────────────────── */
 
         public async Task<IEnumerable<SupportCaseResponseDto>> ObtenerCasosAdminAsync(string? estado, string? prioridad, string? categoria, string? q)
         {
@@ -530,7 +526,7 @@ namespace WebApi.Implementacion
             var adminId = dto.AdminUsuarioId ?? caso.AdminUsuarioId;
             if (nuevoEstado == "ASIGNADO" && adminId is null) adminId = adminUsuarioId;
 
-            // Al responder por primera vez, el administrador toma el caso.
+
             var respondioAdmin = !string.IsNullOrWhiteSpace(dto.RespuestaAdmin);
             if (respondioAdmin)
             {
@@ -626,7 +622,6 @@ namespace WebApi.Implementacion
             return actualizado is null ? null : ACasoDto(actualizado);
         }
 
-        /* ─── Dashboard ────────────────────────────────────────────────────── */
 
         public async Task<DashboardSoporteResponseDto> ObtenerDashboardAsync()
         {
@@ -689,7 +684,6 @@ namespace WebApi.Implementacion
             return d;
         }
 
-        /* ─── Reportes y moderación ────────────────────────────────────────── */
 
         private const string SelectReporteDenuncia =
             "SELECT d.DenunciaId, d.UsuarioId, u.NombreUsuario AS UsuarioNombre, u.Correo AS UsuarioCorreo, " +
@@ -857,8 +851,8 @@ namespace WebApi.Implementacion
                 }
             }
 
-            // Los casos no comparten los estados de Denuncia: el filtro por
-            // estado se aplica sobre el estado normalizado del reporte.
+
+
             var estadoFiltro = (estado ?? string.Empty).Trim().ToUpperInvariant();
             if (estadoFiltro.Length > 0)
                 lista = lista.Where(r => r.Tipo != "SOPORTE" || r.Estado == estadoFiltro).ToList();
@@ -947,7 +941,7 @@ namespace WebApi.Implementacion
                 $"El estado de tu reporte cambió a {estado.ToLowerInvariant()}. Acción aplicada: {etiquetaAccion}. Motivo: {motivo}",
                 "SOPORTE", denunciaId, "REPORTE");
 
-            // Advertencia al autor del contenido reportado (regla de moderación).
+
             if (accion == "ADVERTENCIA")
             {
                 var autorId = await ObtenerAutorContenidoDenunciaAsync(denunciaId);
@@ -1052,8 +1046,8 @@ namespace WebApi.Implementacion
                 return true;
             }
 
-            // Los comentarios NO se eliminan: se ocultan y se conserva el registro
-            // para auditoría (columna Comentario.Estado agregada en Soporte_Mejoras.sql).
+
+
             if (objetivo == "COMENTARIO" && (accion == "OCULTAR" || accion == "ELIMINAR"))
             {
                 int autorId;
@@ -1086,7 +1080,7 @@ namespace WebApi.Implementacion
             return false;
         }
 
-        /// <summary>Marca el reporte como resuelto al aplicar una moderación desde el reporte.</summary>
+
         private async Task ResolverReporteVinculadoAsync(int? denunciaId, string accion, string? motivo, int adminUsuarioId)
         {
             if (denunciaId is not int id || id <= 0) return;
@@ -1112,7 +1106,6 @@ namespace WebApi.Implementacion
                 null, "RESUELTA", motivoFinal);
         }
 
-        /* ─── Evidencias de retos ──────────────────────────────────────────── */
 
         private const string SelectEvidencia =
             "SELECT ur.UsuarioRetoId, ur.UsuarioId, u.NombreUsuario, u.Correo AS UsuarioCorreo, ur.RetoId, " +
@@ -1180,7 +1173,7 @@ namespace WebApi.Implementacion
                 }
                 catch
                 {
-                    // Metadata antigua o inválida: se ignora.
+
                 }
             }
             return mapa;
@@ -1276,7 +1269,7 @@ namespace WebApi.Implementacion
             bool ok;
             if (estado == "COMPLETADO")
             {
-                // Si no llegan puntos, se usa la recompensa real del reto.
+
                 var puntos = dto.PuntosObtenidos;
                 if (puntos <= 0)
                 {
@@ -1320,7 +1313,6 @@ namespace WebApi.Implementacion
             return ok;
         }
 
-        /* ─── Administradores (usuarios reales con rol ADMIN) ──────────────── */
 
         public async Task<IEnumerable<AdminUsuarioResponseDto>> ObtenerAdminsAsync()
         {
@@ -1464,7 +1456,6 @@ namespace WebApi.Implementacion
             return ok;
         }
 
-        /* ─── Notificaciones ───────────────────────────────────────────────── */
 
         public async Task NotificarAdminsAsync(int casoId, string titulo, string mensaje, string tipo)
         {
@@ -1526,7 +1517,6 @@ namespace WebApi.Implementacion
             });
         }
 
-        /* ─── Resumen para el sondeo automático del panel ──────────────────── */
 
         public async Task<ResumenAdminSoporteResponseDto> ObtenerResumenAdminAsync()
         {

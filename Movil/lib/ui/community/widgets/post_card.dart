@@ -19,16 +19,16 @@ import 'post_helpers.dart';
 import 'post_media.dart';
 import 'share_dialog.dart';
 
-/// Tarjeta de publicacion reutilizable.
-///
-/// Soporta publicaciones normales, con multimedia, con enlace, compartidas,
-/// editadas y con el contenido original eliminado.
+
+
+
+
 class PostCard extends StatelessWidget {
   final PublicacionResponse post;
   final int usuarioId;
 
-  /// Oculta el bloque de autor cuando la tarjeta se muestra dentro de una
-  /// publicacion compartida (contenido citado).
+
+
   final bool esCitada;
 
   const PostCard({
@@ -40,7 +40,7 @@ class PostCard extends StatelessWidget {
 
   bool get _esPropia => post.usuarioId == usuarioId;
 
-  /// Version compacta y sin acciones para citar el contenido original.
+
   Widget _buildCitada(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
@@ -145,7 +145,7 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  // ─── Cabecera ───────────────────────────────────────────────────────────
+
 
   Widget _cabecera(BuildContext context) {
     final sec = textSecondaryColor(context);
@@ -258,7 +258,7 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  // ─── Contenido ──────────────────────────────────────────────────────────
+
 
   Widget _contenidoTexto(BuildContext context, String texto) {
     return Column(
@@ -322,7 +322,7 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  // ─── Publicacion compartida ─────────────────────────────────────────────
+
 
   Widget _bloqueCompartido(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -412,7 +412,7 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  // ─── Resumen y acciones ─────────────────────────────────────────────────
+
 
   Widget _resumenSocial(BuildContext context) {
     final sec = textSecondaryColor(context);
@@ -495,7 +495,7 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  // ─── Navegacion ─────────────────────────────────────────────────────────
+
 
   void _abrirOriginal(BuildContext context, int publicacionId) async {
     final cubit = context.read<CommunityCubit>();
@@ -521,7 +521,7 @@ class PostCard extends StatelessWidget {
     }
   }
 
-  // ─── Menu contextual ────────────────────────────────────────────────────
+
 
   Future<void> _ejecutarMenu(
       BuildContext context, _AccionMenu accion) async {

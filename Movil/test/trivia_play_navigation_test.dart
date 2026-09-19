@@ -23,8 +23,8 @@ void main() {
     (tester) async {
       final cubit = _crearCubit();
       await tester.pumpWidget(
-        // Mismo armado que main.dart: el cubit vive DENTRO del subtree del home.
-        // La pantalla de juego recibe el cubit explicitamente (patrón autocontenido).
+
+
         MaterialApp(
           home: BlocProvider<TriviaCubit>.value(
             value: cubit,
@@ -51,17 +51,17 @@ void main() {
       await tester.tap(find.text('¡Jugar!'));
       await tester.pumpAndSettle();
 
-      // La pantalla de juego se abrió y construyó sin ProviderNotFound.
+
       expect(find.byType(TriviaPlayScreen), findsOneWidget);
       expect(find.text('No hay preguntas disponibles'), findsOneWidget);
 
-      // Sigue abierta unos frames después: no hay pop automático.
+
       await tester.pump(const Duration(seconds: 1));
       await tester.pump(const Duration(seconds: 1));
       expect(find.byType(TriviaPlayScreen), findsOneWidget);
       expect(find.text('¡Jugar!'), findsNothing);
 
-      // El botón de volver cierra la pantalla y regresa a la lista.
+
       await tester.tap(find.text('Volver a Trivia'));
       await tester.pumpAndSettle();
       expect(find.byType(TriviaPlayScreen), findsNothing);

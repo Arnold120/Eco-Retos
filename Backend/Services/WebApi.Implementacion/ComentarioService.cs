@@ -122,7 +122,7 @@ namespace WebApi.Implementacion
             }
             catch
             {
-                // Una notificacion fallida nunca debe impedir el comentario.
+
             }
         }
 
@@ -146,7 +146,7 @@ namespace WebApi.Implementacion
 
             try
             {
-                // Reacciones propias y de las respuestas.
+
                 using (var reacciones = new SqlCommand(
                     "DELETE FROM Reaccion WHERE ComentarioId = @ComentarioId " +
                     "OR ComentarioId IN (SELECT ComentarioId FROM Comentario WHERE ComentarioPadreId = @ComentarioId)", connection, transaction))
@@ -155,7 +155,7 @@ namespace WebApi.Implementacion
                     await reacciones.ExecuteNonQueryAsync();
                 }
 
-                // Las respuestas primero: su FK es NO ACTION.
+
                 using (var respuestas = new SqlCommand(
                     "DELETE FROM Comentario WHERE ComentarioPadreId = @ComentarioId", connection, transaction))
                 {

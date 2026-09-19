@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 
-/// Tipos de efecto visual ligero del jardín (una sola pasada, sin física).
+
 enum GardenEffectType { gotas, abono, insecticida, brillo }
 
-/// Superposición de partículas de un solo uso. Se instancia con una clave
-/// nueva por evento para que la animación se reproduzca una vez.
+
+
 class GardenEffectOverlay extends StatefulWidget {
   final GardenEffectType tipo;
   final Duration duracion;
@@ -88,7 +88,7 @@ class _EffectPainter extends CustomPainter {
         paint..color = AppColors.bluePastel.withValues(alpha: alpha),
       );
     }
-    // Suelo húmedo temporal
+
     final humedad = t < 0.5 ? t / 0.5 : (1 - t) / 0.5;
     canvas.drawOval(
       Rect.fromCenter(
@@ -119,7 +119,7 @@ class _EffectPainter extends CustomPainter {
         Paint()..color = color.withValues(alpha: alpha * 0.9),
       );
     }
-    // Aro de energía en la base
+
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(size.width / 2, size.height * 0.93),
@@ -135,7 +135,7 @@ class _EffectPainter extends CustomPainter {
 
   void _pintarInsecticida(Canvas canvas, Size size) {
     final centro = Offset(size.width / 2, size.height * 0.45);
-    // Niebla/rocio
+
     for (var i = 0; i < 14; i++) {
       final semilla = ((i * 41) % 19) / 19;
       final angulo = i * 2 * math.pi / 14 + t * 2.4;
@@ -149,7 +149,7 @@ class _EffectPainter extends CustomPainter {
         Paint()..color = AppColors.mintLight.withValues(alpha: (1 - t) * 0.45),
       );
     }
-    // Bichito que se desvanece
+
     final alphaBicho = (1 - t * 1.2).clamp(0.0, 1.0);
     if (alphaBicho > 0) {
       final cuerpo = Paint()
@@ -188,7 +188,7 @@ class _EffectPainter extends CustomPainter {
 
   void _pintarBrillo(Canvas canvas, Size size) {
     final centro = Offset(size.width / 2, size.height * 0.52);
-    // Anillos expansivos
+
     for (var anillo = 0; anillo < 3; anillo++) {
       final fase = (t * 1.25 - anillo * 0.18).clamp(0.0, 1.0);
       if (fase <= 0) continue;
@@ -201,7 +201,7 @@ class _EffectPainter extends CustomPainter {
           ..color = AppColors.xpGold.withValues(alpha: (1 - fase) * 0.8),
       );
     }
-    // Destellos
+
     final paint = Paint()..color = AppColors.xpGold;
     for (var i = 0; i < 16; i++) {
       final semilla = ((i * 53) % 21) / 21;
@@ -228,7 +228,7 @@ class _EffectPainter extends CustomPainter {
       oldDelegate.t != t;
 }
 
-/// Mancha sutil de tierra húmeda cuando la planta fue regada hace poco.
+
 class SueloHumedoOverlay extends StatelessWidget {
   final double intensidad;
 

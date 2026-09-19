@@ -14,7 +14,7 @@ import 'package:eco_reto/data/services/descarga_service.dart';
 const _correo = 'qa.descarga@test.local';
 const _contrasena = 'QaTest123!';
 
-// PNG 1x1 valido.
+
 const _pngBase64 =
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 
@@ -30,7 +30,7 @@ Future<String> _token() async {
       'Apellido': 'Descarga',
     });
   } catch (_) {
-    // Ya existe.
+
   }
   final r = await _dio.post('/Auth/login', data: {
     'Correo': _correo,

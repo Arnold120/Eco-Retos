@@ -74,7 +74,7 @@ class JardinService {
         fromJson: JardinResponse.fromJson,
       );
     } on ApiException catch (e) {
-      // Si el usuario no tiene jardín (404), devolvemos uno vacío por defecto
+
       if (e.statusCode == 404) {
         return JardinResponse(
           jardinId: 0,
@@ -147,12 +147,12 @@ class InsigniaService {
   }
 }
 
-/// Servicio del Monedero: única fuente de verdad del saldo de Monedas Eco.
-///
-/// - getSaldo: saldo actual + XP/nivel (el backend calcula todo).
-/// - getHistorial: auditoría de movimientos (ganancias y gastos).
-/// - reclamarRecompensa: el backend calcula la XP y las monedas y es idempotente.
-/// - gastar: gasta monedas validando el saldo en el servidor.
+
+
+
+
+
+
 class MonederoService {
   final ApiClient _client;
 
@@ -184,8 +184,8 @@ class MonederoService {
     );
   }
 
-  /// Reclama una recompensa (TRIVIA, TRIVIA_SEMANA, RETO o INSIGNIA).
-  /// La cantidad de XP/monedas la decide el backend.
+
+
   Future<RecompensaResponse> reclamarRecompensa({
     required String tipo,
     required String claveIdempotencia,
@@ -213,7 +213,7 @@ class MonederoService {
     );
   }
 
-  /// Gasta Monedas Eco (herramientas del jardín, ayudas de trivia, etc.).
+
   Future<GastoMonedasResponse> gastar({
     required int cantidad,
     required String tipo,

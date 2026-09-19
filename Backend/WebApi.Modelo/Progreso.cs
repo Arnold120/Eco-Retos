@@ -4,7 +4,7 @@ namespace WebApi.Modelo
     {
         public int ProgresoId { get; set; }
         public int UsuarioId { get; set; }
-        /// <summary>Experiencia (XP) total. Independiente de las Monedas Eco.</summary>
+
         public int Experiencia { get; set; }
         public int RetosCompletados { get; set; }
         public int TriviasCompletadas { get; set; }

@@ -2,11 +2,11 @@ import 'dart:math';
 
 import '../../../data/models/trivia/trivia_models.dart';
 
-/// Pregunta generada por [GeneradorPreguntaTrivia] a partir de los registros
-/// de la tabla `Trivia`.
-///
-/// `opciones` contiene las 4 opciones etiquetadas con A, B, C y D.
-/// `respuestaCorrecta` contiene únicamente la letra de la opción correcta.
+
+
+
+
+
 class TriviaPreguntaGenerada {
   final int triviaId;
   final String pregunta;
@@ -35,23 +35,23 @@ class TriviaPreguntaGenerada {
   bool esLetraCorrecta(String letra) => letra == respuestaCorrecta;
 }
 
-/// Generador de preguntas de opción múltiple basado en la tabla `Trivia`.
-///
-/// Implementa las reglas:
-/// * Solo registros con `Estado` ACTIVA, filtrados por categoría/dificultad y
-///   excluyendo las preguntas ya utilizadas.
-/// * La respuesta correcta es siempre `Descripcion`.
-/// * Los distractores provienen de `Descripcion` de otros registros de la
-///   MISMA categoría, priorizando la misma dificultad.
-/// * Sin opciones duplicadas ni equivalentes a la correcta.
-/// * Exactamente 4 opciones con la posición de la correcta aleatorizada.
+
+
+
+
+
+
+
+
+
+
 class GeneradorPreguntaTrivia {
   static const int opcionesPorPregunta = 4;
 
   const GeneradorPreguntaTrivia();
 
-  /// Genera una pregunta con sus 4 opciones. Devuelve `null` si no existen
-  /// suficientes registros compatibles para construir una pregunta válida.
+
+
   TriviaPreguntaGenerada? generarPregunta({
     required List<TriviaResponse> registros,
     int? categoriaId,
@@ -130,8 +130,8 @@ class GeneradorPreguntaTrivia {
     return null;
   }
 
-  /// Busca hasta 3 distractores válidos en la MISMA categoría, priorizando la
-  /// misma dificultad. Devuelve `null` si no se alcanzan suficientes.
+
+
   List<String>? _buscarDistractores({
     required List<TriviaResponse> registros,
     required TriviaResponse seleccionada,
@@ -177,7 +177,7 @@ class GeneradorPreguntaTrivia {
 
   static const _letras = ['A', 'B', 'C', 'D'];
 
-  /// Comprobaciones finales (CHECK 1-8).
+
   bool _validar(
     TriviaPreguntaGenerada generada, {
     int? categoriaSolicitada,
@@ -226,8 +226,8 @@ class GeneradorPreguntaTrivia {
     return true;
   }
 
-  /// Compara dos textos ignorando mayúsculas, espacios redundantes y tildes.
-  /// Devuelve verdadero cuando son iguales o esencialmente iguales.
+
+
   static bool _esEquivalente(String a, String b) {
     final na = _normalizar(a);
     final nb = _normalizar(b);
@@ -254,7 +254,7 @@ class GeneradorPreguntaTrivia {
         );
   }
 
-  /// Similitud de Levenshtein normalizada (0..1).
+
   static double _similitud(String a, String b) {
     if (a == b) return 1;
     final maxLen = max(a.length, b.length);
@@ -280,10 +280,10 @@ class GeneradorPreguntaTrivia {
     return dp[a.length][b.length];
   }
 
-  /// Genera un lote de hasta [cantidad] preguntas válidas y sin repetir entre
-  /// sí. Cada pregunta consume el material de distractores propio de su
-  /// categoría, por lo que el lote devuelve las preguntas que sea posible
-  /// construir (mínimo 1); si ninguna es construible devuelve lista vacía.
+
+
+
+
   List<TriviaPreguntaGenerada> generarLote({
     required List<TriviaResponse> registros,
     int? categoriaId,

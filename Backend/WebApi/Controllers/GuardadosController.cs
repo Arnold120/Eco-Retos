@@ -26,7 +26,7 @@ namespace WebApi.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>Publicaciones guardadas del usuario autenticado.</summary>
+
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<PublicacionResponseDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ObtenerGuardadas()

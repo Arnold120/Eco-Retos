@@ -8,7 +8,7 @@ import 'cubit/modo_libre_state.dart';
 import 'widgets/recompensa_celebracion.dart';
 import 'widgets/trivia_ui.dart';
 
-/// Pantalla de resultados de Modo Libre con botón RECLAMAR.
+
 class ModoLibreResultScreen extends StatefulWidget {
   const ModoLibreResultScreen({super.key});
 

@@ -12,7 +12,7 @@ import 'widgets/follow_button.dart';
 import 'widgets/post_card_skeleton.dart';
 import 'widgets/post_helpers.dart';
 
-/// Version como pantalla independiente.
+
 class UsuariosScreen extends StatelessWidget {
   final int usuarioId;
 
@@ -27,8 +27,8 @@ class UsuariosScreen extends StatelessWidget {
   }
 }
 
-/// Listado de usuarios incrustable (Muro Eco):
-/// Siguiendo, Seguidores y Todos (con sugerencias).
+
+
 class MuroUsuariosView extends StatelessWidget {
   final int usuarioId;
 
@@ -137,7 +137,7 @@ class _ListaUsuariosState extends State<_ListaUsuarios> {
   }
 }
 
-/// Pestaña "Todos": sugerencias + usuarios registrados.
+
 class _TodosLosUsuarios extends StatefulWidget {
   final int usuarioId;
 
@@ -275,7 +275,7 @@ class _TodosLosUsuariosState extends State<_TodosLosUsuarios> {
   }
 }
 
-/// Fila reutilizable de usuario con foto, nombre y acciones.
+
 class _FilaUsuario extends StatelessWidget {
   final UsuarioResumen usuario;
   final bool conSeguir;

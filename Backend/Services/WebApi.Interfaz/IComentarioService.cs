@@ -11,7 +11,7 @@ namespace WebApi.Interfaz
         Task<bool> EliminarAsync(int comentarioId);
         Task<int> ContarComentariosAsync(int publicacionId);
 
-        /// <summary>Conteo de comentarios por publicacion en una sola consulta.</summary>
+
         Task<Dictionary<int, int>> ContarPorPublicacionesAsync(IEnumerable<int> publicacionIds);
     }
 }

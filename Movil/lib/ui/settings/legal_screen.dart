@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
 
-/// Pantalla simple para mostrar documentos legales dentro de la app.
+
 class LegalScreen extends StatelessWidget {
   final String titulo;
   final String contenido;

@@ -16,13 +16,13 @@ import '../../../data/services/trivia_service.dart' show TriviaService;
 import '../trivia_question_generator.dart';
 import 'modo_libre_state.dart';
 
-/// Dirige el flujo completo de Modo Libre: configuración, partida,
-/// temporización, feedback, puntuación/recompensas y resultados.
-///
-/// Una única instancia por partida, creada por la pantalla dueña del flujo y
-/// siempre proveída por encima de todos sus consumidores. Todos los timers se
-/// cancelan al cerrar el cubit para evitar fugas de memoria o emisiones
-/// posteriores al dispose.
+
+
+
+
+
+
+
 class ModoLibreCubit extends Cubit<ModoLibreState> {
   final int usuarioId;
   final CategoriaService _categoriaService;
@@ -61,9 +61,9 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     if (!isClosed) emit(nuevo);
   }
 
-  // ---------------------------------------------------------------------------
-  // Carga inicial y pantalla de configuración
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<void> iniciar() async {
     _emit(state.copyWith(isLoading: true, clearError: true));
@@ -71,7 +71,7 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
       final results = await Future.wait([
         _categoriaService.getCategorias(),
         _triviaService.getTriviasActivas(),
-        // Saldo único de Monedas Eco.
+
         _monederoService.getSaldo(),
       ]);
       if (isClosed) return;
@@ -134,9 +134,9 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Partida
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<void> iniciarPartida() async {
     if (state.status != ModoLibreStatus.configurando) return;
@@ -217,7 +217,7 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     );
   }
 
-  /// Avanza a la siguiente pregunta (manual o automática).
+
   void siguienteRespuesta() {
     if (state.status != ModoLibreStatus.retroalimentacion) return;
     _detenerAvanceAutomatico();
@@ -245,9 +245,9 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     _iniciarTemporizador();
   }
 
-  // ---------------------------------------------------------------------------
-  // Resolución de respuestas y puntuación
-  // ---------------------------------------------------------------------------
+
+
+
 
   void _resolverRespuesta({
     required String? opcionSeleccionada,
@@ -310,12 +310,12 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     return max(5, (puntos * 0.25).round());
   }
 
-  // ---------------------------------------------------------------------------
-  // Ayudas
-  // ---------------------------------------------------------------------------
 
-  /// Aplica una ayuda durante la pregunta activa. `saltar` descarta la
-  /// pregunta actual; pista/50/50 eliminan opciones incorrectas.
+
+
+
+
+
   Future<void> usarAyuda(AyudaTrivia ayuda) async {
     if (ayuda == AyudaTrivia.saltar) {
       saltarPregunta();
@@ -368,7 +368,7 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     }
   }
 
-  /// Descarta la pregunta actual (solo disponible en Modo Libre).
+
   void saltarPregunta() {
     if (state.status != ModoLibreStatus.jugando) return;
     if (state.opcionSeleccionada != null) return;
@@ -418,9 +418,9 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     _programarAvanceAutomatico();
   }
 
-  // ---------------------------------------------------------------------------
-  // Temporizador por pregunta
-  // ---------------------------------------------------------------------------
+
+
+
 
   void _iniciarTemporizador() {
     _detenerTemporizador();
@@ -459,9 +459,9 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     _timerTemporizador = null;
   }
 
-  // ---------------------------------------------------------------------------
-  // Avance automático
-  // ---------------------------------------------------------------------------
+
+
+
 
   void _programarAvanceAutomatico() {
     _detenerAvanceAutomatico();
@@ -475,9 +475,9 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     _timerAvanceAutomatico = null;
   }
 
-  // ---------------------------------------------------------------------------
-  // Finalización y recompensas
-  // ---------------------------------------------------------------------------
+
+
+
 
   Future<void> _finalizar() async {
     if (_recompensasRegistradas) return;
@@ -491,7 +491,7 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     final monedas = state.puntuacion ~/ 10;
     final clave = DateTime.now().microsecondsSinceEpoch.toString();
 
-    // Sin recompensas: reclamar automáticamente (solo marca local + onCompleted).
+
     final autoReclamado = xp == 0 && monedas == 0;
     if (autoReclamado) {
       await _recompensaStore.guardar(
@@ -509,8 +509,8 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
       if (isClosed) return;
       _onTriviaCompleted?.call();
     } else {
-      // Se persiste la recompensa pendiente; la entrega real ocurre al pulsar
-      // "RECLAMAR RECOMPENSAS" (sobrevive al cierre de la app).
+
+
       await _recompensaStore.guardar(
         RecompensaLibre(
           puntos: state.puntuacion,
@@ -539,8 +539,8 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     );
   }
 
-  /// Reclama la recompensa de la partida en el backend (idempotente).
-  /// El backend calcula la XP y las monedas desde la puntuación.
+
+
   Future<void> _registrarEnBackend(String clave) async {
     try {
       final recompensa = await _monederoService.reclamarRecompensa(
@@ -565,9 +565,9 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     }
   }
 
-  /// Reclama las recompensas de la partida finalizada. Solo se ejecuta una vez:
-  /// antes de tocar el backend se marca reclamada en el almacén local
-  /// (anti-duplicado offline-first).
+
+
+
   Future<bool> reclamarRecompensas() async {
     if (!state.recompensaPendiente) return false;
     final xp = state.xpGanados;
@@ -575,7 +575,7 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
 
     _emit(state.copyWith(recompensaReclamando: true));
 
-    // 1) Persistir reclamada PRIMERO (anti-duplicado) conservando la clave.
+
     final almacenada = await _recompensaStore.cargar();
     final clave = (almacenada != null && almacenada.clave.isNotEmpty)
         ? almacenada.clave
@@ -592,7 +592,7 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
       ),
     );
 
-    // 2) Backend: recompensa idempotente calculada por el servidor.
+
     await _registrarEnBackend(clave);
 
     if (isClosed) return false;
@@ -623,9 +623,9 @@ class ModoLibreCubit extends Cubit<ModoLibreState> {
     return true;
   }
 
-  // ---------------------------------------------------------------------------
-  // Ciclo de vida
-  // ---------------------------------------------------------------------------
+
+
+
 
   @override
   Future<void> close() {

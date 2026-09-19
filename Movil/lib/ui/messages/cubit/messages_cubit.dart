@@ -39,7 +39,7 @@ class MessagesState extends Equatable {
       [conversaciones, isLoading, error, totalNoLeidos];
 }
 
-/// Lista de conversaciones del usuario con actualizacion periodica ligera.
+
 class MessagesCubit extends Cubit<MessagesState> {
   final MensajeService _service;
 
@@ -71,13 +71,13 @@ class MessagesCubit extends Cubit<MessagesState> {
     }
   }
 
-  /// Solo refresca el contador global de no leídos (para el badge del shell).
+
   Future<void> refrescarNoLeidos() async {
     try {
       final total = await _service.getConteoNoLeidos();
       emit(state.copyWith(totalNoLeidos: total));
     } catch (_) {
-      // Silencioso: es un indicador secundario.
+
     }
   }
 
@@ -93,7 +93,7 @@ class MessagesCubit extends Cubit<MessagesState> {
               conversaciones.fold<int>(0, (a, c) => a + c.noLeidos),
         ));
       } catch (_) {
-        // Se reintenta en el siguiente ciclo.
+
       }
     });
   }

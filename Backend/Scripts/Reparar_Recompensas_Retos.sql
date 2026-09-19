@@ -1,22 +1,21 @@
-/* ============================================================================
-   EcoRetos - Reparación opcional de recompensas de RETOS
-   ----------------------------------------------------------------------------
-   ¿Para qué sirve?
-   Hubo una ventana en la que la app sincronizaba los retos SIN enviar
-   MonedasRecompensa: el backend los guardó con 0 y, al reclamar, el Monedero
-   no recibía monedas (el XP sí se acreditó cuando la recompensa tenía XP).
 
-   Este script acredita las monedas que quedaron pendientes a los retos ya
-   COMPLETADOS, sin tocar los que ya las recibieron (por el ledger migrado o
-   por un reclamo correcto). Es idempotente: usa la clave
-   'REPARACION_RETO:<UsuarioRetoId>' y el índice único de ClaveIdempotencia.
 
-   IMPORTANTE:
-   - Ejecutar SOLO después de aplicar Migrar_Monedero.sql.
-   - Ejecutar conectado a la base del proyecto (p. ej. EcoReto).
-   - Primero revisa el diagnóstico del paso 1. Si no hay filas, no hay nada
-     que reparar.
-   ============================================================================ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
@@ -92,7 +91,7 @@ INSERT INTO @Reparados (UsuarioId)
 SELECT DISTINCT UsuarioId FROM HistorialMonedas
 WHERE Tipo = 'AJUSTE_RETO';
 
--- Recalcula el saldo corrido del historial de los usuarios reparados.
+
 ;WITH Corridos AS (
     SELECT hm.HistorialMonedaId,
            SUM(hm.Cantidad) OVER (
@@ -108,7 +107,7 @@ SET hm.SaldoResultante = c.Saldo
 FROM HistorialMonedas hm
 INNER JOIN Corridos c ON c.HistorialMonedaId = hm.HistorialMonedaId;
 
--- Deja el monedero igual a la suma del historial (nunca negativo).
+
 UPDATE m
 SET m.Saldo = CASE WHEN s.Total < 0 THEN 0 ELSE s.Total END,
     m.FechaActualizacion = SYSDATETIME()

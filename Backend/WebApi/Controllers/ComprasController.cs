@@ -56,12 +56,12 @@ namespace WebApi.Controllers
             return Ok(Convertir(compra));
         }
 
-        /// <summary>
-        /// Compra transaccional: valida stock y saldo en el servidor, cobra del
-        /// Monedero, crea Compra + DetalleCompra, actualiza Inventario y registra
-        /// el movimiento en HistorialMonedas. Todo o nada.
-        /// El UsuarioId sale del token JWT, nunca del cuerpo.
-        /// </summary>
+
+
+
+
+
+
         [HttpPost]
         [ProducesResponseType(typeof(CompraResponseDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

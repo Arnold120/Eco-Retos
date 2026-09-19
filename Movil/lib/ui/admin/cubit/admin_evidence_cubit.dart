@@ -11,7 +11,7 @@ class AdminEvidenceCubit extends Cubit<AdminEvidenceState> {
   AdminEvidenceCubit(this._adminService)
     : super(const AdminEvidenceState.initial());
 
-  /// Carga todas las evidencias (historial): pendientes + resueltas.
+
   Future<void> cargar() async {
     emit(const AdminEvidenceState(isLoading: true, evidencias: []));
     try {
@@ -28,13 +28,13 @@ class AdminEvidenceCubit extends Cubit<AdminEvidenceState> {
     }
   }
 
-  /// Cambia el filtro activo del panel.
+
   void cambiarFiltro(EvidenceFiltro filtro) {
     if (state.filtro == filtro) return;
     emit(state.copyWith(filtro: filtro));
   }
 
-  /// Acepta la evidencia: el reto queda completado con sus puntos.
+
   Future<bool> aprobar(UsuarioRetoResponse evidencia, int puntos) async {
     emit(state.copyWith(aprobandoId: evidencia.usuarioRetoId, error: null));
     try {
@@ -55,7 +55,7 @@ class AdminEvidenceCubit extends Cubit<AdminEvidenceState> {
     }
   }
 
-  /// Rechaza la evidencia con un motivo visible para el estudiante.
+
   Future<bool> rechazar(UsuarioRetoResponse evidencia, String motivo) async {
     emit(state.copyWith(rechazandoId: evidencia.usuarioRetoId, error: null));
     try {
@@ -91,7 +91,7 @@ class AdminEvidenceCubit extends Cubit<AdminEvidenceState> {
     return generico;
   }
 
-  /// Conserva la evidencia en el historial actualizando su estado.
+
   void _marcarDecidida(UsuarioRetoResponse evidencia, String estado) {
     emit(
       state.copyWith(

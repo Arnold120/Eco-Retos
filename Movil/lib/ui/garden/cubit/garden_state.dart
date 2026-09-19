@@ -4,7 +4,7 @@ import '../../../data/models/gamification/gamification_models.dart';
 import '../../../data/models/garden/plant_growth.dart';
 import '../../../data/repositories/garden_repository.dart';
 
-/// Efecto visual que debe reproducir la UI tras una acción de cuidado.
+
 enum EfectoJardin { riego, abono, insecticida }
 
 class GardenState extends Equatable {

@@ -15,7 +15,7 @@ namespace WebApi.Interfaz
     {
         Task<IEnumerable<ConversacionResumen>> ObtenerConversacionesAsync(int usuarioId);
 
-        /// <summary>Devuelve la conversacion existente entre dos usuarios o crea una nueva.</summary>
+
         Task<int> ObtenerOCrearConversacionAsync(int usuarioA, int usuarioB);
 
         Task<bool> EsParticipanteAsync(int conversacionId, int usuarioId);
@@ -28,7 +28,7 @@ namespace WebApi.Interfaz
 
         Task<int> ContarNoLeidosAsync(int usuarioId);
 
-        /// <summary>Marca como leidos los mensajes de la conversacion y devuelve el usuario destinatario.</summary>
+
         Task<int?> ObtenerOtroParticipanteAsync(int conversacionId, int usuarioId);
     }
 }

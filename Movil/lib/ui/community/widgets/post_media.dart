@@ -7,16 +7,16 @@ import '../../../core/utils/media_url.dart';
 import '../../../data/models/social/social_models.dart';
 import '../../widgets/download_helper.dart';
 
-/// Galeria de multimedia de una publicacion.
-///
-/// - 1 elemento: imagen a ancho completo (o tarjeta de video).
-/// - 2+: cuadricula con contador de elementos restantes.
-/// - Al tocar se abre un visor a pantalla completa que permite recorrer
-///   TODOS los elementos (no solo los 4 visibles en la cuadricula).
-///
-/// Cada elemento vive dentro de un `SizedBox` con altura definida (o de una
-/// cuadricula que impone restricciones). Nunca se usa `StackFit.expand` bajo
-/// restricciones de altura infinitas, que rompia el layout del feed.
+
+
+
+
+
+
+
+
+
+
 class PostMedia extends StatelessWidget {
   final List<MultimediaItem> items;
 
@@ -104,7 +104,7 @@ class PostMedia extends StatelessWidget {
   }
 }
 
-/// Abre el visor a pantalla completa (reutilizable para fotos y videos).
+
 void abrirVisorMultimedia(
   BuildContext context,
   List<MultimediaItem> items,
@@ -123,7 +123,7 @@ void abrirVisorMultimedia(
   );
 }
 
-/// Visor a pantalla completa con navegacion entre todos los elementos.
+
 class VisorMultimedia extends StatefulWidget {
   final List<MultimediaItem> items;
   final int indiceInicial;
@@ -299,9 +299,9 @@ class _VisorMultimediaState extends State<VisorMultimedia> {
   }
 }
 
-/// Reproductor de video en la app. Si la plataforma no soporta el
-/// reproductor (por ejemplo escritorio), muestra una tarjeta con la opcion
-/// de abrirlo externamente usando SIEMPRE la URL resuelta al host actual.
+
+
+
 class _ReproductorVideo extends StatefulWidget {
   final MultimediaItem item;
 
@@ -329,8 +329,8 @@ class _ReproductorVideoState extends State<_ReproductorVideo> {
     try {
       await controller.initialize();
       await controller.setLooping(true);
-      // Vista previa: se posiciona en el primer fotograma y queda en pausa
-      // (evita que el video arranque en negro).
+
+
       await controller.seekTo(const Duration(milliseconds: 1));
       if (!mounted) {
         await controller.dispose();
@@ -413,8 +413,8 @@ class _ReproductorVideoState extends State<_ReproductorVideo> {
                 aspectRatio: value.aspectRatio,
                 child: VideoPlayer(controller),
               ),
-              // Mientras se decodifica el primer fotograma se muestra la
-              // portada elegida (o un indicador), nunca un cuadro negro.
+
+
               if (value.position == Duration.zero && !value.isPlaying)
                 Stack(
                   fit: StackFit.expand,
@@ -504,7 +504,7 @@ class _ReproductorVideoState extends State<_ReproductorVideo> {
 class _MediaTile extends StatelessWidget {
   final MultimediaItem item;
 
-  /// Altura fija. Si es null, el padre (p. ej. la cuadricula) debe acotarla.
+
   final double? height;
   final VoidCallback? onTap;
 
@@ -560,7 +560,7 @@ class _MediaTile extends StatelessWidget {
 
     if (_esVideo) {
       final poster = resolverUrlMedia(item.poster);
-      // Portada elegida por el usuario; si no hay, se muestra el icono.
+
       if (poster != null) {
         return Stack(
           fit: StackFit.expand,

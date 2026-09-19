@@ -6,8 +6,8 @@ import '../../../data/models/garden/plant_growth.dart';
 import '../cubit/garden_cubit.dart';
 import 'tool_icon.dart';
 
-/// Abre el panel de detalle de una planta: etapa, porcentaje, fecha de
-/// plantación, próximo objetivo, estado, agua, abono, plaga y herramientas.
+
+
 Future<void> mostrarDetallePlanta(
   BuildContext context, {
   required String plantaId,

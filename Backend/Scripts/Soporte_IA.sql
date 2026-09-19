@@ -1,16 +1,14 @@
-/* ============================================================================
-   SOPORTE IA — Script ADITIVO para la base de datos viva: EcoRitos
-   ----------------------------------------------------------------------------
-   - NO elimina ni modifica tablas/columnas existentes.
-   - Solo crea tablas NUEVAS (si no existen) y sus índices.
-   - Es idempotente: puede ejecutarse varias veces sin efecto adicional.
-   - Ejecutar en: SERVIDOR = DESKTOP-2LNPI4U\SQLEXPRESS, BD = EcoRitos
-   ============================================================================ */
+
+
+
+
+
+
+
 
 USE EcoRitos;
 GO
 
-/* ─── 1. SoporteConfig: textos y versión de términos configurables ───────── */
 IF OBJECT_ID('dbo.SoporteConfig', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.SoporteConfig
@@ -29,7 +27,6 @@ BEGIN
 END
 GO
 
-/* ─── 2. SupportCase: caso de soporte (usuario + IA + admin) ─────────────── */
 IF OBJECT_ID('dbo.SupportCase', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.SupportCase
@@ -61,18 +58,17 @@ BEGIN
 END
 GO
 
-/* ─── 3. SupportCaseMensaje: mensajes USUARIO / IA / ADMIN ───────────────── */
 IF OBJECT_ID('dbo.SupportCaseMensaje', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.SupportCaseMensaje
     (
         SupportCaseMensajeId INT            NOT NULL IDENTITY(1,1) PRIMARY KEY,
         SupportCaseId        INT            NOT NULL,
-        TipoRemitente        NVARCHAR(10)   NOT NULL,   -- USUARIO | IA | ADMIN
+        TipoRemitente        NVARCHAR(10)   NOT NULL,   
         RemitenteUsuarioId   INT            NULL,
         Contenido            NVARCHAR(MAX)  NOT NULL,
-        AdjuntosJson         NVARCHAR(MAX)  NULL,       -- [{url,tipo,nombre}]
-        SugerenciasJson      NVARCHAR(MAX)  NULL,       -- respuestas rápidas de la IA
+        AdjuntosJson         NVARCHAR(MAX)  NULL,       
+        SugerenciasJson      NVARCHAR(MAX)  NULL,       
         Leido                BIT            NOT NULL CONSTRAINT DF_SupportCaseMensaje_Leido DEFAULT 0,
         Fecha                DATETIME2      NOT NULL CONSTRAINT DF_SupportCaseMensaje_Fecha DEFAULT GETDATE(),
         CONSTRAINT FK_SCM_SupportCase FOREIGN KEY (SupportCaseId)      REFERENCES dbo.SupportCase(SupportCaseId) ON DELETE CASCADE,
@@ -83,14 +79,13 @@ BEGIN
 END
 GO
 
-/* ─── 4. SupportAuditLog: auditoría de acciones de soporte ───────────────── */
 IF OBJECT_ID('dbo.SupportAuditLog', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.SupportAuditLog
     (
         AuditLogId      BIGINT         NOT NULL IDENTITY(1,1) PRIMARY KEY,
         ActorUsuarioId  INT            NULL,
-        ActorTipo       NVARCHAR(10)   NOT NULL CONSTRAINT DF_SAL_ActorTipo DEFAULT 'USUARIO', -- USUARIO|IA|ADMIN|SISTEMA
+        ActorTipo       NVARCHAR(10)   NOT NULL CONSTRAINT DF_SAL_ActorTipo DEFAULT 'USUARIO', 
         Accion          NVARCHAR(60)   NOT NULL,
         EntidadTipo     NVARCHAR(40)   NOT NULL,
         EntidadId       INT            NULL,

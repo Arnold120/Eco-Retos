@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/catalogos/retos/reto_model.dart';
 
-/// Componentes base del Design System de Eco Retos.
-///
-/// Toda pantalla del producto debe reutilizarlos (evita estilos duplicados
-/// y garantiza consistencia en light/dark).
 
-/// Título de sección con opción de acción "Ver todo".
+
+
+
+
+
 class EcoSectionTitle extends StatelessWidget {
   final String titulo;
   final String? subtitulo;
@@ -73,7 +73,7 @@ class EcoSectionTitle extends StatelessWidget {
   }
 }
 
-/// Selector compacto (chips horizontales). Reutilizable en filtros.
+
 class EcoChip extends StatelessWidget {
   final String label;
   final bool seleccionado;
@@ -139,7 +139,7 @@ class EcoChip extends StatelessWidget {
   }
 }
 
-/// Chip de dificultad con color semántico.
+
 class EcoDificultadTag extends StatelessWidget {
   final RetoDificultad dificultad;
 
@@ -155,8 +155,8 @@ class EcoDificultadTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _color;
-    // Fondo sólido con letra de alto contraste: oscura sobre el verde y el
-    // naranja claros, blanca sobre rojo y morado.
+
+
     final colorTexto = color.computeLuminance() > 0.30
         ? AppColors.textPrimary
         : Colors.white;
@@ -186,7 +186,7 @@ class EcoDificultadTag extends StatelessWidget {
   }
 }
 
-/// Barra de progreso reutilizable (retos, nivel, trivias, etc.).
+
 class EcoProgressBar extends StatelessWidget {
   final double progreso;
   final Color? color;
@@ -214,7 +214,7 @@ class EcoProgressBar extends StatelessWidget {
   }
 }
 
-/// Tarjeta con dato destacado (XP, monedas, completados, nivel...).
+
 class EcoStatCard extends StatelessWidget {
   final IconData icono;
   final String valor;
@@ -273,7 +273,7 @@ class EcoStatCard extends StatelessWidget {
   }
 }
 
-/// Estado vacío centralizado (misma gráfica que el Muro).
+
 class EcoEmptyState extends StatelessWidget {
   final IconData icono;
   final String titulo;
@@ -347,7 +347,7 @@ class EcoEmptyState extends StatelessWidget {
   }
 }
 
-/// Estado de error con reintento centralizado.
+
 class EcoErrorState extends StatelessWidget {
   final String mensaje;
   final VoidCallback onReintentar;
@@ -391,7 +391,7 @@ class EcoErrorState extends StatelessWidget {
   }
 }
 
-/// Contenedor principal de sección (fondo + padding homogéneo).
+
 class EcoCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;

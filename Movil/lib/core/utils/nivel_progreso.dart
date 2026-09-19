@@ -1,6 +1,6 @@
-/// Modela el progreso de nivel a partir de datos reales del backend.
-/// Soporta cálculo basado en XP total real o en porcentaje del backend.
-/// La base de XP por nivel es fija (100 XP) para consistencia visual.
+
+
+
 class NivelInfo {
   final int nivel;
   final double porcentaje;
@@ -23,10 +23,10 @@ class NivelInfo {
   });
 
   bool get listoParaSubir => xpFaltante <= 0;
-  bool get esNivelMaximo => false; // Se puede extender si hay nivel máximo
+  bool get esNivelMaximo => false; 
 
-  /// Calcula el progreso usando el XP total real del usuario.
-  /// Este es el método preferido cuando tenemos el XP total real.
+
+
   factory NivelInfo.fromTotalXp(
     int totalXp, {
     int xpPorNivel = 100,
@@ -51,13 +51,13 @@ class NivelInfo {
     );
   }
 
-  /// Calcula el progreso usando nivel actual y porcentaje del backend.
-  /// Útil cuando el backend ya proporciona estos valores calculados.
+
+
   factory NivelInfo.fromBackendProgress(
     int nivelActual,
     double porcentajeProgreso, {
     int xpPorNivel = 100,
-    int? totalXp, // Opcional: si tenemos el XP total real, lo usamos para validar
+    int? totalXp, 
   }) {
     final nivel = nivelActual < 1 ? 1 : nivelActual;
     final porcentaje = porcentajeProgreso.clamp(0.0, 100.0);
@@ -79,7 +79,7 @@ class NivelInfo {
     );
   }
 
-  /// Método legacy para compatibilidad - redirige a fromBackendProgress
+
   @Deprecated('Usar fromTotalXp o fromBackendProgress')
   factory NivelInfo.computar(
     int nivelActual,

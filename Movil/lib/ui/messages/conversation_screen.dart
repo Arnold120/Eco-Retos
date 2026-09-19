@@ -14,8 +14,8 @@ class ConversationScreen extends StatelessWidget {
   final int usuarioId;
   final String titulo;
 
-  /// Foto de perfil del otro usuario. Si no se conoce, la pantalla la
-  /// resuelve consultando las conversaciones.
+
+
   final String? fotoUrl;
 
   const ConversationScreen({
@@ -47,14 +47,14 @@ class ConversationScreen extends StatelessWidget {
   }
 }
 
-/// Conversacion incrustable dentro del Muro Eco (mantiene la navegacion).
+
 class MuroConversacionView extends StatefulWidget {
   final int conversacionId;
   final int usuarioId;
   final String titulo;
   final String? fotoUrl;
 
-  /// Si viene, muestra el boton de volver (para la version incrustada).
+
   final VoidCallback? onVolver;
 
   const MuroConversacionView({
@@ -84,8 +84,8 @@ class _MuroConversacionViewState extends State<MuroConversacionView> {
     _nombre = widget.titulo;
     _foto = widget.fotoUrl;
     _scroll.addListener(() {
-      // Con la lista invertida, llegar al final del scroll significa llegar
-      // a los mensajes mas antiguos: ahi se cargan mas.
+
+
       if (_scroll.position.pixels >= _scroll.position.maxScrollExtent - 80) {
         context.read<ConversationCubit>().cargarMas();
       }
@@ -93,7 +93,7 @@ class _MuroConversacionViewState extends State<MuroConversacionView> {
     if (_foto == null) _resolverContacto();
   }
 
-  /// Obtiene nombre y foto reales del otro participante.
+
   Future<void> _resolverContacto() async {
     try {
       final conversaciones =
@@ -109,7 +109,7 @@ class _MuroConversacionViewState extends State<MuroConversacionView> {
         }
       }
     } catch (_) {
-      // Se conserva el titulo recibido.
+
     }
   }
 
@@ -133,7 +133,7 @@ class _MuroConversacionViewState extends State<MuroConversacionView> {
     }
   }
 
-  /// Con la lista invertida, el mensaje mas reciente esta en el offset 0.
+
   void _bajarAlUltimoMensaje() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !_scroll.hasClients) return;
@@ -179,8 +179,8 @@ class _MuroConversacionViewState extends State<MuroConversacionView> {
                       subtitulo: 'Escribe el primero para iniciar la conversación.',
                     );
                   }
-                  // Lista invertida: el mensaje mas reciente siempre queda
-                  // abajo y visible al abrir o al enviar.
+
+
                   final mensajes = state.mensajes.reversed.toList();
                   final ultimoMioId = _idUltimoMio(state.mensajes);
                   return ListView.builder(

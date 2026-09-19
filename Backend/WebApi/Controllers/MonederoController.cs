@@ -29,7 +29,7 @@ namespace WebApi.Controllers
             _categoriaService = categoriaService;
         }
 
-        /// <summary>Saldo de Monedas Eco y resumen de XP del usuario autenticado.</summary>
+
         [HttpGet("saldo")]
         [ProducesResponseType(typeof(MonederoSaldoResponseDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> ObtenerSaldo()
@@ -51,7 +51,7 @@ namespace WebApi.Controllers
             });
         }
 
-        /// <summary>Historial de movimientos de monedas del usuario autenticado.</summary>
+
         [HttpGet("historial")]
         [ProducesResponseType(typeof(IEnumerable<HistorialMonedaResponseDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ObtenerHistorial([FromQuery] int? cantidad)
@@ -90,10 +90,10 @@ namespace WebApi.Controllers
             return Ok(resultado);
         }
 
-        /// <summary>
-        /// Reclama una recompensa (trivia, reto o insignia). El backend calcula
-        /// la XP y las monedas desde su configuración y es idempotente por clave.
-        /// </summary>
+
+
+
+
         [HttpPost("recompensa")]
         [ProducesResponseType(typeof(ReclamarRecompensaResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -129,10 +129,10 @@ namespace WebApi.Controllers
             });
         }
 
-        /// <summary>
-        /// Gasta Monedas Eco (por ejemplo herramientas del jardín). El backend
-        /// valida el saldo de forma atómica y registra el movimiento.
-        /// </summary>
+
+
+
+
         [HttpPost("gastar")]
         [ProducesResponseType(typeof(GastarMonedasResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

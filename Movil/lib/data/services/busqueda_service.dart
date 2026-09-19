@@ -17,7 +17,7 @@ class BusquedaService {
     );
   }
 
-  /// Todos los usuarios activos (para la seccion Usuarios).
+
   Future<List<UsuarioResumen>> getUsuarios({
     int limite = 100,
     int? excluir,

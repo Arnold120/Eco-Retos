@@ -18,12 +18,12 @@ import 'modo_libre_screen.dart';
 import 'widgets/recompensa_celebracion.dart';
 import 'widgets/trivia_ui.dart';
 
-/// Pantalla principal de trivias: acceso a Modo Libre y Modo Diario, junto con
-/// el progreso semanal de la trivia diaria.
-///
-/// Es un [StatefulWidget] que POSEE el [TriviasCubit]: lo crea, lo provee con
-/// [BlocProvider.value] y lo cierra al salir. Idéntico patrón autocontenido
-/// que el resto de las pantallas de trivia.
+
+
+
+
+
+
 class TriviasScreen extends StatefulWidget {
   final int usuarioId;
   final VoidCallback? onMenuTap;
@@ -321,8 +321,8 @@ class _TriviasScreenState extends State<TriviasScreen> {
   Widget _buildSemana(TriviasState state) {
     final esOscuro = Theme.of(context).brightness == Brightness.dark;
 
-    // En modo claro la tarjeta se pinta blanca con letras negras, al estilo
-    // de la tarjeta de Modo Libre; en oscuro conserva el verde actual.
+
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -407,8 +407,8 @@ class _TriviasScreenState extends State<TriviasScreen> {
                     : AppColors.primary)
               : const Color.fromARGB(255, 229, 220, 220));
 
-    // En modo claro el día de hoy se pinta blanco con letras negras; en
-    // oscuro conserva el gris con acento amarillo.
+
+
     final Color colorFondo = completado
         ? const Color.fromARGB(255, 0, 0, 0)
         : (esHoy
@@ -699,8 +699,8 @@ class _TriviasScreenState extends State<TriviasScreen> {
     );
   }
 
-  /// Envuelve a cada tarjeta con una animación de entrada tipo slide+fade
-  /// escalonada.
+
+
   Widget _entradaAnimada({
     required int index,
     required Widget child,

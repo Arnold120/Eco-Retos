@@ -41,7 +41,7 @@ class _ShopScreenState extends State<ShopScreen> {
       final monederoService = context.read<MonederoService>();
       final results = await Future.wait([
         materialService.getMaterialesDisponibles(),
-        // Saldo único de Monedas Eco.
+
         monederoService.getSaldo(),
       ]);
       setState(() {
@@ -305,8 +305,8 @@ class _ShopScreenState extends State<ShopScreen> {
     try {
       final compraService = context.read<CompraService>();
 
-      // Compra transaccional: el backend valida stock y saldo, cobra del
-      // Monedero, actualiza inventario y registra el movimiento.
+
+
       final compra = await compraService.createCompra(
         detalles: [
           DetalleCompraItem(materialId: material.materialId, cantidad: 1),

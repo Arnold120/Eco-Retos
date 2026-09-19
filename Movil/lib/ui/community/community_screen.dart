@@ -20,8 +20,8 @@ import 'widgets/post_card.dart';
 import 'widgets/post_card_skeleton.dart';
 import 'widgets/post_helpers.dart';
 
-/// Secciones internas del Muro Eco. El layout (busqueda, titulo y
-/// navegacion) permanece visible mientras se cambia de seccion.
+
+
 enum _SeccionMuro { inicio, usuarios, mensajes, alertas, guardados, perfil }
 
 class CommunityScreen extends StatefulWidget {
@@ -82,7 +82,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     );
   }
 
-  // ─── Navegacion entre secciones ─────────────────────────────────────────
+
 
   Future<void> _irA(_SeccionMuro seccion) async {
     switch (seccion) {
@@ -90,7 +90,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
         setState(() {
           _seccion = _SeccionMuro.inicio;
         });
-        // Al pulsar Inicio se vuelve al muro y se recargan las publicaciones.
+
         if (_cubit.state.filtro != MuroFiltro.paraTi) {
           await _cubit.cambiarFiltro(MuroFiltro.paraTi);
         } else {
@@ -142,7 +142,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     });
   }
 
-  /// El chat se abre a pantalla completa (solo la lista vive en el Muro).
+
   void _abrirConversacionPorId(
     int conversacionId, {
     String titulo = 'Conversación',
@@ -160,7 +160,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     );
   }
 
-  // ─── Layout ─────────────────────────────────────────────────────────────
+
 
   @override
   Widget build(BuildContext context) {
@@ -251,7 +251,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     }
   }
 
-  // ─── Cabecera ───────────────────────────────────────────────────────────
+
 
   Widget _barraBusqueda(BuildContext context, bool isDark) {
     return Padding(
@@ -410,7 +410,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     );
   }
 
-  // ─── Feed ───────────────────────────────────────────────────────────────
+
 
   Widget _feed(BuildContext context, CommunityState state) {
     if (state.cargandoInicial) {
@@ -576,7 +576,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 }
 
-/// Icono de la navegacion interna del Muro Eco.
+
 class _NavMuro extends StatelessWidget {
   final IconData icono;
   final String label;

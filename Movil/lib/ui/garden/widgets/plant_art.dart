@@ -6,25 +6,25 @@ import '../../../core/theme/app_theme.dart';
 import '../../../data/models/garden/plant_growth.dart';
 import 'plant_visual.dart';
 
-/// Dibuja la planta del jardín según su etapa, especie (perfil visual) y
-/// estado. Es intencionalmente liviano: un `CustomPainter` por espacio
-/// repintado por un controlador compartido (sin reconstruir widgets).
-///
-/// Cada etapa dibuja únicamente la estructura que le corresponde: la planta
-/// adulta (flores y frutos incluidos) solo aparece en la última etapa.
+
+
+
+
+
+
 class PlantSprite extends StatelessWidget {
   final PlantGrowth planta;
   final Animation<double> animacion;
   final double fase;
 
-  /// Si la planta lleva más de [GardenGrowthConfig.ventanaHumedad] sin regar,
-  /// se dibuja marchita: colores apagados, hojas caídas y menos movimiento.
+
+
   final bool marchita;
 
-  /// Progreso de la marchitez (0 = recién seca, 1 = a punto de perderse).
+
   final double marchitez;
 
-  /// Si fue regada hace poco, muestra rocío brillante y verdes más vivos.
+
   final bool recienRegada;
 
   const PlantSprite({
@@ -64,7 +64,7 @@ class PlantSprite extends StatelessWidget {
   }
 }
 
-/// Colores y shaders para dar volumen (luz por arriba-izquierda, sombra abajo).
+
 extension on Color {
   Color claro(double f) => Color.lerp(this, Colors.white, f)!;
   Color oscuro(double f) => Color.lerp(this, Colors.black, f)!;
@@ -103,15 +103,15 @@ class _PlantSpritePainter extends CustomPainter {
       etapa == EtapaCrecimiento.plantaAdulta ||
       etapa == EtapaCrecimiento.floracion;
 
-  /// Mientras más tiempo seco, más apagado y caído se dibuja.
+
   double get _sed =>
       marchita ? (0.18 + 0.72 * marchitez.clamp(0.0, 1.0)) : 0.0;
 
   double get _t => (animacion.value + fase) % 1.0;
 
-  /// Altura relativa continua (0..~0.82) derivada de las horas reales, con
-  /// interpolación suave entre etapas para que el crecimiento no dé saltos.
-  /// La planta adulta solo alcanza su silueta completa al terminar de crecer.
+
+
+
   double get _alturaGlobal {
     const umbrales = [0.0, 5.0, 10.0, 15.0, 19.0, 25.0, 31.0];
     const alturas = [0.0, 0.16, 0.30, 0.44, 0.60, 0.80, 0.82];
@@ -141,9 +141,9 @@ class _PlantSpritePainter extends CustomPainter {
     return ((horas - inicio) / (fin - inicio)).clamp(0.0, 1.0);
   }
 
-  // ---------------------------------------------------------------------------
-  // paint principal
-  // ---------------------------------------------------------------------------
+
+
+
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -216,9 +216,9 @@ class _PlantSpritePainter extends CustomPainter {
 
   bool get _marchitado => _sed > 0;
 
-  // ---------------------------------------------------------------------------
-  // Fondos, suelo y sombras
-  // ---------------------------------------------------------------------------
+
+
+
 
   void _fondoAura(
     Canvas canvas,
@@ -308,7 +308,7 @@ class _PlantSpritePainter extends CustomPainter {
         ).createShader(rect),
     );
 
-    // Cerco superior iluminado (borde del terreno).
+
     final cresta = Paint()
       ..color = base.claro(0.42).withValues(alpha: 0.55)
       ..strokeWidth = h * 0.012
@@ -325,7 +325,7 @@ class _PlantSpritePainter extends CustomPainter {
       cresta,
     );
 
-    // Piedritas y granos de tierra.
+
     final polvo = Paint()..color = base.oscuro(0.5).withValues(alpha: 0.4);
     for (var i = 0; i < 6; i++) {
       final semilla = ((i * 47) % 17) / 17;
@@ -345,7 +345,7 @@ class _PlantSpritePainter extends CustomPainter {
       );
     }
 
-    // Parque de césped al fondo: briznas que se mecen con el viento.
+
     for (var i = 0; i < 7; i++) {
       final semilla = ((i * 31) % 13) / 13;
       final x = cx + (semilla - 0.5) * sueloAncho * 0.9;
@@ -383,9 +383,9 @@ class _PlantSpritePainter extends CustomPainter {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Etapas iniciales
-  // ---------------------------------------------------------------------------
+
+
+
 
   void _pintarSemilla(Canvas canvas, double w, double h, double cx, double baseY) {
     final ancho = w * 0.135 * perfil.anchura;
@@ -419,7 +419,7 @@ class _PlantSpritePainter extends CustomPainter {
         ..color = perfil.marchitar(perfil.semilla.oscuro(0.5), _sed)
             .withValues(alpha: 0.6),
     );
-    // Grietilla de germinación.
+
     canvas.drawLine(
       Offset(-ancho * 0.5, -alto * 0.15),
       Offset(ancho * 0.5, alto * 0.25),
@@ -428,7 +428,7 @@ class _PlantSpritePainter extends CustomPainter {
         ..strokeWidth = 1.3
         ..strokeCap = StrokeCap.round,
     );
-    // Moteado de la cáscara.
+
     for (var i = 0; i < 3; i++) {
       final s = ((i * 41) % 11) / 11;
       canvas.drawCircle(
@@ -477,7 +477,7 @@ class _PlantSpritePainter extends CustomPainter {
     );
     canvas.restore();
 
-    // Raíz que se hunde.
+
     final raiz = Path()
       ..moveTo(cx, baseY - h * 0.015)
       ..quadraticBezierTo(
@@ -494,7 +494,7 @@ class _PlantSpritePainter extends CustomPainter {
         ..strokeCap = StrokeCap.round,
     );
 
-    // Tallo asomando con dos cotiledones abriéndose (animación de desarrollo).
+
     final apertura = 0.35 + 0.65 * tE;
     final punta = _puntoCuadratico(
       Offset(cx, baseY - h * 0.01),
@@ -534,9 +534,9 @@ class _PlantSpritePainter extends CustomPainter {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Portes
-  // ---------------------------------------------------------------------------
+
+
+
 
   int get _nRamas {
     return switch (etapa) {
@@ -578,7 +578,7 @@ class _PlantSpritePainter extends CustomPainter {
             perfil.densidad)
         .clamp(2.6, 8.0);
 
-    // Roseta basal: hojas grandes que abren la planta desde la tierra.
+
     final nBase = _esAdulta
         ? 5
         : etapa.index >= EtapaCrecimiento.plantaPequena.index
@@ -600,7 +600,7 @@ class _PlantSpritePainter extends CustomPainter {
       );
     }
 
-    // Ramas laterales para portes frondosos/ramificados.
+
     final nRamas = _nRamas;
     for (var r = 0; r < nRamas; r++) {
       final origen = _puntoCuadratico(p0, p1, p2, 0.3 + 0.25 * r);
@@ -639,7 +639,7 @@ class _PlantSpritePainter extends CustomPainter {
       }
     }
 
-    // Tallo principal.
+
     _ramaConica(
       canvas,
       p0,
@@ -649,7 +649,7 @@ class _PlantSpritePainter extends CustomPainter {
       perfil.marchitar(perfil.tallo, _sed),
     );
 
-    // Hojas por nudos, de abajo hacia arriba, cada vez más pequeñas.
+
     final nNudos = switch (etapa) {
       EtapaCrecimiento.brote => 2,
       EtapaCrecimiento.plantaPequena => 4,
@@ -691,7 +691,7 @@ class _PlantSpritePainter extends CustomPainter {
       }
     }
 
-    // Brotes de flores (yemas) desde etapa mediana.
+
     if (etapa.index >= EtapaCrecimiento.plantaMediana.index &&
         perfil.floresAdultas &&
         !_esAdulta) {
@@ -699,7 +699,7 @@ class _PlantSpritePainter extends CustomPainter {
       _florCerrada(canvas, punto, h * 0.028 * perfil.densidad);
     }
 
-    // En adulta: flores abiertas y frutos colgando.
+
     if (_esAdulta) {
       final cima = Offset(topX + w * 0.04, topY);
       if (perfil.floresAdultas) {
@@ -959,7 +959,7 @@ class _PlantSpritePainter extends CustomPainter {
       );
     }
 
-    // Copa en capas de profundidad: atrás oscura, delante clara.
+
     blob(
       Offset(centro.dx - radio * 0.78, centro.dy + radio * 0.15),
       dia * 0.7,
@@ -997,7 +997,7 @@ class _PlantSpritePainter extends CustomPainter {
       perfil.marchitar(perfil.hojaClara.claro(0.08), _sed),
     );
 
-    // Hojitas sueltas en el borde (silueta viva).
+
     for (var i = 0; i < 8; i++) {
       final angulo = i * 2 * math.pi / 8 + 0.4;
       final p = Offset(
@@ -1016,7 +1016,7 @@ class _PlantSpritePainter extends CustomPainter {
       );
     }
 
-    // Destellos de luz sobre la copa.
+
     final brillo = Paint()..color = Colors.white.withValues(alpha: 0.16);
     canvas.drawOval(
       Rect.fromCenter(
@@ -1043,8 +1043,8 @@ class _PlantSpritePainter extends CustomPainter {
     }
   }
 
-  /// Enredadera que trepa por un tutor de madera: guía principal en zigzag
-  /// suave, hojas acorazonadas, zarcillos en la punta y flores al ser adulta.
+
+
   void _pintarTrepadorVertical(
     Canvas canvas,
     double w,
@@ -1057,7 +1057,7 @@ class _PlantSpritePainter extends CustomPainter {
     if (altura <= 0) return;
     final crecimiento = (_alturaGlobal / 0.82).clamp(0.0, 1.0);
 
-    // Tutor: la estructura que la planta trepa.
+
     final altoTutor = altura * 1.14 + h * 0.02;
     _tutor(
       canvas,
@@ -1076,7 +1076,7 @@ class _PlantSpritePainter extends CustomPainter {
       perfil.tallo.oscuro(0.45),
     );
 
-    // Guía principal que sube enrollándose alrededor del tutor.
+
     final nSegmentos = math.max(3, (7 * crecimiento).round());
     final puntos = <Offset>[];
     for (var i = 0; i <= nSegmentos; i++) {
@@ -1107,7 +1107,7 @@ class _PlantSpritePainter extends CustomPainter {
       );
     }
 
-    // Hojas a lo largo de la guía, cada vez más grandes.
+
     for (var i = 1; i < puntos.length; i++) {
       final p = puntos[i];
       final lado = i.isEven ? 1.0 : -1.0;
@@ -1142,7 +1142,7 @@ class _PlantSpritePainter extends CustomPainter {
       }
     }
 
-    // Zarcillos enroscados en la punta.
+
     if (crecimiento > 0.35 && !_marchitado) {
       final punta = puntos.last;
       _zarcillo(
@@ -1172,7 +1172,7 @@ class _PlantSpritePainter extends CustomPainter {
     }
   }
 
-  /// Planta colgante: macetero artesanal con guías que caen y se mecen.
+
   void _pintarColgante(
     Canvas canvas,
     double w,
@@ -1185,7 +1185,7 @@ class _PlantSpritePainter extends CustomPainter {
     final largoGuias = h * (0.22 + 0.5 * crecimiento);
     final centro = Offset(cx, baseY - h * 0.58);
 
-    // Cuerdas del macramé.
+
     final cuerda = Paint()
       ..color = const Color(0xFFC9B48F).withValues(alpha: 0.85)
       ..strokeWidth = math.max(1.1, w * 0.008)
@@ -1262,7 +1262,7 @@ class _PlantSpritePainter extends CustomPainter {
     }
   }
 
-  /// Tutor de madera con brillo lateral.
+
   void _tutor(
     Canvas canvas,
     Offset base,
@@ -1288,7 +1288,7 @@ class _PlantSpritePainter extends CustomPainter {
     );
   }
 
-  /// Zarcillo que se enrosca en el aire.
+
   void _zarcillo(
     Canvas canvas,
     Offset base,
@@ -1323,7 +1323,7 @@ class _PlantSpritePainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  /// Macetero de barro con borde y tierra.
+
   void _macetaColgante(
     Canvas canvas,
     Offset centro,
@@ -1393,7 +1393,7 @@ class _PlantSpritePainter extends CustomPainter {
     final altura = h * _alturaGlobal * perfil.anchura;
     final nTallos = _esAdulta ? 4 : 1 + etapa.index ~/ 2;
 
-    // Roseta basal de hojas carnosas.
+
     for (var i = 0; i < 3; i++) {
       final lado = i.isEven ? 1.0 : -1.0;
       _hoja(
@@ -1464,7 +1464,7 @@ class _PlantSpritePainter extends CustomPainter {
           ],
         ).createShader(boca),
     );
-    // Labios con acento de color y dientes de zarcillo.
+
     final labio = Paint()
       ..color = perfil.marchitar(perfil.flor, _sed)
       ..strokeWidth = tam * 0.09
@@ -1480,7 +1480,7 @@ class _PlantSpritePainter extends CustomPainter {
       false,
       labio,
     );
-    // Destello de luz en el cuerpo.
+
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(punta.dx - tam * 0.12, punta.dy - tam * 0.8),
@@ -1517,7 +1517,7 @@ class _PlantSpritePainter extends CustomPainter {
         ).createShader(agua),
     );
 
-    // Almohadillas flotantes en capas.
+
     final nPads = etapa.index >= EtapaCrecimiento.plantaMediana.index ? 3 : 2;
     for (var i = 0; i < nPads; i++) {
       final s = ((i * 37) % 11) / 11;
@@ -1572,9 +1572,9 @@ class _PlantSpritePainter extends CustomPainter {
     }
   }
 
-  // ---------------------------------------------------------------------------
-  // Piezas
-  // ---------------------------------------------------------------------------
+
+
+
 
   void _ramaConica(
     Canvas canvas,
@@ -1708,7 +1708,7 @@ class _PlantSpritePainter extends CustomPainter {
         _carnosa(canvas, l, hh, pintura, trazo, color);
     }
 
-    // Brillo húmedo en la cara superior.
+
     if (!_marchitado || recienRegada) {
       final destello = Paint()..color = Colors.white.withValues(alpha: 0.16);
       canvas.drawOval(
@@ -1782,7 +1782,7 @@ class _PlantSpritePainter extends CustomPainter {
     canvas.drawPath(ruta, pintura);
     canvas.drawPath(ruta, trazo);
     _veta(canvas, largo);
-    // Pliegue jugoso central.
+
     canvas.drawLine(
       Offset(largo * 0.12, 0),
       Offset(largo * 0.85, 0),
@@ -1863,7 +1863,7 @@ class _PlantSpritePainter extends CustomPainter {
   }
 
   void _florAbierta(Canvas canvas, Offset centro, double radio) {
-    // Halo de luz detrás de la flor.
+
     _halo(
       canvas,
       centro,
@@ -1871,7 +1871,7 @@ class _PlantSpritePainter extends CustomPainter {
       perfil.flor.withValues(alpha: 0.18 + 0.08 * math.sin(_t * 2 * math.pi)),
     );
 
-    // Pétalos traseros (oscuros).
+
     const petalos = 6;
     for (var i = 0; i < petalos; i++) {
       final angulo = i * 2 * math.pi / petalos + math.sin(_t * 2 * math.pi) * 0.04;
@@ -1884,7 +1884,7 @@ class _PlantSpritePainter extends CustomPainter {
         perfil.flor.oscuro(0.22),
       );
     }
-    // Pétalos delanteros por encima.
+
     for (var i = 0; i < petalos; i++) {
       final angulo = i * 2 * math.pi / petalos + math.pi / petalos + math.sin(_t * 2 * math.pi + 0.4) * 0.04;
       _petalo(
@@ -1896,7 +1896,7 @@ class _PlantSpritePainter extends CustomPainter {
         _alternar(i, perfil.flor, perfil.flor.claro(0.14)),
       );
     }
-    // Centro con gradiente.
+
     canvas.drawCircle(
       centro,
       radio * 0.62,
@@ -1910,7 +1910,7 @@ class _PlantSpritePainter extends CustomPainter {
           stops: const [0.4, 0.75, 1.0],
         ).createShader(Rect.fromCircle(center: centro, radius: radio * 0.62)),
     );
-    // Granitos de polen.
+
     final polenP = Paint()..color = const Color(0xFFFFF3C9);
     for (var i = 0; i < 5; i++) {
       final a = i * 2 * math.pi / 5 + 0.3;
@@ -1973,9 +1973,9 @@ class _PlantSpritePainter extends CustomPainter {
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // Animaciones de vida
-  // ---------------------------------------------------------------------------
+
+
+
 
   void _motasDeCrecimiento(Canvas canvas, double w, double h, double cx, double tope) {
     if (etapa.index < EtapaCrecimiento.brote.index) return;
@@ -2053,18 +2053,18 @@ class _PlantSpritePainter extends CustomPainter {
     canvas.translate(-cx, -baseY);
   }
 
-  // ---------------------------------------------------------------------------
-  // Utilidades
-  // ---------------------------------------------------------------------------
+
+
+
 
   Color _claro(Color c, double f) => c.claro(f);
   Color _oscuro(Color c, double f) => c.oscuro(f);
 
   Color _alternar(int i, Color a, Color b) => i.isEven ? a : b;
 
-  /// Ángulo para una hoja que sale del tallo hacia [lado] (1 derecha,
-  /// -1 izquierda). [inclinacion] es la apertura respecto a la vertical:
-  /// 0 = recta hacia arriba, pi/2 = horizontal.
+
+
+
   double _anguloHoja(double lado, double inclinacion) =>
       -math.pi / 2 + lado * (math.pi / 2 - inclinacion);
 
@@ -2092,8 +2092,8 @@ class _PlantSpritePainter extends CustomPainter {
   }
 }
 
-/// Anillo luminoso que celebra la subida de etapa. Se instancia con una clave
-/// nueva por etapa para que la animación se dispare una sola vez.
+
+
 class GrowthRing extends StatefulWidget {
   final Color color;
 
@@ -2155,7 +2155,7 @@ class _RingPainter extends CustomPainter {
     canvas.drawCircle(Offset(cx, baseY), radio, anillo);
     canvas.drawCircle(Offset(cx, baseY), radio * 0.72, anillo);
 
-    // Chispas radiales que suben desde la base.
+
     for (var i = 0; i < 6; i++) {
       final angulo = -math.pi / 2 + (i - 2.5) * 0.5;
       final largo = size.height * 0.05 * (1 - ease);
@@ -2179,8 +2179,8 @@ class _RingPainter extends CustomPainter {
   bool shouldRepaint(covariant _RingPainter oldDelegate) => oldDelegate.ease != ease;
 }
 
-/// Explosión de partículas (hojitas) al subir de etapa o cuidar una planta.
-/// Es de un solo uso y se elimina al terminar la animación.
+
+
 class GrowthBurst extends StatefulWidget {
   final Color color;
   final int particulas;

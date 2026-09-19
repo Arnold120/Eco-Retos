@@ -55,12 +55,12 @@ void main() {
       await avanzar(tester, const Duration(seconds: 14));
     }
 
-    // Dashboard (Para ti)
+
     await avanzar(tester, const Duration(seconds: 6));
     expect(find.text('Accesos rápidos'), findsWidgets,
         reason: 'El dashboard debe cargar sus secciones');
 
-    // Pestana (barra inferior en movil, rail en pantallas anchas).
+
     Finder destino(String label) {
       final enRail = find.descendant(
         of: find.byType(NavigationRail),

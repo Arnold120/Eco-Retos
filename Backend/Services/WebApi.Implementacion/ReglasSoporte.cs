@@ -1,11 +1,11 @@
 ﻿namespace WebApi.Implementacion
 {
-    /// <summary>
-    /// Motor de reglas del soporte (sustituye temporalmente al LLM).
-    /// Mantiene EXACTAMENTE el contrato que consumirá la web y que un futuro
-    /// proveedor de IA deberá devolver: mensaje, estado, categoría, prioridad,
-    /// escalar, crearReporte, motivoEscalamiento y sugerencias.
-    /// </summary>
+
+
+
+
+
+
     public static class ReglasSoporte
     {
         public class DecisionIA
@@ -130,13 +130,13 @@
             _ => new List<string> { "Adjuntar captura", "La app se cierra", "Es un error de la app" }
         };
 
-        /// <summary>
-        /// Analiza el mensaje del usuario y decide la siguiente acción.
-        /// </summary>
-        /// <param name="texto">Mensaje del usuario.</param>
-        /// <param name="cantidadMensajesUsuario">Mensajes ya enviados por el usuario (incluye este).</param>
-        /// <param name="categoriaCaso">Categoría elegida al crear el caso (manda sobre la detección).</param>
-        /// <param name="tieneAdjuntos">Si el mensaje trae archivos.</param>
+
+
+
+
+
+
+
         public static DecisionIA Analizar(string texto, int cantidadMensajesUsuario, string? categoriaCaso, bool tieneAdjuntos)
         {
             texto ??= string.Empty;
@@ -148,7 +148,6 @@
             var detectada = Clasificar(texto);
             var categoria = !string.IsNullOrWhiteSpace(categoriaCaso) && !grave ? categoriaCaso! : detectada;
 
-            /* 1. El usuario confirma que se solucionó. */
             if (confirmacion && !grave)
             {
                 return new DecisionIA
@@ -162,7 +161,6 @@
                 };
             }
 
-            /* 2. Caso grave o petición explícita de humano → escalar. */
             if (grave)
             {
                 var esContenidoGrave = Contiene(texto, ClavesGraves);
@@ -183,7 +181,6 @@
                 };
             }
 
-            /* 3. El problema sigue tras intentar resolverlo → escalar. */
             if (persiste && n >= 3)
             {
                 return new DecisionIA
@@ -199,7 +196,6 @@
                 };
             }
 
-            /* 4. Primer mensaje → pregunta de diagnóstico. */
             if (n == 1)
             {
                 return new DecisionIA
@@ -212,7 +208,6 @@
                 };
             }
 
-            /* 5. Segundo mensaje. */
             if (n == 2)
             {
                 if (tieneAdjuntos || mencionaEvidencia)
@@ -251,7 +246,6 @@
                 };
             }
 
-            /* 6. Mensajes siguientes → escalar con contexto. */
             return new DecisionIA
             {
                 MensajeIA = "He agotado las alternativas que puedo resolver por aquí. Voy a escalar tu caso a un administrador humano con todo el historial para darte una solución definitiva. Gracias por tu paciencia.",

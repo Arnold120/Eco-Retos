@@ -41,9 +41,9 @@ namespace WebApi.Implementacion
         {
             using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
-            // RetosCompletados se calcula desde UsuarioReto (fuente de verdad):
-            // el contador almacenado quedaba desincronizado cuando la evidencia
-            // se aprobaba por admin o se sincronizaba sin pasar por el móvil.
+
+
+
             using var command = new SqlCommand(
                 "SELECT p.ProgresoId, p.UsuarioId, p.Experiencia, " +
                 "(SELECT COUNT(*) FROM UsuarioReto ur WHERE ur.UsuarioId = p.UsuarioId AND ur.Estado = 'COMPLETADO') AS RetosCompletados, " +
@@ -119,10 +119,10 @@ namespace WebApi.Implementacion
             return lista;
         }
 
-        /// <summary>
-        /// Suma XP y recalcula NivelActual/PorcentajeProgreso de forma atómica.
-        /// Puede participar de una transacción externa (recompensas).
-        /// </summary>
+
+
+
+
         public async Task<Progreso> AgregarExperienciaAsync(
             int usuarioId,
             int cantidad,

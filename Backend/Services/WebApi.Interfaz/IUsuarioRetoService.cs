@@ -19,12 +19,12 @@ namespace WebApi.Interfaz
         Task<bool> RechazarEvidenciaAsync(int usuarioRetoId, string motivo);
         Task<IEnumerable<UsuarioReto>> ObtenerTodosAsync();
 
-        /// <summary>
-        /// Sincroniza un lote de retos del catalogo local en UNA sola conexion
-        /// y UNA transaccion: crea los retos inexistentes (por Codigo), asigna
-        /// la participacion al usuario y aplica el estado final de cada item.
-        /// Reutilizando la conexion evita el lag de abrir N conexiones por lote.
-        /// </summary>
+
+
+
+
+
+
         Task<IEnumerable<UsuarioRetoSincronizado>> SincronizarParticipacionesAsync(
             int usuarioId,
             IEnumerable<RetoSincronizacion> participaciones);

@@ -29,7 +29,7 @@ class ApiConstants {
   static const String enlaces = '/Enlaces';
   static const String insignias = '/Insignias';
   static const String usuariosInsignias = '/usuarios-insignias';
-  /// Monedero: saldo único de Monedas Eco e historial de movimientos.
+
   static const String monedero = '/monedero';
   static const String progresos = '/Progresos';
   static const String jardines = '/Jardines';

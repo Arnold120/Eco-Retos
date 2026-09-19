@@ -710,7 +710,7 @@ class _HistorialMonedasScreenState extends State<HistorialMonedasScreen>
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap ??
           () {
-            // TODO: Implement date pickers
+
           },
     );
   }

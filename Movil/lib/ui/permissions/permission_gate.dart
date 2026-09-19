@@ -9,9 +9,9 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../core/theme/app_theme.dart';
 import 'permission_screen.dart';
 
-/// Bloquea la app hasta que el usuario conceda todos los permisos
-/// obligatorios (notificaciones, fotos, videos y almacenamiento según la
-/// versión de Android). Vuelve a comprobar al regresar de la configuración.
+
+
+
 class PermissionGate extends StatefulWidget {
   final Widget child;
 
@@ -44,7 +44,7 @@ class _PermissionGateState extends State<PermissionGate>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Al volver de la configuración de Android se comprueba de nuevo.
+
     if (state == AppLifecycleState.resumed && !_comprobando && !_solicitando) {
       _soloComprobar();
     }
@@ -53,8 +53,8 @@ class _PermissionGateState extends State<PermissionGate>
   bool _concedido(PermissionStatus estado) =>
       estado.isGranted || estado.isLimited;
 
-  /// Versión de Android (API level). Si no se puede leer, se asume 33 o más
-  /// para no pedir `storage`, que está obsoleto desde Android 13.
+
+
   Future<int> _androidSdk() async {
     if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return 0;
     try {
@@ -65,12 +65,12 @@ class _PermissionGateState extends State<PermissionGate>
     }
   }
 
-  /// Permisos obligatorios según la plataforma y la versión de Android.
-  ///
-  /// En Android 13+ se usan READ_MEDIA_IMAGES/READ_MEDIA_VIDEO mediante
-  /// `photos`/`videos`. En Android 12 y anteriores esas dos no existen como
-  /// permiso de runtime, así que se solicita `storage`
-  /// (READ_EXTERNAL_STORAGE/WRITE_EXTERNAL_STORAGE).
+
+
+
+
+
+
   Future<List<PermisoRequerido>> _requeridos() async {
     final lista = <PermisoRequerido>[];
     if (kIsWeb) return lista;
@@ -95,7 +95,7 @@ class _PermissionGateState extends State<PermissionGate>
     return lista;
   }
 
-  /// Estado del permiso sin riesgo de excepción ni espera infinita.
+
   Future<PermissionStatus> _estadoSeguro(PermisoRequerido requerido) async {
     try {
       return await requerido.permiso.status.timeout(
@@ -108,7 +108,7 @@ class _PermissionGateState extends State<PermissionGate>
     }
   }
 
-  /// Solicitud sin riesgo de excepción ni espera infinita.
+
   Future<PermissionStatus> _solicitarSeguro(PermisoRequerido requerido) async {
     try {
       return await requerido.permiso.request().timeout(
@@ -121,8 +121,8 @@ class _PermissionGateState extends State<PermissionGate>
     }
   }
 
-  /// Pide los permisos que falten y guarda la lista de los pendientes.
-  /// Siempre termina de comprobar, aunque un permiso falle.
+
+
   Future<void> _solicitarYComprobar() async {
     if (_solicitando) return;
     _solicitando = true;
@@ -151,8 +151,8 @@ class _PermissionGateState extends State<PermissionGate>
     }
   }
 
-  /// Solo comprueba (sin volver a pedir), para cuando el usuario regresa de
-  /// la configuración del sistema.
+
+
   Future<void> _soloComprobar() async {
     var faltantes = <PermisoRequerido>[];
     try {

@@ -6,8 +6,8 @@ import 'cubit/modo_libre_cubit.dart';
 import 'cubit/modo_libre_state.dart';
 import 'widgets/trivia_ui.dart';
 
-/// Pantalla de juego de Modo Libre: muestra la pregunta con sus opciones
-/// A-D, la barra de ayudas (pista, 50/50 y saltar) y el feedback inmediato.
+
+
 class ModoLibrePlayScreen extends StatelessWidget {
   const ModoLibrePlayScreen({super.key});
 
@@ -276,7 +276,7 @@ class ModoLibrePlayScreen extends StatelessWidget {
   }
 }
 
-/// Puntaje acumulado en la barra superior.
+
 class _ScoreTexto extends StatelessWidget {
   const _ScoreTexto();
 
@@ -310,7 +310,7 @@ class _ScoreTexto extends StatelessWidget {
   }
 }
 
-/// Monedas disponibles en la barra superior.
+
 class _MonedasTexto extends StatelessWidget {
   const _MonedasTexto();
 

@@ -9,10 +9,10 @@ namespace WebApi.Interfaz
         Task<Notificacion?> ObtenerPorIdAsync(int notificacionId);
         Task<Notificacion> CrearNotificacionAsync(Notificacion notificacion);
 
-        /// <summary>
-        /// Crea una notificacion de interaccion social. No genera nada si el
-        /// destinatario es el mismo actor (evita auto-notificaciones).
-        /// </summary>
+
+
+
+
         Task CrearInteraccionAsync(
             int destinatarioId,
             int actorUsuarioId,

@@ -4,69 +4,69 @@ import 'package:flutter/material.dart';
 import '../gamification/gamification_models.dart';
 import 'garden_catalog.dart';
 
-/// Reglas del jardín: tiempos de crecimiento (basados en tiempo real), costos
-/// de herramientas y límites del jardín.
-///
-/// El progreso NO depende de `Timer.periodic`: se calcula con timestamps
-/// (`ultimaActualizacion` + horas acumuladas), por lo que sobrevive al cierre
-/// de la aplicación.
+
+
+
+
+
+
 class GardenGrowthConfig {
   const GardenGrowthConfig._();
 
-  /// Horas necesarias para cada transición de etapa:
-  /// semilla→germinación, germinación→brote, brote→pequeña,
-  /// pequeña→mediana y mediana→adulta.
+
+
+
   static const List<double> horasPorEtapa = [5, 5, 5, 4, 6];
 
-  /// Horas totales hasta planta adulta (5+5+5+4+6).
+
   static const double horasHastaAdulta = 25;
 
-  /// Horas extra para que una planta con floración muestre su flor/fruto.
+
   static const double horasHastaFloracion = 31;
 
-  /// Espacios iniciales del jardín.
+
   static const int maxSlots = 12;
 
-  /// Beneficio y tiempos de espera de las herramientas.
+
   static const double horasPorRiego = 1.0;
   static const double horasPorAbono = 2.0;
   static const Duration cooldownRiego = Duration(hours: 3);
   static const Duration cooldownAbono = Duration(hours: 6);
 
-  /// El insecticida también se aplica de forma preventiva mientras la planta
-  /// crece: acelera el crecimiento y la protege de plagas durante un rato.
+
+
   static const double horasPorInsecticida = 0.5;
   static const Duration cooldownInsecticida = Duration(hours: 4);
   static const Duration ventanaProteccionPlaga = Duration(hours: 8);
 
-  /// A partir de estas horas sin riego la planta pide agua.
+
   static const Duration ventanaHumedad = Duration(hours: 12);
 
-  /// A partir de estas horas sin riego se muestra el aviso de riego.
+
   static const Duration umbralNecesitaAgua = Duration(hours: 6);
 
-  /// Si pasa esta ventana sin abono, el crecimiento se detiene.
+
   static const Duration ventanaAbono = Duration(hours: 12);
 
-  /// Horas de marchitez (después de [ventanaHumedad]) antes de perder la
-  /// planta. Se pierde a las 12 h + 5 h = 17 h sin agua.
+
+
   static const Duration horasHastaPerderPorSed = Duration(hours: 5);
 
-  /// Horas con una plaga sin tratar antes de perder la planta.
+
   static const Duration horasHastaPerderPorPlaga = Duration(hours: 24);
 
   static const String carpetaModelos = 'assets/plants';
 
-  /// Precios de las herramientas (Monedas Eco).
+
   static const int precioRegadera = 50;
   static const int precioAbono = 25;
   static const int precioInsecticida = 30;
 
-  /// Racha necesaria para la planta carnívora.
+
   static const int rachaCarnicora = 30;
 }
 
-/// Etapas del ciclo de vida. Los umbrales están en horas reales.
+
 enum EtapaCrecimiento {
   semilla(0, 'Semilla', 'La semilla descansa bajo la tierra.'),
   germinacion(5, 'Germinando', 'Una raíz y un pequeño tallo asoman.'),
@@ -106,7 +106,7 @@ enum EtapaCrecimiento {
       this == EtapaCrecimiento.floracion;
 }
 
-/// Herramientas reutilizables o consumibles del jardín.
+
 enum HerramientaJardin { regadera, abono, insecticida }
 
 extension HerramientaJardinX on HerramientaJardin {
@@ -132,7 +132,7 @@ extension HerramientaJardinX on HerramientaJardin {
     }
   }
 
-  /// Ilustración propia de cada herramienta (`assets/objetos_jardin/`).
+
   String get assetIcono {
     switch (this) {
       case HerramientaJardin.regadera:
@@ -167,7 +167,7 @@ extension HerramientaJardinX on HerramientaJardin {
   }
 }
 
-/// Inventario local de herramientas y desbloqueos del jardín.
+
 class InventarioJardin extends Equatable {
   final bool regadera;
   final int abono;
@@ -234,7 +234,7 @@ class InventarioJardin extends Equatable {
   ];
 }
 
-/// Una planta viva del jardín. Todo el progreso se deriva de horas reales.
+
 class PlantGrowth extends Equatable {
   final String id;
   final String catalogoId;
@@ -245,10 +245,10 @@ class PlantGrowth extends Equatable {
   final PlantaRareza rareza;
   final int slot;
 
-  /// Horas de crecimiento acumuladas en `ultimaActualizacion`.
+
   final double horasCrecimiento;
 
-  /// Momento del último cálculo/consolidación del tiempo.
+
   final DateTime ultimaActualizacion;
   final DateTime plantadaEl;
 
@@ -260,7 +260,7 @@ class PlantGrowth extends Equatable {
   final DateTime? plagaDesde;
   final DateTime? proximaRevisionPlaga;
 
-  /// Hasta cuándo la planta está protegida de plagas (por insecticida).
+
   final DateTime? protegidaHasta;
 
   final bool desbloqueada;
@@ -364,9 +364,9 @@ class PlantGrowth extends Equatable {
     };
   }
 
-  // ---------------------------------------------------------------------------
-  // Tiempo y progreso (siempre calculados al momento de consultar)
-  // ---------------------------------------------------------------------------
+
+
+
 
   EspecieJardin? get catalogo => CatalogoJardin.porId(catalogoId);
 
@@ -376,9 +376,9 @@ class PlantGrowth extends Equatable {
 
   DateTime _referencia(DateTime? valor) => valor ?? plantadaEl;
 
-  /// Horas acumuladas incluyendo el tiempo transcurrido desde la última
-  /// actualización. El crecimiento se pausa por plaga, por falta de abono
-  /// (mientras siga creciendo) o cuando la planta lleva demasiado sin agua.
+
+
+
   double horasTotales([DateTime? ahora]) {
     final momento = ahora ?? DateTime.now();
     var transcurridas =
@@ -388,7 +388,7 @@ class PlantGrowth extends Equatable {
     if (tienePlaga) {
       transcurridas = 0;
     } else {
-      // Solo cuenta el tiempo en el que la planta tuvo agua y abono.
+
       final finAgua = _referencia(
         ultimoRiego,
       ).add(GardenGrowthConfig.ventanaHumedad);
@@ -433,8 +433,8 @@ class PlantGrowth extends Equatable {
   double get escalaModelo {
     final especie = catalogo;
     if (especie != null && !especie.escalaPorEtapa) return 1.0;
-    // Escala continua por hora: la planta crece de forma gradual y solo alcanza
-    // su tamaño completo (1.0) cuando ya es adulta.
+
+
     const umbrales = [0.0, 5, 10, 15, 19, 25, 31];
     const escalas = [0.30, 0.45, 0.60, 0.75, 0.88, 1.00, 1.00];
     final horas = horasTotales();
@@ -462,12 +462,12 @@ class PlantGrowth extends Equatable {
     return DateTime.now().difference(ultimo).inMinutes / 60.0;
   }
 
-  /// El crecimiento está detenido por falta de abono.
+
   bool get faltaAbono =>
       enCrecimiento &&
       horasSinAbono >= GardenGrowthConfig.ventanaAbono.inHours;
 
-  /// Progreso de marchitez (0 = sana, 1 = a punto de perderse).
+
   double get marchitez {
     final exceso = horasSinRiego - GardenGrowthConfig.ventanaHumedad.inHours;
     if (exceso <= 0) return 0;
@@ -488,7 +488,7 @@ class PlantGrowth extends Equatable {
         GardenGrowthConfig.horasHastaPerderPorPlaga;
   }
 
-  /// La planta ya no puede recuperarse: hay que retirarla del jardín.
+
   bool get perdida => perdidaPorSed || perdidaPorPlaga;
 
   String? get motivoPerdida {
@@ -497,7 +497,7 @@ class PlantGrowth extends Equatable {
     return null;
   }
 
-  /// Horas que le quedan antes de perderse (para mostrar avisos).
+
   double get horasParaPerderse {
     var restante =
         (GardenGrowthConfig.ventanaHumedad +
@@ -514,14 +514,14 @@ class PlantGrowth extends Equatable {
     return restante < 0 ? 0 : restante;
   }
 
-  /// Todavía está creciendo (no llegó a adulta/floración).
+
   bool get enCrecimiento => !esAdulta;
 
-  /// Pide agua cuando lleva varias horas sin regar (antes de marchitarse).
+
   bool get necesitaAgua =>
       horasSinRiego >= GardenGrowthConfig.umbralNecesitaAgua.inHours;
 
-  /// Ya se ve marchita: lleva más de la ventana de humedad sin agua.
+
   bool get marchita =>
       horasSinRiego >= GardenGrowthConfig.ventanaHumedad.inHours;
 
@@ -566,8 +566,8 @@ class PlantGrowth extends Equatable {
     return restante.isNegative ? Duration.zero : restante;
   }
 
-  /// El insecticida se puede usar para curar una plaga o, de forma
-  /// preventiva, mientras la planta crece.
+
+
   bool get puedeInsecticida {
     if (perdida) return false;
     if (tienePlaga) return true;

@@ -4,15 +4,15 @@ import '../../../core/theme/app_theme.dart';
 import '../../../data/models/trivia/diario_models.dart';
 import '../cubit/diario_state.dart' show mensajePorDesempeno;
 
-/// Colores de superficie "menta" según el tema.
-/// Verde principal de las tarjetas de trivia: vivo en claro, apagado en
-/// oscuro para no resultar chillante.
+
+
+
 Color colorTriviaPrincipal(BuildContext context) =>
     Theme.of(context).brightness == Brightness.dark
         ? AppColorsDark.ecoGreen
         : AppColors.ecoGreen;
 
-/// Verde secundario de las tarjetas de trivia (mismo criterio).
+
 Color colorTriviaSecundario(BuildContext context) =>
     Theme.of(context).brightness == Brightness.dark
         ? AppColorsDark.ecoGreen2
@@ -33,21 +33,21 @@ Color colorTextoMenta(BuildContext context) =>
     ? AppColorsDark.textPrimary
     : AppColors.primaryDark;
 
-/// Color representativo según el porcentaje de aciertos.
+
 Color colorResultadoTrivia(int porcentaje) {
   if (porcentaje >= 80) return AppColors.success;
   if (porcentaje >= 50) return AppColors.mintStrong;
   return AppColors.error;
 }
 
-/// Mensaje motivador según el porcentaje (re-export del estado diario).
+
 String mensajePorcentajeTrivia(double porcentaje) =>
     mensajePorDesempeno(porcentaje);
 
-/// Estados visuales de una opción de respuesta.
+
 enum TriviaOpcionEstado { normal, seleccionada, correcta, incorrecta, eliminada }
 
-/// Botón de opción A-D reutilizado por Modo Libre y Modo Diario.
+
 class TriviaOpcionButton extends StatelessWidget {
   final String letra;
   final String texto;
@@ -219,7 +219,7 @@ class _CirculoBadge extends StatelessWidget {
   }
 }
 
-/// Chip compacto con icono y texto (categoría, dificultad, recompensas).
+
 class ChipTrivia extends StatelessWidget {
   final IconData icono;
   final String texto;
@@ -259,7 +259,7 @@ class ChipTrivia extends StatelessWidget {
   }
 }
 
-/// Píldora con el tiempo restante de la pregunta.
+
 class TemporizadorTrivia extends StatelessWidget {
   final Duration restante;
 
@@ -297,7 +297,7 @@ class TemporizadorTrivia extends StatelessWidget {
   }
 }
 
-/// Barra de ayudas (pista, 50/50 y opcionalmente saltar).
+
 class AyudasTriviaBar extends StatelessWidget {
   final int monedasDisponibles;
   final bool permitirSaltar;
@@ -421,7 +421,7 @@ class AyudasTriviaBar extends StatelessWidget {
   }
 }
 
-/// Panel de retroalimentación inferior (correcto/incorrecto/tiempo agotado).
+
 class PanelFeedbackTrivia extends StatelessWidget {
   final bool esCorrecta;
   final bool tiempoAgotado;
@@ -537,7 +537,7 @@ class PanelFeedbackTrivia extends StatelessWidget {
   }
 }
 
-/// Fila de recompensas (XP / Monedas) usada en las pantallas de resultados.
+
 class RecompensasTrivia extends StatelessWidget {
   final int xp;
   final int monedas;

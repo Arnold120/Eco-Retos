@@ -32,7 +32,7 @@ Future<void> _registrar(String usuario, String correo) async {
       'Apellido': 'Test',
     });
   } catch (_) {
-    // Ya existe.
+
   }
 }
 
@@ -55,7 +55,7 @@ Future<int> _usuarioId(String correo) async {
 Options _auth(String token) =>
     Options(headers: {'Authorization': 'Bearer $token'});
 
-/// Crea (si hace falta) una publicacion de A y le da me gusta desde B.
+
 Future<int> _prepararInteraccion() async {
   await _registrar('auditor_qa_eco', _correoA);
   await _registrar('qa_bob', _correoB);
@@ -109,7 +109,7 @@ void main() {
       await avanzar(tester, const Duration(seconds: 12));
     }
 
-    // Ir al Muro y abrir las alertas desde su header.
+
     await tester.tap(find.text('Muro'));
     await avanzar(tester, const Duration(seconds: 6));
 
@@ -129,12 +129,12 @@ void main() {
       reason: 'Debe existir al menos una alerta de interacción',
     );
 
-    // Abrir la pantalla desde el icono dentro de Muro Eco.
+
     await tester.tap(find.text('Alertas'));
     await avanzar(tester, const Duration(seconds: 4));
     expect(find.text('Notificaciones'), findsWidgets);
 
-    // La lista debe estar realmente visible (sin animaciones que la oculten).
+
     final texto = find.textContaining('reaccion');
     expect(texto, findsWidgets);
     expect(tester.getSize(texto.first).height, greaterThan(0),
