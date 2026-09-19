@@ -18,15 +18,21 @@ import 'widgets/post_helpers.dart';
 
 
 void abrirPerfilUsuario(BuildContext context, int usuarioId) {
+  final community = context.read<CommunityCubit>();
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (_) => BlocProvider(
-        create: (ctx) => PublicProfileCubit(
-          usuarioId: usuarioId,
-          perfilService: ctx.read<PerfilSocialService>(),
-          publicacionService: ctx.read<PublicacionService>(),
-          seguimientoService: ctx.read<SeguimientoService>(),
-        )..load(),
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: community),
+          BlocProvider(
+            create: (ctx) => PublicProfileCubit(
+              usuarioId: usuarioId,
+              perfilService: ctx.read<PerfilSocialService>(),
+              publicacionService: ctx.read<PublicacionService>(),
+              seguimientoService: ctx.read<SeguimientoService>(),
+            )..load(),
+          ),
+        ],
         child: const UserProfileScreen(),
       ),
     ),
