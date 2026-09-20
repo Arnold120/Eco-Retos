@@ -855,7 +855,9 @@ class _PanelCompletado extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Align(
+      alignment: Alignment.center,
+      heightFactor: 1,
       child: Container(
         constraints: const BoxConstraints(maxWidth: 520),
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
