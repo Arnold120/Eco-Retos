@@ -27,6 +27,7 @@ namespace WebApi.Implementacion
         private readonly IMonederoService _monederoService;
         private readonly IAuditoriaService _auditoria;
         private readonly IServicioIA _ia;
+        private readonly IEvaluadorInsigniasService _evaluadorInsignias;
 
         private static readonly string[] EstadosValidos =
             { "NUEVO", "IA_ATENDIENDO", "EN_REVISION", "RESUELTO_POR_IA", "ESCALADO", "ASIGNADO", "RESUELTO", "CERRADO" };
@@ -53,7 +54,8 @@ namespace WebApi.Implementacion
             IJardinService jardinService,
             IMonederoService monederoService,
             IAuditoriaService auditoria,
-            IServicioIA ia)
+            IServicioIA ia,
+            IEvaluadorInsigniasService evaluadorInsignias)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -68,6 +70,7 @@ namespace WebApi.Implementacion
             _monederoService = monederoService;
             _auditoria = auditoria;
             _ia = ia;
+            _evaluadorInsignias = evaluadorInsignias;
         }
 
 
@@ -1309,6 +1312,12 @@ namespace WebApi.Implementacion
                     estado == "COMPLETADO" ? "APROBAR_EVIDENCIA" : "RECHAZAR_EVIDENCIA",
                     "UsuarioReto", usuarioRetoId, null, estado, dto.MotivoRechazo,
                     JsonSerializer.Serialize(new { admin = adminNombre, estado, motivo = dto.MotivoRechazo }));
+
+                if (estado == "COMPLETADO")
+                {
+                    try { await _evaluadorInsignias.EvaluarYOtorgarAsync(usuarioReto.UsuarioId); }
+                    catch { }
+                }
             }
             return ok;
         }

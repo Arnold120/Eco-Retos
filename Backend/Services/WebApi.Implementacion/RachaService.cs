@@ -9,11 +9,13 @@ namespace WebApi.Implementacion
     public class RachaService : IRachaService
     {
         private readonly string _connectionString;
+        private readonly IEvaluadorInsigniasService _evaluadorInsignias;
 
-        public RachaService(IConfiguration configuration)
+        public RachaService(IConfiguration configuration, IEvaluadorInsigniasService evaluadorInsignias)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            _evaluadorInsignias = evaluadorInsignias;
         }
 
         private Racha Mapear(SqlDataReader reader)
@@ -79,6 +81,8 @@ namespace WebApi.Implementacion
             command.Parameters.AddWithValue("@FechaAcceso", fechaSolo);
             command.Parameters.AddWithValue("@NumeroRacha", nuevaRacha);
             var rachaId = Convert.ToInt32(await command.ExecuteScalarAsync());
+            try { await _evaluadorInsignias.EvaluarYOtorgarAsync(usuarioId); }
+            catch { }
             return new Racha { RachaId = rachaId, UsuarioId = usuarioId, FechaAcceso = fechaSolo, NumeroRacha = nuevaRacha };
         }
 

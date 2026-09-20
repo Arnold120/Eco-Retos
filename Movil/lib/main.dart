@@ -311,7 +311,6 @@ class _AppEntryState extends State<AppEntry> {
                       usuarioId: state.usuarioId,
                       retoService: context.read<RetoService>(),
                       monederoService: context.read<MonederoService>(),
-                      progresoService: context.read<ProgresoService>(),
                       insigniaService: context.read<InsigniaService>(),
                     ),
                   )..cargar(),

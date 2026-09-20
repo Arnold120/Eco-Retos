@@ -586,7 +586,7 @@ class ChallengeDetailScreen extends StatelessWidget {
           ),
           RetoEstado.pendienteRevision => const _CtaInfo(
             icono: Icons.verified_outlined,
-            texto: 'Tu evidencia está en revisión. ¡Vuelve pronto!',
+            texto: 'Tu reto está en revisión. ¡Vuelve pronto!',
           ),
           RetoEstado.rechazado => Column(
             mainAxisSize: MainAxisSize.min,
@@ -718,11 +718,11 @@ class ChallengeDetailScreen extends StatelessWidget {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        icon: const Icon(Icons.emoji_events, color: AppColors.xpGold),
-        title: const Text('¿Completar el reto?'),
+        icon: const Icon(Icons.verified_outlined, color: AppColors.info),
+        title: const Text('¿Enviar reto a revisión?'),
         content: Text(
-          'Recibirás ${reto.xp} XP y ${reto.monedas} ECO.\n'
-          'No podrás volver a ganar recompensa por este reto.',
+          'Tu reto será validado por el equipo. Al aprobarse recibirás '
+          '${reto.xp} XP y ${reto.monedas} ECO.',
         ),
         actions: [
           TextButton(
@@ -731,7 +731,7 @@ class ChallengeDetailScreen extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Completar'),
+            child: const Text('Enviar'),
           ),
         ],
       ),
@@ -741,19 +741,16 @@ class ChallengeDetailScreen extends StatelessWidget {
     final resultado = await cubit.completar(reto);
     if (!context.mounted) return;
 
-    if (resultado is! CompletadoNuevo) {
+    if (resultado is CompletoYa) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text(
-            'Este reto ya estaba completado (sin recompensa doble)',
-          ),
+          content: Text('Este reto ya estaba completado'),
           backgroundColor: AppColors.warning,
         ),
       );
       return;
     }
 
-    final p = resultado.progreso;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -761,11 +758,10 @@ class ChallengeDetailScreen extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      builder: (ctx) => _CelebracionSheet(
+      builder: (ctx) => _RevisionSheet(
         titulo: reto.titulo,
-        xp: p.reto.xp,
-        eco: p.reto.monedas,
-        logros: resultado.logros,
+        xp: reto.xp,
+        eco: reto.monedas,
         onCerrar: () => Navigator.of(ctx).pop(),
       ),
     );
@@ -1374,18 +1370,17 @@ class _EvidenciaSheetState extends State<_EvidenciaSheet> {
 
 
 
-class _CelebracionSheet extends StatelessWidget {
+class _RevisionSheet extends StatelessWidget {
   final String titulo;
   final int xp;
   final int eco;
-  final List<InsigniaResponse> logros;
+  final List<InsigniaResponse> logros = const [];
   final VoidCallback onCerrar;
 
-  const _CelebracionSheet({
+  const _RevisionSheet({
     required this.titulo,
     required this.xp,
     required this.eco,
-    required this.logros,
     required this.onCerrar,
   });
 
@@ -1405,18 +1400,18 @@ class _CelebracionSheet extends StatelessWidget {
             width: 76,
             height: 76,
             decoration: BoxDecoration(
-              color: AppColors.success.withValues(alpha: 0.14),
+              color: AppColors.info.withValues(alpha: 0.14),
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.emoji_events,
-              color: AppColors.success,
+              Icons.verified_outlined,
+              color: AppColors.info,
               size: 40,
             ),
           ),
           const SizedBox(height: 14),
           Text(
-            '¡Reto completado! 🎉',
+            '¡Reto enviado a revisión!',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w800,
@@ -1430,6 +1425,11 @@ class _CelebracionSheet extends StatelessWidget {
             style: TextStyle(fontSize: 14, color: textColor),
           ),
           const SizedBox(height: 18),
+          const Text(
+            'Al aprobarse recibirás:',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
@@ -1581,7 +1581,7 @@ class _CelebracionSheet extends StatelessWidget {
             child: FilledButton.icon(
               onPressed: onCerrar,
               icon: const Icon(Icons.check),
-              label: const Text('¡Seguir con mi jardín!'),
+              label: const Text('¡Entendido!'),
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),

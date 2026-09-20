@@ -5,28 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'cubit/auth_cubit.dart';
 import 'cubit/auth_state.dart';
 import '../../core/theme/app_theme.dart';
-import '../../data/services/user_service.dart';
-import '../../data/services/gamification_service.dart';
-import '../../data/services/categoria_service.dart';
-import '../../data/services/reto_service.dart';
-import '../../data/services/trivia_service.dart';
-import '../../data/services/social_service.dart';
-import '../../data/services/social_interaction_service.dart';
-import '../../data/services/mensaje_service.dart';
-import '../../data/services/imagen_service.dart';
-import '../../data/repositories/reto_repository.dart';
-import '../../data/repositories/trivias_diario_local.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
 import 'welcome_screen.dart';
-import '../app/main_shell.dart';
-import '../home/cubit/home_cubit.dart';
-import '../challenges/cubit/challenge_cubit.dart';
-import '../trivia/cubit/trivia_cubit.dart';
-import '../profile/cubit/profile_cubit.dart';
-import '../community/cubit/community_cubit.dart';
-import '../messages/cubit/messages_cubit.dart';
-import '../notifications/cubit/notification_cubit.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -108,105 +89,13 @@ class _LoginScreenState extends State<LoginScreen> {
         } else if (state is AuthRegistrationSuccess) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (_) => WelcomeScreen(
+              builder: (context) => WelcomeScreen(
                 nombre: state.nombre,
                 onStart: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (_) => MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (_) => HomeCubit(
-                              usuarioId: state.usuarioId,
-                              nombreUsuario: state.nombre,
-                              categoriaService: context
-                                  .read<CategoriaService>(),
-                              retoService: context.read<RetoService>(),
-                              progresoService: context.read<ProgresoService>(),
-                              jardinService: context.read<JardinService>(),
-                              diarioStore:
-                                  DiarioStore(usuarioId: state.usuarioId),
-                              monederoService: context
-                                  .read<MonederoService>(),
-                              notificacionService: context
-                                  .read<NotificacionService>(),
-                              publicacionService: context
-                                  .read<PublicacionService>(),
-                            )..loadDashboard(),
-                          ),
-                          BlocProvider(
-                            create: (_) => ChallengeCubit(
-                              repositorio: RetoRepository(
-                                usuarioId: state.usuarioId,
-                                retoService: context.read<RetoService>(),
-                                monederoService: context
-                                    .read<MonederoService>(),
-                                progresoService: context
-                                    .read<ProgresoService>(),
-                                insigniaService: context
-                                    .read<InsigniaService>(),
-                              ),
-                            )..cargar(),
-                          ),
-                          BlocProvider(
-                            create: (_) => TriviaCubit(
-                              usuarioId: state.usuarioId,
-                              categoriaService: context
-                                  .read<CategoriaService>(),
-                              triviaService: context.read<TriviaService>(),
-                              monederoService: context
-                                  .read<MonederoService>(),
-                              progresoService: context.read<ProgresoService>(),
-                            )..loadTrivias(),
-                          ),
-                          BlocProvider(
-                            create: (_) => ProfileCubit(
-                              usuarioId: state.usuarioId,
-                              nombreUsuario: state.nombre,
-                              correo: state.correo,
-                              userService: context.read<UserService>(),
-                              progresoService: context.read<ProgresoService>(),
-                              jardinService: context.read<JardinService>(),
-                              insigniaService: context.read<InsigniaService>(),
-                              monederoService: context
-                                  .read<MonederoService>(),
-                              diarioStore:
-                                  DiarioStore(usuarioId: state.usuarioId),
-                              imagenService: context.read<ImagenService>(),
-                            )..loadProfile(),
-                          ),
-                          BlocProvider(
-                            create: (_) => CommunityCubit(
-                              usuarioId: state.usuarioId,
-                              publicacionService:
-                                  context.read<PublicacionService>(),
-                              reaccionService: context.read<ReaccionService>(),
-                              seguimientoService:
-                                  context.read<SeguimientoService>(),
-                              guardadoService: context.read<GuardadoService>(),
-                            )..loadPublicaciones(),
-                          ),
-                          BlocProvider(
-                            create: (_) => MessagesCubit(
-                              context.read<MensajeService>(),
-                            )
-                              ..load()
-                              ..iniciarPolling(),
-                          ),
-                          BlocProvider(
-                            create: (_) => NotificationCubit(
-                              usuarioId: state.usuarioId,
-                              service: context.read<NotificacionService>(),
-                            )
-                              ..loadNotificaciones()
-                              ..iniciarPolling(),
-                          ),
-                        ],
-                        child: const MainShell(),
-                      ),
-                    ),
-                    (route) => false,
-                  );
+                  final auth = context.read<AuthCubit>().state;
+                  if (auth is Authenticated) {
+                    Navigator.of(context).pop();
+                  }
                 },
               ),
             ),

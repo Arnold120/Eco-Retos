@@ -9,11 +9,13 @@ namespace WebApi.Implementacion
     public class IntentoTriviaService : IIntentoTriviaService
     {
         private readonly string _connectionString;
+        private readonly IEvaluadorInsigniasService _evaluadorInsignias;
 
-        public IntentoTriviaService(IConfiguration configuration)
+        public IntentoTriviaService(IConfiguration configuration, IEvaluadorInsigniasService evaluadorInsignias)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            _evaluadorInsignias = evaluadorInsignias;
         }
 
         private IntentoTrivia Mapear(SqlDataReader reader)
@@ -82,10 +84,15 @@ namespace WebApi.Implementacion
         {
             using var connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
-            using var command = new SqlCommand("UPDATE IntentoTrivia SET Puntuacion = @Puntuacion, FechaFinalizacion = GETDATE() WHERE IntentoId = @IntentoId", connection);
+            using var command = new SqlCommand("UPDATE IntentoTrivia SET Puntuacion = @Puntuacion, FechaFinalizacion = GETDATE() OUTPUT INSERTED.UsuarioId WHERE IntentoId = @IntentoId", connection);
             command.Parameters.AddWithValue("@IntentoId", intentoId);
             command.Parameters.AddWithValue("@Puntuacion", puntuacion);
-            return await command.ExecuteNonQueryAsync() > 0;
+            var valor = await command.ExecuteScalarAsync();
+            if (valor is null || valor == DBNull.Value) return false;
+
+            try { await _evaluadorInsignias.EvaluarYOtorgarAsync(Convert.ToInt32(valor)); }
+            catch { }
+            return true;
         }
 
         public async Task<int?> ObtenerMejorPuntuacionAsync(int usuarioId, int triviaId)

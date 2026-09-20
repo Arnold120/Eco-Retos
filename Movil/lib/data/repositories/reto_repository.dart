@@ -21,19 +21,16 @@ class RetoRepository {
   final RetoService _retoService;
   final RetoProgresoLocal _local;
   final MonederoService _monedero;
-  final ProgresoService _progreso;
   final InsigniaService _insignias;
 
   RetoRepository({
     required this.usuarioId,
     required RetoService retoService,
     required MonederoService monederoService,
-    required ProgresoService progresoService,
     required InsigniaService insigniaService,
     RetoProgresoLocal? local,
   }) : _retoService = retoService,
        _monedero = monederoService,
-       _progreso = progresoService,
        _insignias = insigniaService,
        _local = local ?? RetoProgresoLocal();
 
@@ -409,33 +406,31 @@ class RetoRepository {
     if (previo?.estado == RetoEstado.completado) {
       return CompletoYa(previo!);
     }
+    if (previo?.estado == RetoEstado.pendienteRevision) {
+      return EnRevisionNuevo(previo!);
+    }
 
     final objetivo = reto.cantidadObjetivo ?? reto.instrucciones.length;
-    final completo = RetoProgreso(
+    final pendiente = RetoProgreso(
       reto: reto,
-      estado: RetoEstado.completado,
+      estado: RetoEstado.pendienteRevision,
       progresoActual: objetivo,
       pasosCompletadas: reto.instrucciones.isNotEmpty
           ? reto.instrucciones.length
           : null,
       fechaInicio: previo?.fechaInicio,
-      fechaCompletado: DateTime.now(),
     );
 
-    await _local.guardar(completo);
+    await _local.guardar(pendiente);
 
     if (_backendCargado) {
       try {
-        await _asignarRetoBackend(reto, 'COMPLETADO');
+        await _asignarRetoBackend(reto, 'EN_REVISION');
         _backendCargado = false;
       } catch (_) {}
     }
 
-
-
-    final logros = await _otorgarRecompensa(reto);
-
-    return CompletadoNuevo(completo, logros: logros);
+    return EnRevisionNuevo(pendiente);
   }
 
 
@@ -447,15 +442,7 @@ class RetoRepository {
 
   Future<List<InsigniaResponse>> _otorgarRecompensa(Reto reto) async {
     try {
-      var backendId = _idBackendDeReto(reto);
-      try {
-        final respuesta = await _asignarRetoBackend(reto, 'COMPLETADO');
-        _backendCargado = false;
-        if (respuesta.retoId != 0) backendId = respuesta.retoId;
-      } catch (_) {
-
-
-      }
+      final backendId = _idBackendDeReto(reto);
       if (backendId != null) {
         await _monedero.reclamarRecompensa(
           tipo: 'RETO',
@@ -466,11 +453,10 @@ class RetoRepository {
         );
         await _marcarRecompensaOk(reto.id);
       }
-      await _progreso.incrementarRetos(usuarioId);
     } catch (_) {
 
     }
-    return _otorgarInsigniasPorRetos();
+    return _logrosRecientes();
   }
 
 
@@ -478,58 +464,25 @@ class RetoRepository {
 
 
 
-  Future<List<InsigniaResponse>> _otorgarInsigniasPorRetos() async {
-    final otorgadas = <InsigniaResponse>[];
+  /// Logros otorgados por el backend en los últimos minutos (ej. al aprobarse
+  /// el reto el evaluador backend otorga las insignias correspondientes).
+  /// Solo se consultan para celebrarlos; el otorgamiento ya lo hizo el servidor.
+  Future<List<InsigniaResponse>> _logrosRecientes({
+    Duration ventana = const Duration(minutes: 10),
+  }) async {
     try {
-      final progreso = await _progreso.getProgreso(usuarioId);
-      final total = progreso.retosCompletados;
-      final catalogo = await _insignias.getInsignias();
       final propias = await _insignias.getInsigniasUsuario(usuarioId);
-      final yaObtuvo = propias.map((u) => u.insigniaId).toSet();
-
-      for (final ins in catalogo) {
-        if (yaObtuvo.contains(ins.insigniaId)) continue;
-        final requerido = _requisitoRetos(ins);
-        if (requerido == null || total < requerido) continue;
-        await _insignias.otorgarInsignia(usuarioId, ins.insigniaId);
-        await _progreso.incrementarInsignias(usuarioId);
-
-
-        try {
-          await _monedero.reclamarRecompensa(
-            tipo: 'INSIGNIA',
-            claveIdempotencia: 'INSIGNIA:${ins.insigniaId}',
-            insigniaId: ins.insigniaId,
-          );
-        } catch (_) {}
-        otorgadas.add(ins);
-        yaObtuvo.add(ins.insigniaId);
-      }
+      final limite = DateTime.now().subtract(ventana);
+      final ids = propias
+          .where((u) => u.fechaObtencion.isAfter(limite))
+          .map((u) => u.insigniaId)
+          .toSet();
+      if (ids.isEmpty) return const [];
+      final catalogo = await _insignias.getInsignias();
+      return catalogo.where((i) => ids.contains(i.insigniaId)).toList();
     } catch (_) {
-
+      return const [];
     }
-    return otorgadas;
-  }
-
-
-
-  int? _requisitoRetos(InsigniaResponse ins) {
-    final texto = '${ins.requisito} ${ins.nombreInsignia} ${ins.descripcion}'
-        .toLowerCase();
-    final coincidencia = RegExp(
-      r'(\d+)\s*reto',
-      caseSensitive: false,
-    ).firstMatch(texto);
-    if (coincidencia != null) {
-      return int.tryParse(coincidencia.group(1)!);
-    }
-    if (texto.contains('primer reto') ||
-        texto.contains('primer eco') ||
-        texto.contains('novato') ||
-        texto.contains('iniciador')) {
-      return 1;
-    }
-    return null;
   }
 
   void _sincronizarBackend(Reto reto, RetoProgreso progreso) {
@@ -586,6 +539,11 @@ class CompletadoNuevo extends CompletarResultado {
   final List<InsigniaResponse> logros;
 
   const CompletadoNuevo(super.progreso, {this.logros = const []});
+}
+
+
+class EnRevisionNuevo extends CompletarResultado {
+  const EnRevisionNuevo(super.progreso);
 }
 
 

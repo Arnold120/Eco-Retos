@@ -86,6 +86,7 @@ builder.Services.AddScoped<IRachaService, RachaService>();
 builder.Services.AddScoped<IJardinService, JardinService>();
 builder.Services.AddScoped<IInsigniaService, InsigniaService>();
 builder.Services.AddScoped<IUsuarioInsigniaService, UsuarioInsigniaService>();
+builder.Services.AddScoped<IEvaluadorInsigniasService, EvaluadorInsigniasService>();
 builder.Services.AddScoped<IRetoService, RetoService>();
 builder.Services.AddScoped<IUsuarioRetoService, UsuarioRetoService>();
 builder.Services.AddScoped<ITriviaService, TriviaService>();
