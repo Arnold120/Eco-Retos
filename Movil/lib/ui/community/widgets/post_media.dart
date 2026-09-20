@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/media_url.dart';
 import '../../../data/models/social/social_models.dart';
+import '../../../data/services/social_interaction_service.dart';
+import 'post_helpers.dart';
 import '../../widgets/download_helper.dart';
+import '../../widgets/user_avatar.dart';
+import '../cubit/community_cubit.dart';
+import '../user_profile_screen.dart';
+import '../widgets/comments_sheet.dart';
+import '../widgets/share_dialog.dart';
 
 
 
@@ -109,17 +117,30 @@ void abrirVisorMultimedia(
   BuildContext context,
   List<MultimediaItem> items,
   int indice, {
+  PublicacionResponse? post,
   String nombreSugerido = 'muro',
 }) {
   if (items.isEmpty) return;
+  CommunityCubit? cubit;
+  try {
+    cubit = context.read<CommunityCubit>();
+  } catch (_) {
+    cubit = null;
+  }
+  Widget visor = VisorMultimedia(
+    items: items,
+    indiceInicial: indice,
+    post: post,
+    cubit: cubit,
+    nombreSugerido: nombreSugerido,
+  );
+  if (cubit != null) {
+    visor = BlocProvider.value(value: cubit, child: visor);
+  }
   showDialog<void>(
     context: context,
     barrierColor: Colors.black,
-    builder: (_) => VisorMultimedia(
-      items: items,
-      indiceInicial: indice,
-      nombreSugerido: nombreSugerido,
-    ),
+    builder: (_) => visor,
   );
 }
 
@@ -128,11 +149,15 @@ class VisorMultimedia extends StatefulWidget {
   final List<MultimediaItem> items;
   final int indiceInicial;
   final String nombreSugerido;
+  final PublicacionResponse? post;
+  final CommunityCubit? cubit;
 
   const VisorMultimedia({
     super.key,
     required this.items,
     required this.indiceInicial,
+    this.post,
+    this.cubit,
     this.nombreSugerido = 'muro',
   });
 
@@ -160,6 +185,15 @@ class _VisorMultimediaState extends State<VisorMultimedia> {
   @override
   Widget build(BuildContext context) {
     final actual = widget.items[_indice];
+    final post = widget.post;
+    CommunityCubit? cubit = widget.cubit;
+    if (cubit == null) {
+      try {
+        cubit = context.read<CommunityCubit>();
+      } catch (_) {
+        cubit = null;
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -219,6 +253,51 @@ class _VisorMultimediaState extends State<VisorMultimedia> {
                 style: IconButton.styleFrom(backgroundColor: Colors.black45),
               ),
             ),
+            if (post != null)
+              Positioned(
+                top: 54,
+                left: 12,
+                right: 88,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+child: Material(
+                        color: Colors.black45,
+                        child: InkWell(
+                          onTap: () =>
+                              abrirPerfilUsuario(context, post.usuarioId),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(6, 4, 14, 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                UserAvatar(
+                                  nombre: post.nombreUsuario,
+                                  fotoUrl: post.fotoPerfil,
+                                  radius: 15,
+                                ),
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  child: Text(
+                                    post.nombreUsuario,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+),
+                ),
+              ),
             Positioned(
               top: 8,
               right: 8,
@@ -270,7 +349,18 @@ class _VisorMultimediaState extends State<VisorMultimedia> {
                 ],
               ),
             ),
-            if (widget.items.length > 1)
+            if (post != null)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: _InfoPost(
+                  post: post,
+                  cubit: cubit,
+                  usuarioId: cubit?.usuarioId ?? 0,
+                ),
+              )
+            else if (widget.items.length > 1)
               Positioned(
                 left: 16,
                 right: 16,
@@ -301,6 +391,242 @@ class _VisorMultimediaState extends State<VisorMultimedia> {
 
 
 
+
+class _InfoPost extends StatefulWidget {
+  final PublicacionResponse post;
+  final CommunityCubit? cubit;
+  final int usuarioId;
+
+  const _InfoPost({
+    required this.post,
+    this.cubit,
+    this.usuarioId = 0,
+  });
+
+  @override
+  State<_InfoPost> createState() => _InfoPostState();
+}
+
+class _InfoPostState extends State<_InfoPost> {
+  late PublicacionResponse _post = widget.post;
+  bool _procesando = false;
+
+  int get _usuarioId => widget.usuarioId;
+
+  Future<void> _alternarMeGusta() async {
+    if (_procesando) return;
+    final activo = !_post.meGusta;
+    setState(() {
+      _procesando = true;
+      _post = _post.copyWith(
+        meGusta: activo,
+        cantidadLikes:
+            (_post.cantidadLikes + (activo ? 1 : -1)).clamp(0, 1 << 31),
+      );
+    });
+    try {
+      final resultado = await context.read<ReaccionService>().alternar(
+            publicacionId: _post.publicacionId,
+            tipo: 'ME_GUSTA',
+          );
+      if (!mounted) return;
+      setState(() {
+        _post = _post.copyWith(
+          meGusta: resultado.activa,
+          cantidadLikes: resultado.total,
+        );
+        _procesando = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _post = _post.copyWith(
+          meGusta: !_post.meGusta,
+          cantidadLikes:
+              (_post.cantidadLikes - (!_post.meGusta ? -1 : 1)).clamp(0, 1 << 31),
+        );
+        _procesando = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No pudimos registrar tu reacción. Revisa tu conexión.'),
+        ),
+      );
+    }
+  }
+
+  void _abrirComentarios() {
+    final cubit = widget.cubit;
+    if (cubit == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vuelve a abrir la foto para comentar.')),
+      );
+      return;
+    }
+    showCommentsSheet(
+      context,
+      publicacionId: _post.publicacionId,
+      usuarioId: _usuarioId,
+      cubit: cubit,
+    );
+  }
+
+  void _abrirCompartir() {
+    final cubit = widget.cubit;
+    if (cubit == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vuelve a abrir la foto para compartir.')),
+      );
+      return;
+    }
+    showShareDialog(
+      context,
+      post: _post,
+      usuarioId: _usuarioId,
+      cubit: cubit,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 26, 16, 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.black.withValues(alpha: 0.82),
+          ],
+        ),
+      ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+          if (_post.contenido.trim().isNotEmpty)
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${_post.nombreUsuario}  ',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13.5,
+                    ),
+                  ),
+                  TextSpan(
+                    text: _post.contenido,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13.5,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 4),
+          Text(
+            timeAgo(_post.fechaPublicacion),
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.6),
+              fontSize: 11,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _BotonAccion(
+                  icono: _post.meGusta
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  color: _post.meGusta ? AppColors.error : Colors.white,
+                  etiqueta: 'Me gusta',
+                  cuenta: _post.cantidadLikes,
+                  onTap: _procesando ? null : _alternarMeGusta,
+                ),
+              ),
+              Expanded(
+                child: _BotonAccion(
+                  icono: Icons.chat_bubble_outline,
+                  color: Colors.white,
+                  etiqueta: 'Comentar',
+                  cuenta: _post.cantidadComentarios,
+                  onTap: _abrirComentarios,
+                ),
+              ),
+              Expanded(
+                child: _BotonAccion(
+                  icono: Icons.share_outlined,
+                  color: Colors.white,
+                  etiqueta: 'Compartir',
+                  cuenta: _post.cantidadCompartidos,
+                  onTap: _abrirCompartir,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BotonAccion extends StatelessWidget {
+  final IconData icono;
+  final Color color;
+  final String etiqueta;
+  final int cuenta;
+  final VoidCallback? onTap;
+
+  const _BotonAccion({
+    required this.icono,
+    required this.color,
+    required this.etiqueta,
+    required this.cuenta,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icono, color: color, size: 24),
+            const SizedBox(height: 4),
+            Text(
+              '$cuenta',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 1),
+            Text(
+              etiqueta,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _ReproductorVideo extends StatefulWidget {
   final MultimediaItem item;

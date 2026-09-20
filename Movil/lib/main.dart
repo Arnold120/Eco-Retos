@@ -24,6 +24,7 @@ import 'data/services/social_interaction_service.dart';
 import 'data/services/mensaje_service.dart';
 import 'data/services/busqueda_service.dart';
 import 'data/services/perfil_social_service.dart';
+import 'data/services/calificacion_service.dart';
 import 'data/services/enlace_service.dart';
 import 'data/services/account_service.dart';
 import 'data/services/descarga_service.dart';
@@ -132,6 +133,7 @@ class _EcoRetoAppState extends State<EcoRetoApp> {
         RepositoryProvider(create: (_) => MensajeService(apiClient)),
         RepositoryProvider(create: (_) => BusquedaService(apiClient)),
         RepositoryProvider(create: (_) => PerfilSocialService(apiClient)),
+        RepositoryProvider(create: (_) => CalificacionService(apiClient)),
         RepositoryProvider(create: (_) => EnlaceService(apiClient)),
         RepositoryProvider(create: (_) => AccountService(apiClient)),
         RepositoryProvider(create: (_) => DescargaService(apiClient)),

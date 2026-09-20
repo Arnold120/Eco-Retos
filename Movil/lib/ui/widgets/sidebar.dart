@@ -94,7 +94,7 @@ class Sidebar extends StatelessWidget {
                           ),
                           _buildMenuItem(
                             icon: Icons.forum_outlined,
-                            label: 'Muro Eco',
+                            label: 'Para ti',
                             onTap: () => onOptionSelected('community'),
                           ),
                           _buildMenuItem(

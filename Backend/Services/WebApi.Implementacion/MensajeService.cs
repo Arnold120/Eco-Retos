@@ -27,7 +27,17 @@ namespace WebApi.Implementacion
                 RemitenteId = DatabaseHelper.ReadInt(reader, "RemitenteId"),
                 Contenido = DatabaseHelper.ReadString(reader, "Contenido"),
                 Fecha = DatabaseHelper.ReadDateTime(reader, "Fecha"),
-                Leido = DatabaseHelper.ReadBool(reader, "Leido")
+                Leido = DatabaseHelper.ReadBool(reader, "Leido"),
+                Tipo = reader.IsDBNull(reader.GetOrdinal("Tipo"))
+                    ? "TEXTO"
+                    : DatabaseHelper.ReadString(reader, "Tipo"),
+                ArchivoUrl = reader.IsDBNull(reader.GetOrdinal("ArchivoUrl"))
+                    ? null
+                    : DatabaseHelper.ReadString(reader, "ArchivoUrl"),
+                PublicacionId = DatabaseHelper.ReadNullableInt(reader, "PublicacionId"),
+                RespuestaAId = DatabaseHelper.ReadNullableInt(reader, "RespuestaAId"),
+                Editado = !reader.IsDBNull(reader.GetOrdinal("Editado")) && DatabaseHelper.ReadBool(reader, "Editado"),
+                EliminadoParaTodos = !reader.IsDBNull(reader.GetOrdinal("EliminadoParaTodos")) && DatabaseHelper.ReadBool(reader, "EliminadoParaTodos")
             };
         }
 
@@ -41,9 +51,13 @@ namespace WebApi.Implementacion
 SELECT c.ConversacionId, c.FechaCreacion, c.FechaUltimoMensaje,
        u.UsuarioId, u.NombreUsuario, u.Correo, u.Activo, u.FechaRegistro,
        (SELECT TOP 1 m.Contenido FROM Mensaje m WHERE m.ConversacionId = c.ConversacionId
+         AND m.EliminadoParaTodos = 0
+         AND NOT (m.RemitenteId = @UsuarioId AND m.EliminadoParaRemitente = 1)
+         AND NOT (m.RemitenteId <> @UsuarioId AND m.EliminadoParaDestinatario = 1)
          ORDER BY m.Fecha DESC, m.MensajeId DESC) AS UltimoMensaje,
        (SELECT COUNT(1) FROM Mensaje m2 WHERE m2.ConversacionId = c.ConversacionId
-         AND m2.RemitenteId <> @UsuarioId AND m2.Leido = 0) AS NoLeidos
+         AND m2.RemitenteId <> @UsuarioId AND m2.Leido = 0
+         AND m2.EliminadoParaTodos = 0 AND m2.EliminadoParaDestinatario = 0) AS NoLeidos
 FROM Conversacion c
 JOIN ConversacionParticipante cp  ON cp.ConversacionId = c.ConversacionId AND cp.UsuarioId = @UsuarioId
 JOIN ConversacionParticipante cp2 ON cp2.ConversacionId = c.ConversacionId AND cp2.UsuarioId <> @UsuarioId
@@ -138,7 +152,7 @@ ORDER BY ISNULL(c.FechaUltimoMensaje, c.FechaCreacion) DESC";
             return Convert.ToInt32(await command.ExecuteScalarAsync()) > 0;
         }
 
-        public async Task<IEnumerable<Mensaje>> ObtenerMensajesAsync(int conversacionId, int? antesDeMensajeId, int limite)
+        public async Task<IEnumerable<Mensaje>> ObtenerMensajesAsync(int conversacionId, int usuarioId, int? antesDeMensajeId, int limite)
         {
             limite = Math.Clamp(limite, 1, 100);
             var lista = new List<Mensaje>();
@@ -146,11 +160,17 @@ ORDER BY ISNULL(c.FechaUltimoMensaje, c.FechaCreacion) DESC";
             await connection.OpenAsync();
             using var command = new SqlCommand(
                 "SELECT * FROM (" +
-                "  SELECT TOP (@Limite) MensajeId, ConversacionId, RemitenteId, Contenido, Fecha, Leido " +
-                "  FROM Mensaje WHERE ConversacionId = @ConversacionId AND (@AntesDe IS NULL OR MensajeId < @AntesDe) " +
+                "  SELECT TOP (@Limite) MensajeId, ConversacionId, RemitenteId, Contenido, Fecha, Leido, " +
+                "         Tipo, ArchivoUrl, PublicacionId, RespuestaAId, Editado, EliminadoParaTodos " +
+                "  FROM Mensaje WHERE ConversacionId = @ConversacionId " +
+                "    AND EliminadoParaTodos = 0 " +
+                "    AND NOT (RemitenteId = @UsuarioId AND EliminadoParaRemitente = 1) " +
+                "    AND NOT (RemitenteId <> @UsuarioId AND EliminadoParaDestinatario = 1) " +
+                "    AND (@AntesDe IS NULL OR MensajeId < @AntesDe) " +
                 "  ORDER BY Fecha DESC, MensajeId DESC" +
                 ") t ORDER BY t.Fecha ASC, t.MensajeId ASC", connection);
             command.Parameters.AddWithValue("@ConversacionId", conversacionId);
+            command.Parameters.AddWithValue("@UsuarioId", usuarioId);
             command.Parameters.AddWithValue("@Limite", limite);
             command.Parameters.AddWithValue("@AntesDe", (object?)antesDeMensajeId ?? DBNull.Value);
             using var reader = await command.ExecuteReaderAsync();
@@ -158,11 +178,24 @@ ORDER BY ISNULL(c.FechaUltimoMensaje, c.FechaCreacion) DESC";
             return lista;
         }
 
-        public async Task<Mensaje> EnviarMensajeAsync(int conversacionId, int remitenteId, string contenido)
+        public async Task<Mensaje> EnviarMensajeAsync(
+            int conversacionId,
+            int remitenteId,
+            string contenido,
+            string? tipo = null,
+            string? archivoUrl = null,
+            int? publicacionId = null,
+            int? respuestaAId = null)
         {
-            contenido = contenido.Trim();
-            if (contenido.Length == 0) throw new ArgumentException("El mensaje esta vacio.");
+            contenido = (contenido ?? string.Empty).Trim();
+            archivoUrl = string.IsNullOrWhiteSpace(archivoUrl) ? null : archivoUrl.Trim();
+            if (contenido.Length == 0 && archivoUrl is null && publicacionId is null)
+                throw new ArgumentException("El mensaje esta vacio.");
             if (contenido.Length > 2000) contenido = contenido[..2000];
+
+            var tipoNormalizado = (tipo ?? "TEXTO").Trim().ToUpperInvariant();
+            if (tipoNormalizado is not ("TEXTO" or "IMAGEN" or "VIDEO" or "PUBLICACION"))
+                tipoNormalizado = "TEXTO";
 
             var mensaje = new Mensaje
             {
@@ -170,7 +203,11 @@ ORDER BY ISNULL(c.FechaUltimoMensaje, c.FechaCreacion) DESC";
                 RemitenteId = remitenteId,
                 Contenido = contenido,
                 Fecha = DateTime.Now,
-                Leido = false
+                Leido = false,
+                Tipo = tipoNormalizado,
+                ArchivoUrl = archivoUrl,
+                PublicacionId = publicacionId,
+                RespuestaAId = respuestaAId
             };
 
             var destinatarioId = await ObtenerOtroParticipanteAsync(conversacionId, remitenteId);
@@ -185,13 +222,17 @@ ORDER BY ISNULL(c.FechaUltimoMensaje, c.FechaCreacion) DESC";
                 try
                 {
                     using (var insert = new SqlCommand(
-                        "INSERT INTO Mensaje (ConversacionId, RemitenteId, Contenido, Fecha, Leido) " +
-                        "OUTPUT INSERTED.MensajeId VALUES (@ConversacionId, @RemitenteId, @Contenido, @Fecha, 0)", connection, transaction))
+                        "INSERT INTO Mensaje (ConversacionId, RemitenteId, Contenido, Fecha, Leido, Tipo, ArchivoUrl, PublicacionId, RespuestaAId) " +
+                        "OUTPUT INSERTED.MensajeId VALUES (@ConversacionId, @RemitenteId, @Contenido, @Fecha, 0, @Tipo, @ArchivoUrl, @PublicacionId, @RespuestaAId)", connection, transaction))
                     {
                         insert.Parameters.AddWithValue("@ConversacionId", conversacionId);
                         insert.Parameters.AddWithValue("@RemitenteId", remitenteId);
                         insert.Parameters.AddWithValue("@Contenido", contenido);
                         insert.Parameters.AddWithValue("@Fecha", mensaje.Fecha);
+                        insert.Parameters.AddWithValue("@Tipo", tipoNormalizado);
+                        insert.Parameters.AddWithValue("@ArchivoUrl", (object?)archivoUrl ?? DBNull.Value);
+                        insert.Parameters.AddWithValue("@PublicacionId", (object?)publicacionId ?? DBNull.Value);
+                        insert.Parameters.AddWithValue("@RespuestaAId", (object?)respuestaAId ?? DBNull.Value);
                         mensaje.MensajeId = Convert.ToInt32(await insert.ExecuteScalarAsync());
                     }
 
@@ -216,10 +257,19 @@ ORDER BY ISNULL(c.FechaUltimoMensaje, c.FechaCreacion) DESC";
                 try
                 {
                     var actor = await ObtenerNombreUsuarioAsync(remitenteId);
+                    var resumen = contenido.Length > 0
+                        ? (contenido.Length > 90 ? contenido[..90] + "..." : contenido)
+                        : tipoNormalizado switch
+                        {
+                            "IMAGEN" => "Te envió una foto",
+                            "VIDEO" => "Te envió un video",
+                            "PUBLICACION" => "Te compartió una publicación",
+                            _ => "Te envió un mensaje"
+                        };
                     await _notificacionService.CrearInteraccionAsync(
                         destinatario, remitenteId,
                         $"{actor} te envió un mensaje",
-                        contenido.Length > 90 ? contenido[..90] + "..." : contenido,
+                        resumen,
                         "MENSAJE", "CONVERSACION", conversacionId);
                 }
                 catch
@@ -229,6 +279,58 @@ ORDER BY ISNULL(c.FechaUltimoMensaje, c.FechaCreacion) DESC";
             }
 
             return mensaje;
+        }
+
+        public async Task<Mensaje?> EditarMensajeAsync(int conversacionId, int mensajeId, int usuarioId, string contenido)
+        {
+            contenido = (contenido ?? string.Empty).Trim();
+            if (contenido.Length == 0) throw new ArgumentException("El mensaje esta vacio.");
+            if (contenido.Length > 2000) contenido = contenido[..2000];
+
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var command = new SqlCommand(
+                "UPDATE Mensaje SET Contenido = @Contenido, Editado = 1 " +
+                "OUTPUT INSERTED.MensajeId, INSERTED.ConversacionId, INSERTED.RemitenteId, INSERTED.Contenido, INSERTED.Fecha, INSERTED.Leido, " +
+                "INSERTED.Tipo, INSERTED.ArchivoUrl, INSERTED.PublicacionId, INSERTED.RespuestaAId, INSERTED.Editado, INSERTED.EliminadoParaTodos " +
+                "WHERE MensajeId = @MensajeId AND ConversacionId = @ConversacionId AND RemitenteId = @UsuarioId " +
+                "AND EliminadoParaTodos = 0 AND Fecha >= @Limite", connection);
+            command.Parameters.AddWithValue("@Contenido", contenido);
+            command.Parameters.AddWithValue("@MensajeId", mensajeId);
+            command.Parameters.AddWithValue("@ConversacionId", conversacionId);
+            command.Parameters.AddWithValue("@UsuarioId", usuarioId);
+            command.Parameters.AddWithValue("@Limite", DateTime.Now.AddHours(-2));
+            using var reader = await command.ExecuteReaderAsync();
+            if (await reader.ReadAsync()) return MapearMensaje(reader);
+            return null;
+        }
+
+        public async Task<bool> EliminarMensajeAsync(int conversacionId, int mensajeId, int usuarioId, bool paraTodos)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            if (paraTodos)
+            {
+                using var command = new SqlCommand(
+                    "UPDATE Mensaje SET EliminadoParaTodos = 1 " +
+                    "WHERE MensajeId = @MensajeId AND ConversacionId = @ConversacionId AND RemitenteId = @UsuarioId " +
+                    "AND EliminadoParaTodos = 0 AND Fecha >= @Limite", connection);
+                command.Parameters.AddWithValue("@MensajeId", mensajeId);
+                command.Parameters.AddWithValue("@ConversacionId", conversacionId);
+                command.Parameters.AddWithValue("@UsuarioId", usuarioId);
+                command.Parameters.AddWithValue("@Limite", DateTime.Now.AddHours(-2));
+                return await command.ExecuteNonQueryAsync() > 0;
+            }
+
+            using var comando = new SqlCommand(
+                "UPDATE Mensaje SET " +
+                "EliminadoParaRemitente = CASE WHEN RemitenteId = @UsuarioId THEN 1 ELSE EliminadoParaRemitente END, " +
+                "EliminadoParaDestinatario = CASE WHEN RemitenteId <> @UsuarioId THEN 1 ELSE EliminadoParaDestinatario END " +
+                "WHERE MensajeId = @MensajeId AND ConversacionId = @ConversacionId AND EliminadoParaTodos = 0", connection);
+            comando.Parameters.AddWithValue("@MensajeId", mensajeId);
+            comando.Parameters.AddWithValue("@ConversacionId", conversacionId);
+            comando.Parameters.AddWithValue("@UsuarioId", usuarioId);
+            return await comando.ExecuteNonQueryAsync() > 0;
         }
 
         private async Task<int> ContarNoLeidosDeRemitenteAsync(int conversacionId, int remitenteId)
@@ -289,7 +391,8 @@ ORDER BY ISNULL(c.FechaUltimoMensaje, c.FechaCreacion) DESC";
             using var command = new SqlCommand(
                 "SELECT COUNT(1) FROM Mensaje m " +
                 "JOIN ConversacionParticipante cp ON cp.ConversacionId = m.ConversacionId AND cp.UsuarioId = @UsuarioId " +
-                "WHERE m.RemitenteId <> @UsuarioId AND m.Leido = 0", connection);
+                "WHERE m.RemitenteId <> @UsuarioId AND m.Leido = 0 " +
+                "AND m.EliminadoParaTodos = 0 AND m.EliminadoParaDestinatario = 0", connection);
             command.Parameters.AddWithValue("@UsuarioId", usuarioId);
             return Convert.ToInt32(await command.ExecuteScalarAsync());
         }

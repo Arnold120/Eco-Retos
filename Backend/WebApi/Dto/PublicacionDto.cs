@@ -25,7 +25,6 @@ namespace WebApi.Dto
         [Range(1, int.MaxValue, ErrorMessage = "El usuario es invalido.")]
         public int UsuarioId { get; set; }
 
-        [Required(ErrorMessage = "El contenido es obligatorio.")]
         public string Contenido { get; set; } = string.Empty;
 
         [StringLength(500, ErrorMessage = "La imagen no puede superar los 500 caracteres.")]
@@ -53,7 +52,6 @@ namespace WebApi.Dto
 
     public class ActualizarPublicacionRequestDto
     {
-        [Required(ErrorMessage = "El contenido es obligatorio.")]
         public string Contenido { get; set; } = string.Empty;
 
         [StringLength(500, ErrorMessage = "La imagen no puede superar los 500 caracteres.")]

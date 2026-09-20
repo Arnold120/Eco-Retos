@@ -102,16 +102,8 @@ namespace WebApi.Controllers
             if (!await _mensajeService.EsParticipanteAsync(conversacionId, usuarioId.Value))
                 return StatusCode(StatusCodes.Status403Forbidden, new { mensaje = "No participas en esta conversacion." });
 
-            var mensajes = await _mensajeService.ObtenerMensajesAsync(conversacionId, antesDe, limite);
-            return Ok(mensajes.Select(m => new MensajeResponseDto
-            {
-                MensajeId = m.MensajeId,
-                ConversacionId = m.ConversacionId,
-                RemitenteId = m.RemitenteId,
-                Contenido = m.Contenido,
-                Fecha = m.Fecha,
-                Leido = m.Leido
-            }).ToList());
+            var mensajes = await _mensajeService.ObtenerMensajesAsync(conversacionId, usuarioId.Value, antesDe, limite);
+            return Ok(mensajes.Select(MapearRespuesta).ToList());
         }
 
         [HttpPost("{conversacionId:int}/mensajes")]
@@ -126,19 +118,85 @@ namespace WebApi.Controllers
             if (!await _mensajeService.EsParticipanteAsync(conversacionId, usuarioId.Value))
                 return StatusCode(StatusCodes.Status403Forbidden, new { mensaje = "No participas en esta conversacion." });
 
-            if (string.IsNullOrWhiteSpace(dto.Contenido))
+            var contenido = dto.Contenido ?? string.Empty;
+            var tieneAdjunto = !string.IsNullOrWhiteSpace(dto.ArchivoUrl) || dto.PublicacionId is not null;
+            if (string.IsNullOrWhiteSpace(contenido) && !tieneAdjunto)
                 return BadRequest(new { mensaje = "El mensaje no puede estar vacio." });
 
-            var mensaje = await _mensajeService.EnviarMensajeAsync(conversacionId, usuarioId.Value, dto.Contenido);
-            return StatusCode(StatusCodes.Status201Created, new MensajeResponseDto
+            var mensaje = await _mensajeService.EnviarMensajeAsync(
+                conversacionId,
+                usuarioId.Value,
+                contenido,
+                dto.Tipo,
+                dto.ArchivoUrl,
+                dto.PublicacionId,
+                dto.RespuestaAId);
+            return StatusCode(StatusCodes.Status201Created, MapearRespuesta(mensaje));
+        }
+
+        [HttpPut("{conversacionId:int}/mensajes/{mensajeId:int}")]
+        [ProducesResponseType(typeof(MensajeResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> EditarMensaje(
+            int conversacionId,
+            int mensajeId,
+            [FromBody] EditarMensajeRequestDto dto)
+        {
+            var usuarioId = User.ObtenerUsuarioId();
+            if (usuarioId is null) return Unauthorized();
+
+            if (!await _mensajeService.EsParticipanteAsync(conversacionId, usuarioId.Value))
+                return StatusCode(StatusCodes.Status403Forbidden, new { mensaje = "No participas en esta conversacion." });
+
+            var mensaje = await _mensajeService.EditarMensajeAsync(
+                conversacionId, mensajeId, usuarioId.Value, dto.Contenido);
+            if (mensaje is null)
+                return NotFound(new { mensaje = "No se puede editar este mensaje." });
+
+            return Ok(MapearRespuesta(mensaje));
+        }
+
+        [HttpDelete("{conversacionId:int}/mensajes/{mensajeId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> EliminarMensaje(
+            int conversacionId,
+            int mensajeId,
+            [FromQuery] bool paraTodos = false)
+        {
+            var usuarioId = User.ObtenerUsuarioId();
+            if (usuarioId is null) return Unauthorized();
+
+            if (!await _mensajeService.EsParticipanteAsync(conversacionId, usuarioId.Value))
+                return StatusCode(StatusCodes.Status403Forbidden, new { mensaje = "No participas en esta conversacion." });
+
+            var eliminado = await _mensajeService.EliminarMensajeAsync(
+                conversacionId, mensajeId, usuarioId.Value, paraTodos);
+            if (!eliminado)
+                return NotFound(new { mensaje = "No se puede eliminar este mensaje." });
+
+            return Ok(new { mensaje = "Mensaje eliminado." });
+        }
+
+        private static MensajeResponseDto MapearRespuesta(Modelo.Mensaje m)
+        {
+            return new MensajeResponseDto
             {
-                MensajeId = mensaje.MensajeId,
-                ConversacionId = mensaje.ConversacionId,
-                RemitenteId = mensaje.RemitenteId,
-                Contenido = mensaje.Contenido,
-                Fecha = mensaje.Fecha,
-                Leido = mensaje.Leido
-            });
+                MensajeId = m.MensajeId,
+                ConversacionId = m.ConversacionId,
+                RemitenteId = m.RemitenteId,
+                Contenido = m.Contenido,
+                Fecha = m.Fecha,
+                Leido = m.Leido,
+                Tipo = m.Tipo,
+                ArchivoUrl = m.ArchivoUrl,
+                PublicacionId = m.PublicacionId,
+                RespuestaAId = m.RespuestaAId,
+                Editado = m.Editado
+            };
         }
 
         [HttpPost("{conversacionId:int}/leidos")]

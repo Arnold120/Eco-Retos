@@ -710,6 +710,11 @@ class MensajeResponse extends Equatable {
   final String contenido;
   final DateTime fecha;
   final bool leido;
+  final String tipo;
+  final String? archivoUrl;
+  final int? publicacionId;
+  final int? respuestaAId;
+  final bool editado;
 
   const MensajeResponse({
     required this.mensajeId,
@@ -718,6 +723,11 @@ class MensajeResponse extends Equatable {
     required this.contenido,
     required this.fecha,
     this.leido = false,
+    this.tipo = 'TEXTO',
+    this.archivoUrl,
+    this.publicacionId,
+    this.respuestaAId,
+    this.editado = false,
   });
 
   factory MensajeResponse.fromJson(Map<String, dynamic> json) {
@@ -728,23 +738,48 @@ class MensajeResponse extends Equatable {
       contenido: json['contenido']?.toString() ?? '',
       fecha: DateTime.tryParse(json['fecha'].toString()) ?? DateTime.now(),
       leido: json['leido'] ?? false,
+      tipo: json['tipo']?.toString() ?? 'TEXTO',
+      archivoUrl: json['archivoUrl']?.toString(),
+      publicacionId: json['publicacionId'],
+      respuestaAId: json['respuestaAId'],
+      editado: json['editado'] ?? false,
     );
   }
 
-  MensajeResponse copyWith({bool? leido}) {
+  MensajeResponse copyWith({
+    bool? leido,
+    String? contenido,
+    bool? editado,
+  }) {
     return MensajeResponse(
       mensajeId: mensajeId,
       conversacionId: conversacionId,
       remitenteId: remitenteId,
-      contenido: contenido,
+      contenido: contenido ?? this.contenido,
       fecha: fecha,
       leido: leido ?? this.leido,
+      tipo: tipo,
+      archivoUrl: archivoUrl,
+      publicacionId: publicacionId,
+      respuestaAId: respuestaAId,
+      editado: editado ?? this.editado,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [mensajeId, conversacionId, remitenteId, contenido, fecha, leido];
+  List<Object?> get props => [
+        mensajeId,
+        conversacionId,
+        remitenteId,
+        contenido,
+        fecha,
+        leido,
+        tipo,
+        archivoUrl,
+        publicacionId,
+        respuestaAId,
+        editado,
+      ];
 }
 
 class PerfilPublicoResponse extends Equatable {
@@ -754,6 +789,7 @@ class PerfilPublicoResponse extends Equatable {
   final String? nombreCompleto;
   final String? centroEducativo;
   final String? grado;
+  final String? correo;
   final int cantidadPublicaciones;
   final int cantidadSeguidores;
   final int cantidadSeguidos;
@@ -767,6 +803,7 @@ class PerfilPublicoResponse extends Equatable {
     this.nombreCompleto,
     this.centroEducativo,
     this.grado,
+    this.correo,
     this.cantidadPublicaciones = 0,
     this.cantidadSeguidores = 0,
     this.cantidadSeguidos = 0,
@@ -783,6 +820,7 @@ class PerfilPublicoResponse extends Equatable {
       centroEducativo:
           PublicacionResponse._vacioANull(json['centroEducativo']),
       grado: PublicacionResponse._vacioANull(json['grado']),
+      correo: PublicacionResponse._vacioANull(json['correo']),
       cantidadPublicaciones: json['cantidadPublicaciones'] ?? 0,
       cantidadSeguidores: json['cantidadSeguidores'] ?? 0,
       cantidadSeguidos: json['cantidadSeguidos'] ?? 0,
@@ -805,6 +843,7 @@ class PerfilPublicoResponse extends Equatable {
       nombreCompleto: nombreCompleto,
       centroEducativo: centroEducativo,
       grado: grado,
+      correo: correo,
       cantidadPublicaciones:
           cantidadPublicaciones ?? this.cantidadPublicaciones,
       cantidadSeguidores: cantidadSeguidores ?? this.cantidadSeguidores,
@@ -822,6 +861,7 @@ class PerfilPublicoResponse extends Equatable {
         nombreCompleto,
         centroEducativo,
         grado,
+        correo,
         cantidadPublicaciones,
         cantidadSeguidores,
         cantidadSeguidos,
@@ -885,4 +925,96 @@ class ResultadoBusqueda extends Equatable {
 
   @override
   List<Object?> get props => [usuarios, publicaciones];
+}
+
+class CalificacionOpinion extends Equatable {
+  final int usuarioId;
+  final String nombreUsuario;
+  final String? fotoPerfil;
+  final int calificacion;
+  final String? comentario;
+  final DateTime fecha;
+
+  const CalificacionOpinion({
+    required this.usuarioId,
+    required this.nombreUsuario,
+    this.fotoPerfil,
+    required this.calificacion,
+    this.comentario,
+    required this.fecha,
+  });
+
+  factory CalificacionOpinion.fromJson(Map<String, dynamic> json) {
+    return CalificacionOpinion(
+      usuarioId: json['usuarioId'] ?? 0,
+      nombreUsuario: json['nombreUsuario']?.toString() ?? '',
+      fotoPerfil: PublicacionResponse._vacioANull(json['fotoPerfil']),
+      calificacion: json['calificacion'] ?? 0,
+      comentario: PublicacionResponse._vacioANull(json['comentario']),
+      fecha: DateTime.tryParse(json['fecha'].toString()) ?? DateTime.now(),
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+        usuarioId,
+        nombreUsuario,
+        fotoPerfil,
+        calificacion,
+        comentario,
+        fecha,
+      ];
+}
+
+class ResumenCalificaciones extends Equatable {
+  final double promedio;
+  final int total;
+  final int? calificacionPropia;
+  final List<CalificacionOpinion> opiniones;
+
+  const ResumenCalificaciones({
+    this.promedio = 0,
+    this.total = 0,
+    this.calificacionPropia,
+    this.opiniones = const [],
+  });
+
+  factory ResumenCalificaciones.fromJson(Map<String, dynamic> json) {
+    final raw = json['opiniones'];
+    return ResumenCalificaciones(
+      promedio: (json['promedio'] ?? 0).toDouble(),
+      total: json['total'] ?? 0,
+      calificacionPropia: json['calificacionPropia'] == null
+          ? null
+          : (json['calificacionPropia'] as num).toInt(),
+      opiniones: raw is List
+          ? raw
+              .map((e) => CalificacionOpinion.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList()
+          : const [],
+    );
+  }
+
+  @override
+  List<Object?> get props => [promedio, total, calificacionPropia, opiniones];
+}
+
+class CalificarPerfilRequest extends Equatable {
+  final int calificacion;
+  final String? comentario;
+
+  const CalificarPerfilRequest({
+    required this.calificacion,
+    this.comentario,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'Calificacion': calificacion,
+        if (comentario != null && comentario!.trim().isNotEmpty)
+          'Comentario': comentario!.trim(),
+      };
+
+  @override
+  List<Object?> get props => [calificacion, comentario];
 }

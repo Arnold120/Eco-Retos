@@ -1,34 +1,9 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 IF OBJECT_ID('dbo.Publicacion', 'U') IS NULL
 BEGIN
     RAISERROR('Ejecuta este script sobre la base de datos de Eco-Retos (debe existir la tabla Publicacion).', 16, 1);
     RETURN;
 END
 GO
-
-
 
 IF COL_LENGTH('dbo.Publicacion', 'Ubicacion') IS NULL
     ALTER TABLE dbo.Publicacion ADD Ubicacion NVARCHAR(200) NULL;
@@ -107,8 +82,6 @@ GO
 IF COL_LENGTH('dbo.PublicacionMultimedia', 'Poster') IS NULL
     ALTER TABLE dbo.PublicacionMultimedia ADD Poster NVARCHAR(500) NULL;
 GO
-
-
 
 IF COL_LENGTH('dbo.Comentario', 'ComentarioPadreId') IS NULL
     ALTER TABLE dbo.Comentario ADD ComentarioPadreId INT NULL;

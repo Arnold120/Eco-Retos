@@ -365,7 +365,7 @@ class _MainShellState extends State<MainShell> {
             fontWeight: FontWeight.w500,
           ),
           items: [
-            _navItem(0, Icons.home_outlined, Icons.home, 'Para ti'),
+            _navItem(0, Icons.home_outlined, Icons.home, 'Inicio'),
             _navItem(
                 1, Icons.emoji_events_outlined, Icons.emoji_events, 'Retos'),
             _navItem(2, Icons.quiz_outlined, Icons.quiz, 'Trivia'),
@@ -425,7 +425,7 @@ class _MainShellState extends State<MainShell> {
         NavigationRailDestination(
           icon: Icon(Icons.home_outlined),
           selectedIcon: Icon(Icons.home),
-          label: Text('Para ti'),
+          label: Text('Inicio'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.emoji_events_outlined),

@@ -57,6 +57,7 @@ namespace WebApi.Controllers
                 NombreCompleto = string.IsNullOrWhiteSpace(nombreCompleto) ? null : nombreCompleto,
                 CentroEducativo = string.IsNullOrWhiteSpace(perfil?.CentroEducativo) ? null : perfil!.CentroEducativo,
                 Grado = string.IsNullOrWhiteSpace(perfil?.Grado) ? null : perfil!.Grado,
+                Correo = string.IsNullOrWhiteSpace(usuario.Correo) ? null : usuario.Correo,
                 CantidadPublicaciones = await _publicacionService.ContarPublicacionesAsync(usuarioId),
                 CantidadSeguidores = await _seguimientoService.ContarSeguidoresAsync(usuarioId),
                 CantidadSeguidos = await _seguimientoService.ContarSeguidosAsync(usuarioId),

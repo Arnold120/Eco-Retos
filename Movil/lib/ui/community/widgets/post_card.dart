@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/media_url.dart';
 import '../../../data/models/social/social_models.dart';
+import '../../../data/services/busqueda_service.dart';
 import '../../../data/services/social_interaction_service.dart';
 import '../../../data/services/social_service.dart';
 import '../../widgets/download_helper.dart';
@@ -271,6 +272,7 @@ class PostCard extends StatelessWidget {
             height: 1.4,
             color: textColor(context),
           ),
+          onMentionTap: (nombre) => _abrirMencion(context, nombre),
         ),
         Builder(builder: (context) {
           final url = primerEnlace(texto);
@@ -482,15 +484,6 @@ class PostCard extends StatelessWidget {
           onTap: () =>
               showShareDialog(context, post: post, usuarioId: usuarioId),
         ),
-        _BotonAccion(
-          icono: post.guardada
-              ? Icons.bookmark_rounded
-              : Icons.bookmark_outline,
-          label: post.guardada ? 'Guardado' : 'Guardar',
-          activo: post.guardada,
-          cargando: procesando,
-          onTap: () => context.read<CommunityCubit>().toggleGuardada(post),
-        ),
       ],
     );
   }
@@ -510,15 +503,42 @@ class PostCard extends StatelessWidget {
           backgroundColor: Theme.of(context).brightness == Brightness.dark
               ? AppColorsDark.surface
               : AppColors.surface,
-          builder: (_) => Padding(
-            padding: const EdgeInsets.only(bottom: 24),
-            child: PostCard(post: original, usuarioId: usuarioId),
+          builder: (_) => BlocProvider.value(
+            value: cubit,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: PostCard(post: original, usuarioId: usuarioId),
+            ),
           ),
         );
       }
     } catch (_) {
       cubit.avisoSoporte('La publicación original ya no está disponible');
     }
+  }
+
+
+
+  Future<void> _abrirMencion(BuildContext context, String nombre) async {
+    try {
+      final resultado =
+          await context.read<BusquedaService>().buscar(nombre, limite: 5);
+      if (!context.mounted) return;
+      final usuarios = resultado.usuarios;
+      if (usuarios.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No encontramos ese usuario en Eco Retos.'),
+          ),
+        );
+        return;
+      }
+      final match = usuarios.firstWhere(
+        (u) => u.nombreUsuario.toLowerCase() == nombre.toLowerCase(),
+        orElse: () => usuarios.first,
+      );
+      abrirPerfilUsuario(context, match.usuarioId);
+    } catch (_) {}
   }
 
 

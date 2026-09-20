@@ -1,14 +1,4 @@
-
-
-
-
-
-
-
-
-
-
-USE EcoRitos;
+USE EcoRetos;
 GO
 
 IF COL_LENGTH('dbo.Denuncia', 'Accion') IS NULL

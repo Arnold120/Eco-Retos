@@ -588,6 +588,20 @@ class CommunityCubit extends Cubit<CommunityState> {
     emit(state.copyWith(publicaciones: publicaciones));
   }
 
+  /// Inserta o actualiza una publicación en el estado del cubit.
+  /// Útil para pantallas abiertas fuera del feed (p. ej. desde el chat).
+  void sembrarPublicacion(PublicacionResponse post) {
+    final publicaciones = List<PublicacionResponse>.of(state.publicaciones);
+    final indice = publicaciones
+        .indexWhere((p) => p.publicacionId == post.publicacionId);
+    if (indice >= 0) {
+      publicaciones[indice] = post;
+    } else {
+      publicaciones.insert(0, post);
+    }
+    emit(state.copyWith(publicaciones: publicaciones));
+  }
+
   void _reemplazarPost(PublicacionResponse nuevo) {
     final existe =
         state.publicaciones.any((p) => p.publicacionId == nuevo.publicacionId);

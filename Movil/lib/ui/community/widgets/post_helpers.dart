@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -23,6 +24,13 @@ String fechaCompleta(DateTime fecha) {
   final h = fecha.hour.toString().padLeft(2, '0');
   final min = fecha.minute.toString().padLeft(2, '0');
   return '$d/$m/${fecha.year} · $h:$min';
+}
+
+String horaMensaje(DateTime fecha) {
+  final hora12 = fecha.hour % 12 == 0 ? 12 : fecha.hour % 12;
+  final min = fecha.minute.toString().padLeft(2, '0');
+  final sufijo = fecha.hour < 12 ? 'a.m.' : 'p.m.';
+  return '$hora12:$min $sufijo';
 }
 
 String initialOf(String nombre) {
@@ -160,6 +168,7 @@ class ExpandableRichText extends StatefulWidget {
   final TextStyle? baseStyle;
   final int limite;
   final VoidCallback? onHashtagTap;
+  final void Function(String nombreUsuario)? onMentionTap;
 
   const ExpandableRichText({
     super.key,
@@ -167,6 +176,7 @@ class ExpandableRichText extends StatefulWidget {
     this.baseStyle,
     this.limite = 220,
     this.onHashtagTap,
+    this.onMentionTap,
   });
 
   @override
@@ -174,7 +184,16 @@ class ExpandableRichText extends StatefulWidget {
 }
 
 class _ExpandableRichTextState extends State<ExpandableRichText> {
+  final List<TapGestureRecognizer> _recognizers = [];
   bool _expandido = false;
+
+  @override
+  void dispose() {
+    for (final r in _recognizers) {
+      r.dispose();
+    }
+    super.dispose();
+  }
 
   String get _visible {
     if (_expandido || widget.texto.length <= widget.limite) {
@@ -231,8 +250,17 @@ class _ExpandableRichTextState extends State<ExpandableRichText> {
       if (m.start > last) {
         spans.add(TextSpan(text: texto.substring(last, m.start)));
       }
+      final token = m.group(0)!;
+      final esMencion = token.startsWith('@');
+      TapGestureRecognizer? recognizer;
+      if (esMencion && widget.onMentionTap != null) {
+        recognizer = TapGestureRecognizer()
+          ..onTap = () => widget.onMentionTap!(token.substring(1));
+        _recognizers.add(recognizer);
+      }
       spans.add(TextSpan(
-        text: m.group(0),
+        text: token,
+        recognizer: recognizer,
         style: estilo.copyWith(
           color: primaryOf(context),
           fontWeight: FontWeight.w700,

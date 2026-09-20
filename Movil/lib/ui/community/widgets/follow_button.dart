@@ -57,7 +57,7 @@ class FollowButton extends StatelessWidget {
                 ),
               )
             : Text(
-                siguiendo ? 'Siguiendo' : 'Seguir',
+                siguiendo ? 'Dejar de seguir' : 'Seguir',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: compacto ? 12.5 : 14.5,

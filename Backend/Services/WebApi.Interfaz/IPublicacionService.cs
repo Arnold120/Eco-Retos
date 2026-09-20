@@ -23,6 +23,7 @@ namespace WebApi.Interfaz
 
         Task<Dictionary<int, Publicacion>> ObtenerPorIdsAsync(IEnumerable<int> publicacionIds);
         Task<IEnumerable<Publicacion>> ObtenerPublicacionesDeUsuarioAsync(int usuarioId, int? espectadorId = null);
+        Task<IEnumerable<Publicacion>> ObtenerMencionesAsync(int usuarioId, string nombreUsuario, int? espectadorId = null);
         Task<Publicacion> CrearAsync(Publicacion publicacion);
         Task<Publicacion?> ActualizarAsync(Publicacion publicacion);
         Task<bool> EliminarAsync(int publicacionId);

@@ -58,6 +58,20 @@ namespace WebApi.Dto
 
     public class EnviarMensajeRequestDto
     {
+        [StringLength(2000, ErrorMessage = "El mensaje no puede superar los 2000 caracteres.")]
+        public string? Contenido { get; set; }
+
+        public string? Tipo { get; set; }
+
+        public string? ArchivoUrl { get; set; }
+
+        public int? PublicacionId { get; set; }
+
+        public int? RespuestaAId { get; set; }
+    }
+
+    public class EditarMensajeRequestDto
+    {
         [Required(ErrorMessage = "El mensaje es obligatorio.")]
         [StringLength(2000, MinimumLength = 1, ErrorMessage = "El mensaje debe tener entre 1 y 2000 caracteres.")]
         public string Contenido { get; set; } = string.Empty;
@@ -71,6 +85,11 @@ namespace WebApi.Dto
         public string Contenido { get; set; } = string.Empty;
         public DateTime Fecha { get; set; }
         public bool Leido { get; set; }
+        public string Tipo { get; set; } = "TEXTO";
+        public string? ArchivoUrl { get; set; }
+        public int? PublicacionId { get; set; }
+        public int? RespuestaAId { get; set; }
+        public bool Editado { get; set; }
     }
 
     public class UsuarioResumenDto
@@ -88,6 +107,7 @@ namespace WebApi.Dto
         public string? NombreCompleto { get; set; }
         public string? CentroEducativo { get; set; }
         public string? Grado { get; set; }
+        public string? Correo { get; set; }
         public int CantidadPublicaciones { get; set; }
         public int CantidadSeguidores { get; set; }
         public int CantidadSeguidos { get; set; }
@@ -99,5 +119,33 @@ namespace WebApi.Dto
     {
         public List<UsuarioResumenDto> Usuarios { get; set; } = new();
         public List<PublicacionResponseDto> Publicaciones { get; set; } = new();
+    }
+
+    public class CalificarPerfilRequestDto
+    {
+        [Range(1, 5, ErrorMessage = "La calificacion debe estar entre 1 y 5 estrellas.")]
+        public int Calificacion { get; set; }
+
+        [StringLength(500, ErrorMessage = "La opinion no puede superar los 500 caracteres.")]
+        public string? Comentario { get; set; }
+    }
+
+    public class CalificacionOpinionDto
+    {
+        public int UsuarioId { get; set; }
+        public string NombreUsuario { get; set; } = string.Empty;
+        public string? FotoPerfil { get; set; }
+        public int Calificacion { get; set; }
+        public string? Comentario { get; set; }
+        public DateTime Fecha { get; set; }
+    }
+
+    public class ResumenCalificacionesDto
+    {
+        public decimal Promedio { get; set; }
+        public int Total { get; set; }
+        public int? CalificacionPropia { get; set; }
+
+        public List<CalificacionOpinionDto> Opiniones { get; set; } = new();
     }
 }

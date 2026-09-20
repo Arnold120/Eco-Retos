@@ -406,8 +406,17 @@ CREATE TABLE Mensaje (
     Contenido NVARCHAR(MAX) NOT NULL,
     Fecha DATETIME2 NOT NULL DEFAULT GETDATE(),
     Leido BIT NOT NULL DEFAULT 0,
+    Tipo VARCHAR(20) NOT NULL DEFAULT 'TEXTO',
+    ArchivoUrl NVARCHAR(500) NULL,
+    PublicacionId INT NULL,
+    RespuestaAId INT NULL,
+    Editado BIT NOT NULL DEFAULT 0,
+    EliminadoParaTodos BIT NOT NULL DEFAULT 0,
+    EliminadoParaRemitente BIT NOT NULL DEFAULT 0,
+    EliminadoParaDestinatario BIT NOT NULL DEFAULT 0,
     CONSTRAINT FK_Mensaje_Conversacion FOREIGN KEY (ConversacionId) REFERENCES Conversacion(ConversacionId) ON DELETE CASCADE,
-    CONSTRAINT FK_Mensaje_Remitente FOREIGN KEY (RemitenteId) REFERENCES Usuario(UsuarioId)
+    CONSTRAINT FK_Mensaje_Remitente FOREIGN KEY (RemitenteId) REFERENCES Usuario(UsuarioId),
+    CONSTRAINT FK_Mensaje_Publicacion FOREIGN KEY (PublicacionId) REFERENCES Publicacion(PublicacionId)
 );
 
 CREATE INDEX IX_Mensaje_Conversacion_Fecha ON Mensaje(ConversacionId, Fecha);
@@ -494,11 +503,6 @@ CREATE INDEX IX_HistorialMonedas_CategoriaId ON HistorialMonedas(CategoriaId);
 CREATE UNIQUE INDEX UX_HistorialMonedas_Idempotencia
 ON HistorialMonedas(UsuarioId, ClaveIdempotencia)
 WHERE ClaveIdempotencia IS NOT NULL;
-
-
-
-
-
 
 CREATE TABLE RecompensaReclamada (
     RecompensaId INT PRIMARY KEY IDENTITY(1,1),

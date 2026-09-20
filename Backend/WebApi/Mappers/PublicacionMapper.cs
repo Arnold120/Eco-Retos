@@ -76,6 +76,9 @@ namespace WebApi.Mappers
             var padres = await _publicaciones.ObtenerPorIdsAsync(padresIds);
             var autoresPadresIds = padres.Values.Select(p => p.UsuarioId).Distinct().Except(autorIds).ToList();
             var usuariosPadres = await _usuarios.ObtenerPorIdsAsync(autoresPadresIds);
+            var multimediaPadres = padresIds.Count == 0
+                ? new Dictionary<int, List<PublicacionMultimedia>>()
+                : await _multimedia.ObtenerPorPublicacionesAsync(padresIds);
 
             var seguidos = espectadorId is int seguidor
                 ? (await _seguimientos.ObtenerIdsSeguidosAsync(seguidor)).ToHashSet()
@@ -136,6 +139,18 @@ namespace WebApi.Mappers
                     {
                         dto.CompartidoDeContenido = padre.Contenido;
                         dto.CompartidoDeImagen = padre.Imagen;
+                        if (string.IsNullOrWhiteSpace(dto.CompartidoDeImagen))
+                        {
+                            var itemsPadre = multimediaPadres.GetValueOrDefault(padre.PublicacionId);
+                            var itemPadre = itemsPadre?.FirstOrDefault(m => m.Tipo == "imagen")
+                                ?? itemsPadre?.FirstOrDefault(m => !string.IsNullOrWhiteSpace(m.Poster));
+                            if (itemPadre is not null)
+                            {
+                                dto.CompartidoDeImagen = itemPadre.Tipo == "video"
+                                    ? itemPadre.Poster
+                                    : itemPadre.Url;
+                            }
+                        }
                     }
                 }
 

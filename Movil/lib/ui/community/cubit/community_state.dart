@@ -53,8 +53,14 @@ class CommunityState extends Equatable {
 
     switch (filtro) {
       case MuroFiltro.paraTi:
-
-        lista.sort((a, b) => b.fechaPublicacion.compareTo(a.fechaPublicacion));
+        lista.sort((a, b) {
+          final aPrioridad = siguiendoIds.contains(a.usuarioId) ? 1 : 0;
+          final bPrioridad = siguiendoIds.contains(b.usuarioId) ? 1 : 0;
+          if (aPrioridad != bPrioridad) {
+            return bPrioridad.compareTo(aPrioridad);
+          }
+          return b.fechaPublicacion.compareTo(a.fechaPublicacion);
+        });
       case MuroFiltro.populares:
         lista.sort((a, b) =>
             (b.cantidadLikes + b.cantidadComentarios * 2)

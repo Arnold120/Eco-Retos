@@ -238,11 +238,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
         );
       case _SeccionMuro.alertas:
         return MuroNotificacionesView(
-          onAbrirPublicacion: (id) => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => PostDetailScreen(publicacionId: id),
-            ),
-          ),
+          onAbrirPublicacion: (id) => abrirDetallePublicacion(context, id),
           onAbrirPerfil: (id) => abrirPerfilUsuario(context, id),
           onAbrirConversacion: (id) => _abrirConversacionPorId(id),
         );
@@ -367,7 +363,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
         children: [
           _NavMuro(
             icono: Icons.home_outlined,
-            label: 'Inicio',
+            label: 'Para ti',
             activo: _seccion == _SeccionMuro.inicio,
             onTap: () => _irA(_SeccionMuro.inicio),
           ),
@@ -386,7 +382,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
           ),
           _NavMuro(
             icono: Icons.notifications_none,
-            label: 'Alertas',
+            label: 'Notificaciones',
             badge: alertasNoLeidas,
             activo: _seccion == _SeccionMuro.alertas,
             onTap: () => _irA(_SeccionMuro.alertas),

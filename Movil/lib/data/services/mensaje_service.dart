@@ -50,12 +50,48 @@ class MensajeService {
   }
 
   Future<MensajeResponse> enviarMensaje(
-      int conversacionId, String contenido) {
+    int conversacionId,
+    String contenido, {
+    String tipo = 'TEXTO',
+    String? archivoUrl,
+    int? publicacionId,
+    int? respuestaAId,
+  }) {
     return ApiHelper.post(
       _client,
       '${ApiConstants.conversaciones}/$conversacionId/mensajes',
+      body: {
+        'Contenido': contenido,
+        'Tipo': tipo,
+        if (archivoUrl != null) 'ArchivoUrl': archivoUrl,
+        if (publicacionId != null) 'PublicacionId': publicacionId,
+        if (respuestaAId != null) 'RespuestaAId': respuestaAId,
+      },
+      fromJson: MensajeResponse.fromJson,
+    );
+  }
+
+  Future<MensajeResponse> editarMensaje(
+    int conversacionId,
+    int mensajeId,
+    String contenido,
+  ) {
+    return ApiHelper.put(
+      _client,
+      '${ApiConstants.conversaciones}/$conversacionId/mensajes/$mensajeId',
       body: {'Contenido': contenido},
       fromJson: MensajeResponse.fromJson,
+    );
+  }
+
+  Future<void> eliminarMensaje(
+    int conversacionId,
+    int mensajeId, {
+    bool paraTodos = false,
+  }) async {
+    await _client.dio.delete(
+      '${ApiConstants.conversaciones}/$conversacionId/mensajes/$mensajeId',
+      queryParameters: {'paraTodos': paraTodos},
     );
   }
 

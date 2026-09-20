@@ -13,14 +13,15 @@ Future<void> showCommentsSheet(
   BuildContext context, {
   required int publicacionId,
   required int usuarioId,
+  CommunityCubit? cubit,
 }) {
-  final cubit = context.read<CommunityCubit>();
+  final cub = cubit ?? context.read<CommunityCubit>();
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (_) => BlocProvider.value(
-      value: cubit,
+      value: cub,
       child: _CommentsSheet(
         publicacionId: publicacionId,
         usuarioId: usuarioId,

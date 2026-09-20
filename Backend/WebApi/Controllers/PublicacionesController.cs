@@ -108,6 +108,21 @@ namespace WebApi.Controllers
             return Ok(await _mapper.MapearAsync(publicacion, User.ObtenerUsuarioId()));
         }
 
+        [HttpGet("menciones/{usuarioId:int}")]
+        [ProducesResponseType(typeof(IEnumerable<PublicacionResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerMenciones(int usuarioId)
+        {
+            var espectadorId = User.ObtenerUsuarioId();
+            var usuario = await _usuarioService.ObtenerPorIdAsync(usuarioId);
+            if (usuario is null)
+                return NotFound(new { mensaje = $"No se encontro el usuario con id {usuarioId}." });
+
+            var publicaciones = await _publicacionService.ObtenerMencionesAsync(
+                usuarioId, usuario.NombreUsuario, espectadorId);
+            return Ok(await _mapper.MapearListaAsync(publicaciones, espectadorId));
+        }
+
         [HttpGet("usuario/{usuarioId:int}")]
         [ProducesResponseType(typeof(IEnumerable<PublicacionResponseDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ObtenerPublicacionesDeUsuario(int usuarioId)
@@ -212,7 +227,7 @@ namespace WebApi.Controllers
             if (publicacion.UsuarioId != usuarioId.Value)
                 return Forbidden("No puedes editar una publicacion que no te pertenece.");
 
-            publicacion.Contenido = dto.Contenido.Trim();
+            publicacion.Contenido = (dto.Contenido ?? string.Empty).Trim();
             publicacion.Imagen = dto.Imagen;
             publicacion.Tipo = dto.Tipo.Trim().ToUpper();
             publicacion.Estado = dto.Estado.Trim().ToUpper();

@@ -8,5 +8,11 @@ namespace WebApi.Modelo
         public string Contenido { get; set; } = string.Empty;
         public DateTime Fecha { get; set; }
         public bool Leido { get; set; }
+        public string Tipo { get; set; } = "TEXTO";
+        public string? ArchivoUrl { get; set; }
+        public int? PublicacionId { get; set; }
+        public int? RespuestaAId { get; set; }
+        public bool Editado { get; set; }
+        public bool EliminadoParaTodos { get; set; }
     }
 }

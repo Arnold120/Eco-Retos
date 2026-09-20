@@ -190,6 +190,26 @@ namespace WebApi.Implementacion
             return lista;
         }
 
+        public async Task<IEnumerable<Publicacion>> ObtenerMencionesAsync(int usuarioId, string nombreUsuario, int? espectadorId = null)
+        {
+            var lista = new List<Publicacion>();
+            if (string.IsNullOrWhiteSpace(nombreUsuario))
+                return lista;
+
+            using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var command = new SqlCommand(
+                $"SELECT {Columnas} FROM Publicacion " +
+                "WHERE Estado = 'PUBLICADA' AND Contenido LIKE @Mencion " +
+                $"{ClausulaVisibilidad} " +
+                "ORDER BY FechaPublicacion DESC", connection);
+            command.Parameters.AddWithValue("@Mencion", $"%@{nombreUsuario.Trim()}%");
+            command.Parameters.AddWithValue("@Espectador", (object?)espectadorId ?? DBNull.Value);
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync()) lista.Add(Mapear(reader));
+            return lista;
+        }
+
         public async Task<Publicacion> CrearAsync(Publicacion publicacion)
         {
             using var connection = new SqlConnection(_connectionString);

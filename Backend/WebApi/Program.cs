@@ -98,6 +98,7 @@ builder.Services.AddScoped<IComentarioService, ComentarioService>();
 builder.Services.AddScoped<INotificacionService, NotificacionService>();
 builder.Services.AddScoped<IReaccionService, ReaccionService>();
 builder.Services.AddScoped<ISeguimientoService, SeguimientoService>();
+        builder.Services.AddScoped<ICalificacionService, CalificacionService>();
 builder.Services.AddScoped<IGuardadoService, GuardadoService>();
 builder.Services.AddScoped<IMultimediaService, MultimediaService>();
 builder.Services.AddScoped<IMensajeService, MensajeService>();

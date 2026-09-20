@@ -1,12 +1,4 @@
-
-
-
-
-
-
-
-
-USE EcoRitos;
+USE EcoRetos;
 GO
 
 IF OBJECT_ID('dbo.SoporteConfig', 'U') IS NULL

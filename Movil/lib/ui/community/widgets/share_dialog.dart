@@ -15,8 +15,9 @@ Future<void> showShareDialog(
   BuildContext context, {
   required PublicacionResponse post,
   required int usuarioId,
+  CommunityCubit? cubit,
 }) {
-  final cubit = context.read<CommunityCubit>();
+  final cub = cubit ?? context.read<CommunityCubit>();
   final mensajeService = context.read<MensajeService>();
   return showModalBottomSheet<void>(
     context: context,
@@ -31,7 +32,7 @@ Future<void> showShareDialog(
     builder: (ctx) => _ShareSheet(
       post: post,
       usuarioId: usuarioId,
-      cubit: cubit,
+      cubit: cub,
       mensajeService: mensajeService,
     ),
   );
@@ -58,6 +59,7 @@ class _ShareSheetState extends State<_ShareSheet> {
   final _comentario = TextEditingController();
   bool _publicando = false;
   bool _enviandoEnlace = false;
+  String _visibilidad = 'PUBLICO';
 
   @override
   void dispose() {
@@ -74,6 +76,7 @@ class _ShareSheetState extends State<_ShareSheet> {
       contenido: _comentario.text.trim(),
       compartidoDeId: widget.post.publicacionId,
       tipo: 'GENERAL',
+      visibilidad: _visibilidad,
     );
     if (!mounted) return;
     setState(() => _publicando = false);
@@ -116,12 +119,12 @@ class _ShareSheetState extends State<_ShareSheet> {
       );
       if (elegida == null || !mounted) return;
 
-      final texto = _comentario.text.trim().isEmpty
-          ? _enlace
-          : '${_comentario.text.trim()}\n$_enlace';
+      final texto = _comentario.text.trim();
       await widget.mensajeService.enviarMensaje(
         elegida.conversacionId,
         texto,
+        tipo: 'PUBLICACION',
+        publicacionId: widget.post.publicacionId,
       );
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -196,6 +199,42 @@ class _ShareSheetState extends State<_ShareSheet> {
               ],
             ),
             const SizedBox(height: 16),
+            Text(
+              '¿Quién puede verlo?',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 13.5,
+                color: isDark
+                    ? AppColorsDark.textPrimary
+                    : AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _VisibilidadChip(
+                  icono: Icons.public,
+                  label: 'Público',
+                  seleccionado: _visibilidad == 'PUBLICO',
+                  onTap: () => setState(() => _visibilidad = 'PUBLICO'),
+                ),
+                const SizedBox(width: 8),
+                _VisibilidadChip(
+                  icono: Icons.group_outlined,
+                  label: 'Seguidores',
+                  seleccionado: _visibilidad == 'SEGUIDORES',
+                  onTap: () => setState(() => _visibilidad = 'SEGUIDORES'),
+                ),
+                const SizedBox(width: 8),
+                _VisibilidadChip(
+                  icono: Icons.lock_outline,
+                  label: 'Solo yo',
+                  seleccionado: _visibilidad == 'SOLO_YO',
+                  onTap: () => setState(() => _visibilidad = 'SOLO_YO'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
             TextField(
               controller: _comentario,
               minLines: 2,
@@ -225,6 +264,62 @@ class _ShareSheetState extends State<_ShareSheet> {
   }
 
   String get enlace => _enlace;
+}
+
+class _VisibilidadChip extends StatelessWidget {
+  final IconData icono;
+  final String label;
+  final bool seleccionado;
+  final VoidCallback onTap;
+
+  const _VisibilidadChip({
+    required this.icono,
+    required this.label,
+    required this.seleccionado,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final prim = Theme.of(context).brightness == Brightness.dark
+        ? AppColorsDark.primary
+        : AppColors.primary;
+    final sec = textSecondaryColor(context);
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            color: seleccionado
+                ? prim.withValues(alpha: 0.14)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: seleccionado ? prim : sec.withValues(alpha: 0.35),
+              width: seleccionado ? 1.4 : 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icono, size: 15, color: seleccionado ? prim : sec),
+              const SizedBox(width: 5),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: seleccionado ? prim : sec,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _Opcion extends StatelessWidget {

@@ -113,12 +113,26 @@ class ConversationCubit extends Cubit<ConversationState> {
     }
   }
 
-  Future<bool> enviar(String contenido) async {
+  Future<bool> enviar(
+    String contenido, {
+    String tipo = 'TEXTO',
+    String? archivoUrl,
+    int? publicacionId,
+    int? respuestaAId,
+  }) async {
     final texto = contenido.trim();
-    if (texto.isEmpty || state.isSending) return false;
+    final tieneAdjunto = archivoUrl != null || publicacionId != null;
+    if ((texto.isEmpty && !tieneAdjunto) || state.isSending) return false;
     emit(state.copyWith(isSending: true, clearError: true));
     try {
-      final mensaje = await _service.enviarMensaje(conversacionId, texto);
+      final mensaje = await _service.enviarMensaje(
+        conversacionId,
+        texto,
+        tipo: tipo,
+        archivoUrl: archivoUrl,
+        publicacionId: publicacionId,
+        respuestaAId: respuestaAId,
+      );
       emit(state.copyWith(
         isSending: false,
         mensajes: [...state.mensajes, mensaje],
@@ -129,6 +143,43 @@ class ConversationCubit extends Cubit<ConversationState> {
         isSending: false,
         error: 'No se pudo enviar el mensaje. Inténtalo nuevamente.',
       ));
+      return false;
+    }
+  }
+
+  Future<bool> editar(int mensajeId, String contenido) async {
+    try {
+      final actualizado = await _service.editarMensaje(
+        conversacionId,
+        mensajeId,
+        contenido,
+      );
+      emit(state.copyWith(
+        mensajes: state.mensajes
+            .map((m) => m.mensajeId == mensajeId ? actualizado : m)
+            .toList(),
+      ));
+      return true;
+    } catch (_) {
+      emit(state.copyWith(error: 'No se pudo editar el mensaje.'));
+      return false;
+    }
+  }
+
+  Future<bool> eliminar(int mensajeId, {required bool paraTodos}) async {
+    try {
+      await _service.eliminarMensaje(
+        conversacionId,
+        mensajeId,
+        paraTodos: paraTodos,
+      );
+      emit(state.copyWith(
+        mensajes:
+            state.mensajes.where((m) => m.mensajeId != mensajeId).toList(),
+      ));
+      return true;
+    } catch (_) {
+      emit(state.copyWith(error: 'No se pudo eliminar el mensaje.'));
       return false;
     }
   }
@@ -164,7 +215,9 @@ class ConversationCubit extends Cubit<ConversationState> {
       var huboCambio = lista.length != state.mensajes.length;
       if (!huboCambio) {
         for (var i = 0; i < lista.length; i++) {
-          if (lista[i].leido != state.mensajes[i].leido) {
+          if (lista[i].leido != state.mensajes[i].leido ||
+              lista[i].contenido != state.mensajes[i].contenido ||
+              lista[i].editado != state.mensajes[i].editado) {
             huboCambio = true;
             break;
           }

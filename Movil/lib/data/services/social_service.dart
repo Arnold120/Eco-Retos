@@ -69,6 +69,14 @@ class PublicacionService {
     );
   }
 
+  Future<List<PublicacionResponse>> getMenciones(int usuarioId) {
+    return ApiHelper.getList(
+      _client,
+      '${ApiConstants.publicaciones}/menciones/$usuarioId',
+      fromJson: PublicacionResponse.fromJson,
+    );
+  }
+
   Future<List<PublicacionResponse>> buscar(String termino, {int limite = 20}) {
     return ApiHelper.getList(
       _client,

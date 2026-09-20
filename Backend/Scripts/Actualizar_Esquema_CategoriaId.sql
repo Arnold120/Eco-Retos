@@ -1,30 +1,5 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 SET NOCOUNT ON;
 GO
-
-
-
 
 IF COL_LENGTH('dbo.HistorialPuntos', 'CategoriaId') IS NULL
 BEGIN

@@ -23,6 +23,7 @@ class ApiConstants {
   static const String reacciones = '/Reacciones';
   static const String seguimientos = '/Seguimientos';
   static const String guardados = '/Guardados';
+  static const String calificaciones = '/Calificaciones';
   static const String conversaciones = '/Conversaciones';
   static const String denuncias = '/Denuncias';
   static const String busqueda = '/Busqueda';

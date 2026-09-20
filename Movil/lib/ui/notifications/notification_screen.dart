@@ -446,11 +446,7 @@ class _MuroNotificacionesViewState extends State<MuroNotificacionesView> {
           if (widget.onAbrirPublicacion != null) {
             widget.onAbrirPublicacion!(referenciaId);
           } else {
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => PostDetailScreen(publicacionId: referenciaId),
-              ),
-            );
+            abrirDetallePublicacion(context, referenciaId);
           }
         }
         break;
