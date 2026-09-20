@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/theme/app_theme.dart';
 import '../auth/cubit/auth_cubit.dart';
 import '../auth/cubit/auth_state.dart';
+import '../profile/cubit/profile_cubit.dart';
 import 'user_avatar.dart';
 
 
@@ -18,9 +19,21 @@ Future<void> showUserMenu(
   required VoidCallback onPrivacidad,
   required VoidCallback onCerrarSesion,
 }) {
+  String? foto;
+  String? nombrePerfil;
+  try {
+    final perfil = context.read<ProfileCubit>().state.perfil;
+    foto = perfil?.fotoPerfil;
+    if (perfil != null) {
+      final completo = '${perfil.nombre} ${perfil.apellido}'.trim();
+      if (completo.isNotEmpty) nombrePerfil = completo;
+    }
+  } catch (_) {}
+
   return showModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
+    isScrollControlled: true,
     backgroundColor: Theme.of(context).brightness == Brightness.dark
         ? AppColorsDark.surface
         : AppColors.surface,
@@ -31,16 +44,24 @@ Future<void> showUserMenu(
       final sec = Theme.of(ctx).brightness == Brightness.dark
           ? AppColorsDark.textSecondary
           : AppColors.textSecondary;
+      final auth = ctx.read<AuthCubit>().state;
+      final nombreAuth =
+          auth is Authenticated ? auth.nombreUsuario : 'Eco Héroe';
 
       return SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
               child: Row(
                 children: [
-                  const CurrentUserAvatar(radius: 24),
+                  UserAvatar(
+                    nombre: nombrePerfil ?? nombreAuth,
+                    fotoUrl: foto,
+                    radius: 24,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: BlocBuilder<AuthCubit, AuthState>(
@@ -138,6 +159,7 @@ Future<void> showUserMenu(
             ),
             const SizedBox(height: 8),
           ],
+          ),
         ),
       );
     },

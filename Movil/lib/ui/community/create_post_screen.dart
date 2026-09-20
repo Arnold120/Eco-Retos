@@ -25,11 +25,15 @@ class CreatePostScreen extends StatefulWidget {
 
 
   final PublicacionResponse? post;
+  final String? fotoPerfil;
+  final String? nombreUsuario;
 
   const CreatePostScreen({
     super.key,
     required this.usuarioId,
     this.post,
+    this.fotoPerfil,
+    this.nombreUsuario,
   });
 
   @override
@@ -740,7 +744,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               children: [
                 Row(
                   children: [
-                    const CurrentUserAvatar(radius: 20),
+                    widget.fotoPerfil != null || widget.nombreUsuario != null
+                        ? UserAvatar(
+                            nombre: widget.nombreUsuario ?? 'Eco Héroe',
+                            fotoUrl: widget.fotoPerfil,
+                            radius: 20,
+                          )
+                        : const CurrentUserAvatar(radius: 20),
                     const SizedBox(width: 10),
                     Expanded(
                       child: InkWell(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/social/social_models.dart';
+import '../../profile/cubit/profile_cubit.dart';
 import '../../widgets/user_avatar.dart';
 import '../cubit/community_cubit.dart';
 import '../user_profile_screen.dart';
@@ -16,6 +17,16 @@ Future<void> showCommentsSheet(
   CommunityCubit? cubit,
 }) {
   final cub = cubit ?? context.read<CommunityCubit>();
+  String? foto;
+  String? nombre;
+  try {
+    final perfil = context.read<ProfileCubit>().state.perfil;
+    foto = perfil?.fotoPerfil;
+    if (perfil != null) {
+      final completo = '${perfil.nombre} ${perfil.apellido}'.trim();
+      if (completo.isNotEmpty) nombre = completo;
+    }
+  } catch (_) {}
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -25,6 +36,8 @@ Future<void> showCommentsSheet(
       child: _CommentsSheet(
         publicacionId: publicacionId,
         usuarioId: usuarioId,
+        fotoPerfil: foto,
+        nombreUsuario: nombre,
       ),
     ),
   );
@@ -33,10 +46,14 @@ Future<void> showCommentsSheet(
 class _CommentsSheet extends StatelessWidget {
   final int publicacionId;
   final int usuarioId;
+  final String? fotoPerfil;
+  final String? nombreUsuario;
 
   const _CommentsSheet({
     required this.publicacionId,
     required this.usuarioId,
+    this.fotoPerfil,
+    this.nombreUsuario,
   });
 
   @override
@@ -72,6 +89,8 @@ class _CommentsSheet extends StatelessWidget {
           CommentsView(
             publicacionId: publicacionId,
             usuarioId: usuarioId,
+            fotoPerfil: fotoPerfil,
+            nombreUsuario: nombreUsuario,
           ),
         ],
       ),
@@ -84,11 +103,15 @@ class _CommentsSheet extends StatelessWidget {
 class CommentsView extends StatefulWidget {
   final int publicacionId;
   final int usuarioId;
+  final String? fotoPerfil;
+  final String? nombreUsuario;
 
   const CommentsView({
     super.key,
     required this.publicacionId,
     required this.usuarioId,
+    this.fotoPerfil,
+    this.nombreUsuario,
   });
 
   @override
@@ -107,6 +130,17 @@ class _CommentsViewState extends State<CommentsView> {
   ComentarioResponse? _respondiendoA;
   final Set<int> _respuestasExpandidas = {};
   int _visibles = 15;
+
+  Widget _avatarActual() {
+    if (widget.fotoPerfil != null || widget.nombreUsuario != null) {
+      return UserAvatar(
+        nombre: widget.nombreUsuario ?? 'Eco Héroe',
+        fotoUrl: widget.fotoPerfil,
+        radius: 16,
+      );
+    }
+    return const CurrentUserAvatar(radius: 16);
+  }
 
   @override
   void initState() {
@@ -420,7 +454,7 @@ class _CommentsViewState extends State<CommentsView> {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CurrentUserAvatar(radius: 16),
+          _avatarActual(),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -645,7 +679,7 @@ class _CommentsViewState extends State<CommentsView> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const CurrentUserAvatar(radius: 16),
+                _avatarActual(),
                 const SizedBox(width: 8),
                 Expanded(
                   child: TextField(

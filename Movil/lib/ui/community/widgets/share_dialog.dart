@@ -162,7 +162,8 @@ class _ShareSheetState extends State<_ShareSheet> {
           right: 20,
           bottom: MediaQuery.of(context).viewInsets.bottom + 16,
         ),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -258,6 +259,7 @@ class _ShareSheetState extends State<_ShareSheet> {
               style: TextStyle(color: sec, fontSize: 11.5),
             ),
           ],
+          ),
         ),
       ),
     );

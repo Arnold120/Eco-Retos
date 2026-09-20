@@ -7,6 +7,7 @@ import '../messages/conversation_screen.dart';
 import '../messages/messages_screen.dart';
 import '../notifications/cubit/notification_cubit.dart';
 import '../notifications/notification_screen.dart';
+import '../profile/cubit/profile_cubit.dart';
 import '../search/search_screen.dart';
 import '../widgets/user_avatar.dart';
 import 'create_post_screen.dart';
@@ -72,11 +73,26 @@ class _CommunityScreenState extends State<CommunityScreen> {
   }
 
   Future<void> _abrirCompositor() async {
+    String? foto;
+    String? nombre;
+    try {
+      final perfil = context.read<ProfileCubit>().state.perfil;
+      foto = perfil?.fotoPerfil;
+      final completo = perfil == null
+          ? ''
+          : '${perfil.nombre} ${perfil.apellido}'.trim();
+      if (completo.isNotEmpty) nombre = completo;
+    } catch (_) {}
+
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => BlocProvider.value(
           value: _cubit,
-          child: CreatePostScreen(usuarioId: widget.usuarioId),
+          child: CreatePostScreen(
+            usuarioId: widget.usuarioId,
+            fotoPerfil: foto,
+            nombreUsuario: nombre,
+          ),
         ),
       ),
     );

@@ -4,6 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/models/social/social_models.dart';
 import '../../data/services/busqueda_service.dart';
+import '../../data/services/social_interaction_service.dart';
+import '../../data/services/social_service.dart';
+import '../auth/cubit/auth_cubit.dart';
+import '../auth/cubit/auth_state.dart';
 import '../community/cubit/community_cubit.dart';
 import '../community/user_profile_screen.dart';
 import '../community/widgets/post_card.dart';
@@ -17,8 +21,24 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (ctx) => SearchCubit(ctx.read<BusquedaService>()),
+    final auth = context.read<AuthCubit>().state;
+    final usuarioId = auth is Authenticated ? auth.usuarioId : 0;
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (ctx) => SearchCubit(ctx.read<BusquedaService>()),
+        ),
+        BlocProvider(
+          create: (ctx) => CommunityCubit(
+            usuarioId: usuarioId,
+            publicacionService: ctx.read<PublicacionService>(),
+            reaccionService: ctx.read<ReaccionService>(),
+            seguimientoService: ctx.read<SeguimientoService>(),
+            guardadoService: ctx.read<GuardadoService>(),
+          ),
+        ),
+      ],
       child: const _SearchView(),
     );
   }

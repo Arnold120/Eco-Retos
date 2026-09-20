@@ -10,6 +10,7 @@ import '../../../data/services/social_interaction_service.dart';
 import '../../../data/services/social_service.dart';
 import '../../widgets/download_helper.dart';
 import '../../widgets/user_avatar.dart';
+import '../../profile/cubit/profile_cubit.dart';
 import '../create_post_screen.dart';
 import '../cubit/community_cubit.dart';
 import '../user_profile_screen.dart';
@@ -548,11 +549,26 @@ class PostCard extends StatelessWidget {
     final cubit = context.read<CommunityCubit>();
     switch (accion) {
       case _AccionMenu.editar:
+        String? foto;
+        String? nombre;
+        try {
+          final perfil = context.read<ProfileCubit>().state.perfil;
+          foto = perfil?.fotoPerfil;
+          final completo = perfil == null
+              ? ''
+              : '${perfil.nombre} ${perfil.apellido}'.trim();
+          if (completo.isNotEmpty) nombre = completo;
+        } catch (_) {}
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => BlocProvider.value(
               value: cubit,
-              child: CreatePostScreen(usuarioId: usuarioId, post: post),
+              child: CreatePostScreen(
+                usuarioId: usuarioId,
+                post: post,
+                fotoPerfil: foto,
+                nombreUsuario: nombre,
+              ),
             ),
           ),
         );

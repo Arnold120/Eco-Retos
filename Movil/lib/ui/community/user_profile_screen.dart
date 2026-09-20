@@ -66,6 +66,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   bool _guardandoCalificacion = false;
   bool _publicandoMuro = false;
   int? _calificacionSeleccionada;
+  bool _verPrivados = false;
 
   @override
   void initState() {
@@ -893,27 +894,35 @@ class _UserProfileScreenState extends State<UserProfileScreen>
             .where((p) => p.visibilidad == 'SOLO_YO')
             .toList()
         : const <PublicacionResponse>[];
+    final verPrivados = esPropio && _verPrivados;
 
     return [
-      _tituloSeccion(context, 'Compartido', compartidos.length),
-      if (compartidos.isEmpty)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            esPropio
-                ? 'Aún no has recompartido publicaciones de otros perfiles.'
-                : 'Aún no ha recompartido publicaciones de otros perfiles.',
-          ),
+      if (esPropio)
+        _selectorCompartidoPrivado(
+          context,
+          compartidos.length,
+          privados.length,
         )
       else
-        ...compartidos.map(
-          (p) => PostCard(
-            post: p,
-            usuarioId: _usuarioIdPropio(context),
+        _tituloSeccion(context, 'Compartido', compartidos.length),
+      if (!verPrivados) ...[
+        if (compartidos.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(
+              esPropio
+                  ? 'Aún no has recompartido publicaciones de otros perfiles.'
+                  : 'Aún no ha recompartido publicaciones de otros perfiles.',
+            ),
+          )
+        else
+          ...compartidos.map(
+            (p) => PostCard(
+              post: p,
+              usuarioId: _usuarioIdPropio(context),
+            ),
           ),
-        ),
-      if (esPropio) ...[
-        _tituloSeccion(context, 'Privado (solo para mí)', privados.length),
+      ] else ...[
         if (privados.isEmpty)
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -930,6 +939,66 @@ class _UserProfileScreenState extends State<UserProfileScreen>
           ),
       ],
     ];
+  }
+
+  Widget _selectorCompartidoPrivado(
+    BuildContext context,
+    int nCompartidos,
+    int nPrivados,
+  ) {
+    final prim = primaryOf(context);
+    final sec = textSecondaryColor(context);
+
+    Widget boton(String texto, bool activo, VoidCallback onTap) {
+      return Expanded(
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 6),
+            decoration: BoxDecoration(
+              color:
+                  activo ? prim.withValues(alpha: 0.14) : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: activo ? prim : sec.withValues(alpha: 0.35),
+                width: activo ? 1.4 : 1,
+              ),
+            ),
+            child: Text(
+              texto,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: activo ? prim : sec,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+      child: Row(
+        children: [
+          boton(
+            'Compartido ($nCompartidos)',
+            !_verPrivados,
+            () => setState(() => _verPrivados = false),
+          ),
+          const SizedBox(width: 8),
+          boton(
+            'Privado (solo para mí) ($nPrivados)',
+            _verPrivados,
+            () => setState(() => _verPrivados = true),
+          ),
+        ],
+      ),
+    );
   }
 
   List<Widget> _tabMenciones(

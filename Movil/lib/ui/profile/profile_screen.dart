@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:developer' as developer;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -446,54 +447,123 @@ class ProfileScreen extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 3),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: ClipOval(
-            child: resolverUrlMedia(fotoUrl) != null
-                ? Image.network(
-                    resolverUrlMedia(fotoUrl)!,
-                    width: 88,
-                    height: 88,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        width: 88,
-                        height: 88,
-                        color: Colors.white.withValues(alpha: 0.2),
+        GestureDetector(
+          onTap: () {
+            final url = resolverUrlMedia(fotoUrl);
+            if (url == null) return;
+            showDialog<void>(
+              context: context,
+              barrierColor: Colors.black,
+              builder: (ctx) => Dialog(
+                backgroundColor: Colors.transparent,
+                insetPadding: EdgeInsets.zero,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: InteractiveViewer(
+                        minScale: 1,
+                        maxScale: 5,
                         child: Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                : null,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              Colors.white,
+                          child: Image.network(
+                            url,
+                            fit: BoxFit.contain,
+                            loadingBuilder: (c, child, progreso) {
+                              if (progreso == null) return child;
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white70,
+                                ),
+                              );
+                            },
+                            errorBuilder: (_, __, ___) => const Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.broken_image_outlined,
+                                    color: Colors.white54,
+                                    size: 56,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'Imagen no disponible',
+                                    style: TextStyle(color: Colors.white54),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      developer.log(
-                        'Error loading profile image: $error',
-                        name: 'ProfileScreen',
-                      );
-                      return _defaultAvatar(inicial);
-                    },
-                  )
-                : _defaultAvatar(inicial),
+                      ),
+                    ),
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: SafeArea(
+                        child: IconButton(
+                          tooltip: 'Cerrar',
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          icon: const Icon(Icons.close, color: Colors.white),
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.black45,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 3),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: resolverUrlMedia(fotoUrl) != null
+                  ? Image.network(
+                      resolverUrlMedia(fotoUrl)!,
+                      width: 88,
+                      height: 88,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          width: 88,
+                          height: 88,
+                          color: Colors.white.withValues(alpha: 0.2),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 3,
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                  : null,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        developer.log(
+                          'Error loading profile image: $error',
+                          name: 'ProfileScreen',
+                        );
+                        return _defaultAvatar(inicial);
+                      },
+                    )
+                  : _defaultAvatar(inicial),
+            ),
           ),
         ),
         if (state.subiendoFoto)
@@ -1279,16 +1349,22 @@ class ProfileScreen extends StatelessWidget {
   Future<void> _cambiarFoto(BuildContext context) async {
     if (context.read<ProfileCubit>().state.subiendoFoto) return;
 
-    final source = await showModalBottomSheet<ImageSource>(
+    final esEscritorio = !kIsWeb &&
+        (Platform.isWindows || Platform.isLinux || Platform.isMacOS);
+
+    final source = esEscritorio
+        ? ImageSource.gallery
+        : await showModalBottomSheet<ImageSource>(
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
             const SizedBox(height: 10),
             Container(
               width: 40,
@@ -1337,6 +1413,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
           ],
+          ),
         ),
       ),
     );
