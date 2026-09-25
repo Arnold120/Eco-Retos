@@ -36,6 +36,7 @@ class ApiConstants {
   static const String jardines = '/Jardines';
   static const String rachas = '/Rachas';
   static const String notificaciones = '/Notificaciones';
+  static const String dispositivos = '/Dispositivos';
   static const String recursos = '/Recursos';
   static const String imagenes = '/Imagenes';
 }

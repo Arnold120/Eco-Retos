@@ -1,6 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../notifications/cubit/notification_cubit.dart';
 import '../../core/theme/app_theme.dart';
 import '../auth/cubit/auth_cubit.dart';
 import '../auth/cubit/auth_state.dart';
@@ -22,9 +25,11 @@ import '../admin/admin_evidence_screen.dart';
 import '../admin/cubit/admin_evidence_cubit.dart';
 import '../../data/services/admin_service.dart';
 import '../../data/services/gamification_service.dart';
+import '../../core/notifications/notification_service.dart';
 import '../profile/cubit/profile_cubit.dart';
 import '../home/cubit/home_cubit.dart';
 import '../community/cubit/community_cubit.dart';
+import '../notifications/notification_screen.dart';
 
 
 class MainShellScope extends InheritedWidget {
@@ -54,6 +59,99 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _currentIndex = 0;
   bool _sidebarOpen = false;
+  StreamSubscription<String>? _aperturaNotificacionSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _aperturaNotificacionSub =
+        NotificationService.instance.aperturas.listen(_abrirDesdePayload);
+  }
+
+  @override
+  void dispose() {
+    _aperturaNotificacionSub?.cancel();
+    super.dispose();
+  }
+
+  void _abrirDesdePayload(String payload) {
+    if (!mounted) return;
+    final destino = _destinoDesdePayload(payload);
+    switch (destino) {
+      case 'home':
+        _irATab(0);
+        break;
+      case 'challenges':
+        _irATab(1);
+        break;
+      case 'trivia':
+        _irATab(2);
+        break;
+      case 'community':
+        _irATab(3);
+        break;
+      case 'profile':
+        _irATab(4);
+        break;
+      case 'notifications':
+default:
+  final notificationCubit = context.read<NotificationCubit>();
+
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) => BlocProvider.value(
+        value: notificationCubit,
+        child: const NotificationScreen(),
+      ),
+    ),
+  );
+  break;
+    }
+  }
+
+  String _destinoDesdePayload(String payload) {
+    try {
+      final decoded = jsonDecode(payload);
+      if (decoded is Map) {
+        final screen = decoded['screen'] ?? decoded['seccion'] ?? decoded['tipo'];
+        return _normalizarDestino(screen?.toString());
+      }
+    } catch (_) {
+      return _normalizarDestino(payload);
+    }
+    return _normalizarDestino(payload);
+  }
+
+  String _normalizarDestino(String? valor) {
+    switch (valor?.toLowerCase()) {
+      case 'home':
+      case 'inicio':
+        return 'home';
+      case 'challenge':
+      case 'challenges':
+      case 'reto':
+      case 'retos':
+        return 'challenges';
+      case 'trivia':
+      case 'trivias':
+        return 'trivia';
+      case 'community':
+      case 'comunidad':
+      case 'publicacion':
+      case 'publicaciones':
+        return 'community';
+      case 'profile':
+      case 'perfil':
+        return 'profile';
+      case 'notification':
+      case 'notifications':
+      case 'notificacion':
+      case 'notificaciones':
+        return 'notifications';
+      default:
+        return 'notifications';
+    }
+  }
 
   void _openSidebar() => setState(() => _sidebarOpen = true);
   void _closeSidebar() => setState(() => _sidebarOpen = false);

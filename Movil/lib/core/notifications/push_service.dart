@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -45,6 +46,7 @@ class PushService {
 
 
   VoidCallback? onMensajeRecibido;
+  VoidCallback? onTokenActualizado;
 
   bool get disponible => FirebaseConfig.disponible;
 
@@ -127,8 +129,12 @@ class PushService {
 
   String? _payloadDe(RemoteMessage mensaje) {
     final data = mensaje.data;
-    final payload = data['payload'] ?? data['referencia'] ?? data['tipo'];
-    return payload?.toString();
+    final payload = data['payload'];
+    if (payload != null && payload.toString().isNotEmpty) {
+      return payload.toString();
+    }
+    if (data.isEmpty) return null;
+    return jsonEncode(data);
   }
 
   Future<void> _guardarToken(String? nuevoToken) async {
@@ -140,6 +146,7 @@ class PushService {
     } catch (_) {
 
     }
+    onTokenActualizado?.call();
   }
 
 

@@ -1,5 +1,6 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using WebApi.Implementacion.Helpers;
 using WebApi.Interfaz;
 using WebApi.Modelo;
@@ -9,14 +10,21 @@ namespace WebApi.Implementacion
     public class NotificacionService : INotificacionService
     {
         private readonly string _connectionString;
+        private readonly IFirebaseNotificationService _firebaseNotificationService;
+        private readonly ILogger<NotificacionService> _logger;
 
         private const string Columnas =
             "NotificacionId, UsuarioId, Titulo, Mensaje, Tipo, Leida, Fecha, ReferenciaTipo, ReferenciaId, ActorUsuarioId";
 
-        public NotificacionService(IConfiguration configuration)
+        public NotificacionService(
+            IConfiguration configuration,
+            IFirebaseNotificationService firebaseNotificationService,
+            ILogger<NotificacionService> logger)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            _firebaseNotificationService = firebaseNotificationService;
+            _logger = logger;
         }
 
         private static Notificacion Mapear(SqlDataReader reader)
@@ -87,6 +95,16 @@ namespace WebApi.Implementacion
             command.Parameters.AddWithValue("@ReferenciaId", (object?)notificacion.ReferenciaId ?? DBNull.Value);
             command.Parameters.AddWithValue("@ActorUsuarioId", (object?)notificacion.ActorUsuarioId ?? DBNull.Value);
             notificacion.NotificacionId = Convert.ToInt32(await command.ExecuteScalarAsync());
+            try
+            {
+                await _firebaseNotificationService.EnviarAsync(notificacion);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "No se pudo enviar la notificación push {NotificacionId}.",
+                    notificacion.NotificacionId);
+            }
             return notificacion;
         }
 

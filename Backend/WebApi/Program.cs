@@ -112,6 +112,8 @@ builder.Services.AddScoped<ICompraService, CompraService>();
 builder.Services.AddScoped<IDetalleCompraService, DetalleCompraService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IDispositivoService, DispositivoService>();
+builder.Services.AddScoped<IFirebaseNotificationService, FirebaseNotificationService>();
 
 
 builder.Services.AddScoped<IAuditoriaService, AuditoriaService>();

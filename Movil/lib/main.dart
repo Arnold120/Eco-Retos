@@ -9,7 +9,7 @@ import 'core/network/api_client.dart';
 import 'core/theme/app_theme.dart';
 import 'core/notifications/notification_service.dart';
 import 'core/notifications/push_service.dart';
-import 'ui/notifications/notification_screen.dart';
+
 import 'ui/permissions/permission_gate.dart';
 import 'data/services/auth_service.dart';
 import 'data/services/user_service.dart';
@@ -31,6 +31,7 @@ import 'data/services/descarga_service.dart';
 import 'data/services/imagen_service.dart';
 import 'data/services/admin_service.dart';
 import 'data/services/usuarios_service.dart';
+import 'data/services/device_service.dart';
 import 'data/repositories/trivias_diario_local.dart';
 import 'ui/splash/splash_screen.dart';
 import 'ui/auth/cubit/auth_cubit.dart';
@@ -142,6 +143,7 @@ class _EcoRetoAppState extends State<EcoRetoApp> {
         RepositoryProvider(create: (_) => CompraService(apiClient)),
         RepositoryProvider(create: (_) => AdminService(apiClient)),
         RepositoryProvider(create: (_) => UsuariosService(apiClient)),
+        RepositoryProvider(create: (_) => DeviceService(apiClient)),
         ChangeNotifierProvider.value(value: _themeProvider),
       ],
       child: BlocProvider(
@@ -165,23 +167,40 @@ class _AppEntryState extends State<AppEntry> {
 
 
   bool _estadoInicialResuelto = false;
+  int? _usuarioTokenRegistrado;
+  String? _tokenRegistrado;
 
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
-  StreamSubscription<String>? _aperturaNotifSub;
-
   @override
   void initState() {
     super.initState();
-    _aperturaNotifSub =
-        NotificationService.instance.aperturas.listen(_abrirNotificaciones);
     PushService.instance.onMensajeRecibido = _refrescarNotificaciones;
+    PushService.instance.onTokenActualizado = _registrarTokenActualizado;
   }
 
   @override
   void dispose() {
-    _aperturaNotifSub?.cancel();
     PushService.instance.onMensajeRecibido = null;
+    PushService.instance.onTokenActualizado = null;
     super.dispose();
+  }
+
+  Future<void> _registrarTokenActualizado() async {
+    final auth = context.read<AuthCubit>().state;
+    final token = PushService.instance.token.value ??
+        await PushService.instance.tokenGuardado();
+    if (auth is! Authenticated || token == null || token.isEmpty) return;
+    if (_usuarioTokenRegistrado == auth.usuarioId &&
+        _tokenRegistrado == token) {
+      return;
+    }
+    try {
+      await context.read<DeviceService>().registrarToken(token);
+      _usuarioTokenRegistrado = auth.usuarioId;
+      _tokenRegistrado = token;
+    } catch (e) {
+      debugPrint('No se pudo registrar el token FCM: $e');
+    }
   }
 
 
@@ -194,20 +213,6 @@ class _AppEntryState extends State<AppEntry> {
     }
   }
 
-
-  void _abrirNotificaciones(String payload) {
-    if (!mounted) return;
-    final auth = context.read<AuthCubit>().state;
-    if (auth is! Authenticated) return;
-
-
-    PushService.instance.payloadInicial = null;
-    NotificationService.instance.payloadInicial = null;
-
-    _navKey.currentState?.push(
-      MaterialPageRoute(builder: (_) => const NotificationScreen()),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -274,6 +279,9 @@ class _AppEntryState extends State<AppEntry> {
 
           if (state is Authenticated) {
             _estadoInicialResuelto = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _registrarTokenActualizado();
+            });
 
 
 
@@ -283,7 +291,7 @@ class _AppEntryState extends State<AppEntry> {
               if (pendiente != null && pendiente.isNotEmpty) {
                 PushService.instance.payloadInicial = null;
                 NotificationService.instance.payloadInicial = null;
-                _abrirNotificaciones(pendiente);
+                NotificationService.instance.emitirApertura(pendiente);
               }
             });
 
