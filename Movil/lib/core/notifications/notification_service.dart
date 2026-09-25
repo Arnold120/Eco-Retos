@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -181,7 +182,8 @@ class NotificationService {
     await mostrar(
       titulo: titulo,
       cuerpo: cuerpo,
-      payload: data['payload']?.toString() ?? data['referencia']?.toString(),
+      payload: data['payload']?.toString() ??
+          (data.isEmpty ? null : jsonEncode(data)),
     );
   }
 
