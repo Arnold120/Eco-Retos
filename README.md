@@ -160,6 +160,7 @@ flutter run
 |---|---|
 | Arnold120 | Desarrollo |
 | Franciscosanchezavellan514 | Desarrollo |
+| Jeriel Calero | Desarrollo |
 
 *Proyecto multidisciplinario desarrollado por estudiantes de CUR-Carazo, UNAN Managua.*
 
